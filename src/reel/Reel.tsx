@@ -8,7 +8,7 @@ import { Lanes } from "./scenes/Lanes";
 import { Morph } from "./scenes/Morph";
 import { Logo } from "./scenes/Logo";
 import { INK } from "./theme";
-import { noise1 } from "./math";
+import { noise1 } from "../lib/math";
 import { DURATION_FRAMES, FPS, beatAt, sec, timeAtBeat } from "./time";
 import chapters from "./chapters.json";
 

@@ -1,5 +1,5 @@
 import { CLAY, DISPLAY, INK, IVORY, UI, UI_SIZE, ink, ivory } from "../theme";
-import { clamp, easeInExpo, easeOutExpo, lerp, prog, spring } from "../math";
+import { clamp, easeInExpo, easeOutExpo, lerp, prog, spring } from "../../lib/math";
 import { sec } from "../time";
 
 // Bar 4 (beats 16-20): a cube that turns on every beat with real

@@ -50,7 +50,7 @@ Units: **beats** (`b`) are the reel's clock; `s` seconds; `f` frames at 60 fps; 
 | 21   | [Open items](#21-open-items)                                          | Unverified values and what would settle them                                                                |
 | 22   | [Brief, persona and studio rules](#22-brief-persona-and-studio-rules) | The brief and persona; on-screen copy; the studio rules every film follows; the three example prompts       |
 | 22.1 | [Brief and persona](#221-brief-and-persona)                           | Who the reel speaks as; on-screen copy                                                                      |
-| 22.3 | [Example prompts](#223-example-prompts)                               | The three prompts, verbatim; prompt 3's rules against this reel                                             |
+| 22.3 | [Example prompts](#223-example-prompts)                               | Eight prompts, verbatim; prompt 3's rules against this reel; what each needs                                |
 | 23   | [Preview: Studio and demo page](#23-preview-studio-and-demo-page)     | Scrubbing and playback while editing; the standalone viewer; chapters                                       |
 
 ---
@@ -78,7 +78,7 @@ The reel is a pure function of time, timed in beats from the measured grid.
 5. **Retarget a value by summing one spring per change** (`barHeight`, cube `turns`) — never restart a
    spring from the current position (§8).
 6. **Use seeded randomness only** — `hash`, `noise1`, `mulberry32` in
-   [`math.ts`](../src/reel/math.ts) and [`audio/dsp.mjs`](../audio/dsp.mjs).
+   [`math.ts`](../src/lib/math.ts) and [`audio/dsp.mjs`](../audio/dsp.mjs).
 7. **Regenerate the beat grid after any score change**: `npm run audio` runs `synth.mjs` then
    `beats.mjs`, in that order — `beats.mjs` measures the WAV that `synth.mjs` writes.
 8. **Keep UI text at `UI_SIZE` (56 px) or larger** — 56 px is ≈ 11 pt on a phone-width 16:9 frame;
@@ -298,7 +298,7 @@ linear one would read as slowing down.
 | Morph key spacing        | Keys every 0.5 beat, then every 0.25 beat from 26.5 | Event-rate ramp: eighths → sixteenths                                                                   |
 | Score riser              | LPF 300 → 9000 Hz exponential, amplitude `u²`       | Matching audio ramp across bar 6 (§13)                                                                  |
 
-Where it lives: [`math.ts`](../src/reel/math.ts) — all easings and helpers; ramps inline in each scene.
+Where it lives: [`math.ts`](../src/lib/math.ts) — all easings and helpers; ramps inline in each scene.
 
 ---
 
@@ -308,14 +308,20 @@ Springs are closed-form step responses, so any frame can be computed without sim
 before it.
 
 ```ts
-// math.ts — spring(dt, freq = 2.2, damping = 0.45), dt in seconds
-w  = 2π · freq
-wd = w · √(1 − damping²)
-x(dt) = 1 − e^(−damping·w·dt) · (cos(wd·dt) + (damping·w / wd) · sin(wd·dt))   // 0 for dt ≤ 0
+// math.ts — spring(dt, freq = 2.2, damping = 0.45), dt in seconds; 0 for dt ≤ 0
+w = 2π · freq,  ζ = damping
+ζ < 1:  x = 1 − e^(−ζw·dt) · (cos(wd·dt) + (ζw / wd) · sin(wd·dt)),   wd = w · √(1 − ζ²)
+ζ = 1:  x = 1 − e^(−w·dt) · (1 + w·dt)
+ζ > 1:  x = 1 + (r₂·e^(r₁·dt) − r₁·e^(r₂·dt)) / (r₁ − r₂),   r₁,₂ = −w(ζ ∓ √(ζ² − 1))
+
+// springKD(dt, stiffness = 170, damping = 26, mass = 1): the same response in stiffness/damping
+// units (react-spring's tension/friction): w = √(k/m), ζ = d / (2√(km)). 170/26 is ζ ≈ 0.997.
 
 // wobble(dt, decay = 0.15, freq = 5): e^(−dt/decay) · cos(2π·freq·dt), for hit reactions
 ```
 
+- **All three regimes are closed form** and match a numerical (RK4) integration to within 1e-13
+  `[measured]`; `ζ ≥ 1` never overshoots.
 - **Lower `damping` means more overshoot and ringing; higher `freq` means a faster settle.**
   `damping` 0.36 overshoots ≈ 30 %; 0.5 overshoots ≈ 16 % `[derived]`.
 - **Retarget by summing one spring per change.** A value with several targets is
@@ -323,6 +329,13 @@ x(dt) = 1 − e^(−damping·w·dt) · (cos(wd·dt) + (damping·w / wd) · sin(w
   own time, so motion stays continuous and every frame stays a closed form.
   - Why: restarting one spring from "the current position" needs that position from the previous
     frame — carried state, which the render contract forbids (§1, rule 1).
+
+| Helper (`src/lib/math.ts`)                | Does                                                                                           |
+| ----------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `track(t, keys, stiffness, damping)`      | Keyframes `[time, value]` as a sum of one `springKD` per change                                |
+| `indicator(t, stops, width, lead, trail)` | Stretching tab indicator: leading edge on a stiffer spring (320/30) than the trailing (140/22) |
+| `swapAlpha(t, tIn, tOut)`                 | Text in a morphing container: in 0.08 s after the morph starts, out 0.1 s before the next one  |
+| `loopT(t, dur)`                           | Wraps time for seamless loops; the film must also end where it starts                          |
 
 | Where (file — symbol)        | Animates                               | `freq` (Hz) | `damping` | Stagger               |
 | ---------------------------- | -------------------------------------- | ----------- | --------- | --------------------- |
@@ -337,7 +350,7 @@ x(dt) = 1 − e^(−damping·w·dt) · (cos(wd·dt) + (damping·w / wd) · sin(w
 | `Morph.tsx` — `pulse` | Shape and ring pulse on each key     | 0.09        | 3.5         | ±10 % / ±6 %  |
 | `Logo.tsx` — `pulse`  | Spark rays on the final chime (b 31) | 0.16        | 3           | ±12 %         |
 
-Where it lives: [`math.ts`](../src/reel/math.ts) — `spring`, `wobble`.
+Where it lives: [`math.ts`](../src/lib/math.ts) — `spring`, `wobble`.
 
 ---
 
@@ -928,9 +941,10 @@ home. Each row states one rule and how this reel meets it.
 
 ### 22.3 Example prompts
 
-Three example prompts for films made under the studio rules (§22.2). The first is this reel's brief;
-the other two are templates for product films that this reel does not follow. This section is their
-home; they are kept verbatim.
+Example prompts for films made under the studio rules (§22.2), kept verbatim; this section is their
+home. Prompt 1 is this reel's brief; the others are briefs this reel does not follow. Each is labelled
+with the video type, style source or format it exercises; the planned `make-motion-film` playbooks
+and the `capture-reference-style` skill are built from them.
 
 **Prompt 1: showreel** — the brief for this reel.
 
@@ -1020,6 +1034,54 @@ Prompt 3's build rules, against this reel:
 | One container never cuts; a cursor drives every change         | Not applicable: no product UI                                        | —          |
 | Tab indicator edges on different springs                       | Not applicable: no tabs                                              | —          |
 | The last frame equals the first                                | Not applicable: the reel ends on a logo, not a loop                  | —          |
+
+**Prompts 4–7: showreel variants** — the showreel playbook's variants: a 60 s reel scored for piano,
+a 10 s self-introduction with anti-slop guardrails, a 9:16 history story, and an agency persona.
+Their `#` lines credit the people whose patterns they follow.
+
+```text
+# Longer, with a sound bar (pattern from @kloss_xyz's 90-second piano reel)
+make a dynamic 16:9, 60-second motion graphics showreel that shows your real creative limits.
+S-tier sound design, no generic synth pads. Compose an original piano score and sync every
+cut to it. Export 1080p MP4.
+
+# Anti-slop guardrail (pattern from @1littlecoder)
+make a dynamic 10-second motion graphics video that introduces who you are as Opus 5.5.
+Avoid frames and text in the corners, the usual giveaways of AI-made video.
+
+# Story instead of techniques (pattern from @sonnylazuardi)
+use your showreel energy, but tell a story: the history of [TOPIC] from [START] to today,
+surprise me with the storyboard. 45 seconds, vertical 9:16.
+
+# Agency persona
+make a 30-second showreel as if you were a niche branding studio for startup founders.
+Create every graphic from scratch. One accent color. Every shot is a different technique.
+```
+
+**Prompt 8: style from a reference video** — a style source, not a type: the reference's grammar
+(palette, type, shot lengths, transitions, camera, texture, text motion) applied to new content.
+
+```text
+Reference: ./refs/launch.mp4 (and ./refs/frames/*.png)
+
+1. Extract one frame every 0.5s with ffmpeg. Study them.
+2. Write ./docs/style_guide.md: palette (hex), type (family, weight, tracking),
+   shot lengths, transition types, camera moves, texture/grain, how text enters and exits.
+3. Write ./docs/shotlist.md for a [DURATION]s video about [SUBJECT] in THAT style.
+   Take the grammar of the reference, never its content, logos or characters.
+4. Show me both files. Wait for my OK before any code.
+```
+
+What these prompts need that the repo lacks:
+
+| Prompt | Needs                                                                                                                   |
+| ------ | ----------------------------------------------------------------------------------------------------------------------- |
+| 4      | A piano voice and an arranged 60 s score; cuts synced to measured note onsets, not only beats; about 25 scenes          |
+| 5      | A short self-introduction structure; the corner and frame bans are already studio rules (§22.2)                         |
+| 6      | A research and fact-check step, a storyboard checkpoint, 9:16 layout with platform safe zones                           |
+| 7      | A persona brief; technique variety and one accent are already studio rules                                              |
+| 8      | Frame extraction every 0.5 s, cut detection, palette and type analysis, the approval checkpoint                         |
+| 2      | A scripted cursor, screenshots that assemble piece by piece, UI sounds on the beat, 9:16 → 1:1 → 16:9 from one timeline |
 
 ---
 

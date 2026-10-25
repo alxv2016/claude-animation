@@ -1,7 +1,7 @@
 import { useCurrentFrame, useVideoConfig } from "remotion";
 import { loadFont } from "@remotion/google-fonts/Inter";
 import { LiquidGlass, type GlassPanel } from "..";
-import { lerp, spring } from "../../reel/math";
+import { lerp, spring } from "../../lib/math";
 import { SKY_FRAGMENT, skyUniforms } from "../backgrounds/Sky";
 
 // iOS-style screen in liquid glass (docs/EFFECTS.md §7.3): a lock-screen widget, control

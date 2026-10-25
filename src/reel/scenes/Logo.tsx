@@ -1,5 +1,5 @@
 import { CLAY, DISPLAY, INK, IVORY, UI, UI_SIZE, ink } from "../theme";
-import { clamp, easeOutBack, easeOutExpo, hash, prog, wobble } from "../math";
+import { clamp, easeOutBack, easeOutExpo, hash, prog, wobble } from "../../lib/math";
 import { sec } from "../time";
 
 // Bar 7 (beats 28-32): the drop. An ivory iris opens from the point the

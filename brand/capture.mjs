@@ -1,7 +1,7 @@
 // Captures a website's brand into public/brands/<domain>/: design tokens, colours,
 // fonts, type scale, motion tokens, component crops, logo and screenshots.
 // node brand/capture.mjs <url> [--no-fonts]
-// Output feeds brand/style-guide.mjs. See docs/BRAND_CAPTURE.md.
+// Output feeds brand/style-guide.mjs. Usage: the capture-brand skill; internals: docs/BRAND_CAPTURE.md.
 import fs from "node:fs";
 import path from "node:path";
 import { ensureBrowser } from "@remotion/renderer";

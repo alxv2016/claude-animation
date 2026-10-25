@@ -1,5 +1,5 @@
 import { CLAY, DISPLAY, INK, IVORY, UI, UI_SIZE, ivory } from "../theme";
-import { clamp, easeInCubic, easeInOutCubic, easeOutBack, easeOutBounce, easeOutExpo, lerp, mixHex, prog, wobble } from "../math";
+import { clamp, easeInCubic, easeInOutCubic, easeOutBack, easeOutBounce, easeOutExpo, lerp, mixHex, prog, wobble } from "../../lib/math";
 import { FPS, beatAt, sec, timeAtBeat } from "../time";
 
 // Bar 5 (beats 20-24): four easings race the same distance. Each dot leaves

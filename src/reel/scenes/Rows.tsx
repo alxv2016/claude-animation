@@ -1,5 +1,5 @@
 import { CLAY, DISPLAY, INK, IVORY } from "../theme";
-import { clamp, easeInCubic, easeOutExpo, prog } from "../math";
+import { clamp, easeInCubic, easeOutExpo, prog } from "../../lib/math";
 
 // Bar 1 (beats 4-8): the twelve principles of animation as diagonal marquee
 // rows that snap one step per beat, then leave as blinds onto the grid.

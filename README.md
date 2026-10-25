@@ -1,8 +1,24 @@
 # claude-animation
 
-Claude animation skill
+**motion-kit** — a kit for making motion-graphics films with AI agents: Remotion film tooling, shader
+effects and liquid glass, website brand capture, and portable skills that work in any LLM tool. This
+repo is the kit and its test bench (a showreel and an effects showcase built with it).
 
-## Remotion
+## Use the kit in your project
+
+```sh
+npx --package=github:alxv2016/claude-animation motion-kit init --install   # Remotion + kit library
+npx motion-kit skills install          # skills → .agents/ (any tool), linked into .claude/
+npx motion-kit doctor                  # check the setup
+npm run dev                            # Remotion Studio
+```
+
+Agents read [AGENTS.md](AGENTS.md); the kit is described in [docs/MOTION_KIT.md](docs/MOTION_KIT.md).
+Remotion needs a company licence above a certain company size — see remotion.dev/license.
+
+## Work on this repo
+
+### Remotion
 
 ```sh
 npm install
@@ -19,7 +35,7 @@ The reel lives in `src/reel/`: one file per scene under `scenes/`, composed in `
 scene is a pure function of the beat number, timed from the measured grid. The studio rules every film follows,
 and the example prompts, are in [docs/MOTION_REEL.md §22](docs/MOTION_REEL.md#22-brief-persona-and-studio-rules).
 
-## Effects
+### Effects
 
 Shader backgrounds (grainy gradients, waves, clouds, pixel and dither fields), filters over video and images
 (dither, halftone, mosaic, gradient map) and liquid-glass UI, in `src/effects/`.
@@ -34,11 +50,11 @@ node render.mjs still 200 LiquidGlassDemo                 # one full-size frame
 
 See [docs/EFFECTS.md](docs/EFFECTS.md).
 
-## Brand capture
+### Brand capture
 
 ```sh
-npm run brand:capture -- https://example.com   # Playwright → public/brands/example.com/
-npm run brand:guide -- example.com             # → video-theme.json + docs/brands/example.com/STYLE_GUIDE.md
+npm run mk -- brand capture https://example.com   # Playwright → public/brands/example.com/
+npm run mk -- brand guide example.com             # → video-theme.json + docs/brands/example.com/STYLE_GUIDE.md
 ```
 
 Uses `playwright-core` with Remotion's headless Chrome; no separate browser download. Curate each
@@ -46,6 +62,7 @@ brand before use — see [docs/BRAND_CAPTURE.md](docs/BRAND_CAPTURE.md).
 
 ## Documentation
 
+- [docs/MOTION_KIT.md](docs/MOTION_KIT.md) — the kit: CLI, `init`, packaging of skills and agents
 - [docs/MOTION_REEL.md](docs/MOTION_REEL.md) — how the showreel is built, timed, scored and rendered;
   reference for its easing, springs, morphing, transitions and camera; the studio rules and example
   prompts (§22)

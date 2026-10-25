@@ -43,14 +43,66 @@ export function cubicBezier(x1: number, y1: number, x2: number, y2: number) {
   };
 }
 
-/** Closed-form damped spring step response, 0→1. `dt` in seconds. */
-export function spring(dt: number, freq = 2.2, damping = 0.45) {
+/**
+ * Closed-form step response 0→1 of a mass-spring-damper released at rest, at natural
+ * frequency `w0` (rad/s) and damping ratio `zeta`: under-, critically and over-damped.
+ */
+function springStep(dt: number, w0: number, zeta: number) {
   if (dt <= 0) return 0;
-  const w = 2 * Math.PI * freq;
-  const wd = w * Math.sqrt(1 - damping * damping);
-  const decay = Math.exp(-damping * w * dt);
-  return 1 - decay * (Math.cos(wd * dt) + ((damping * w) / wd) * Math.sin(wd * dt));
+  if (zeta < 1 - 1e-6) {
+    const wd = w0 * Math.sqrt(1 - zeta * zeta);
+    return 1 - Math.exp(-zeta * w0 * dt) * (Math.cos(wd * dt) + ((zeta * w0) / wd) * Math.sin(wd * dt));
+  }
+  if (zeta <= 1 + 1e-6) return 1 - Math.exp(-w0 * dt) * (1 + w0 * dt);
+  const s = Math.sqrt(zeta * zeta - 1);
+  const r1 = -w0 * (zeta - s);
+  const r2 = -w0 * (zeta + s);
+  return 1 + (r2 * Math.exp(r1 * dt) - r1 * Math.exp(r2 * dt)) / (r1 - r2);
 }
+
+/** Spring by frequency (Hz) and damping ratio (< 1 overshoots, 1 critical, > 1 sluggish), 0→1. `dt` in seconds. */
+export const spring = (dt: number, freq = 2.2, damping = 0.45) => springStep(dt, 2 * Math.PI * freq, damping);
+
+/**
+ * Spring by stiffness and damping, mass 1 by default (react-spring's tension / friction units:
+ * 170 / 26 is its default, near-critical). 0→1, `dt` in seconds.
+ */
+export const springKD = (dt: number, stiffness = 170, damping = 26, mass = 1) =>
+  springStep(dt, Math.sqrt(stiffness / mass), damping / (2 * Math.sqrt(stiffness * mass)));
+
+/** Keyframes `[time, value]` (sorted, seconds) as a sum of one spring per change: continuous through retargets. */
+export function track(t: number, keys: readonly (readonly [number, number])[], stiffness = 170, damping = 26) {
+  let v = keys[0][1];
+  for (let i = 1; i < keys.length; i++) v += (keys[i][1] - keys[i - 1][1]) * springKD(t - keys[i][0], stiffness, damping);
+  return v;
+}
+
+/**
+ * A stretching indicator (tab underline, selection lens): both edges follow the same stops,
+ * the leading edge on a stiffer spring than the trailing one, so it stretches as it travels.
+ */
+export function indicator(
+  t: number,
+  stops: readonly (readonly [number, number])[],
+  width: number,
+  lead: readonly [number, number] = [320, 30],
+  trail: readonly [number, number] = [140, 22],
+) {
+  const a = track(t, stops, lead[0], lead[1]);
+  const b = track(t, stops, trail[0], trail[1]);
+  return { left: Math.min(a, b), right: Math.max(a, b) + width };
+}
+
+/**
+ * Opacity of text inside a morphing container: in after the morph starts (`tIn` + delay),
+ * out before the next one (`tOut`), so text never rides a moving edge.
+ */
+export function swapAlpha(t: number, tIn: number, tOut: number, delay = 0.08, fadeIn = 0.12, fadeOut = 0.1) {
+  return Math.min(clamp((t - tIn - delay) / fadeIn), clamp((tOut - fadeOut - t) / fadeOut));
+}
+
+/** Wraps time into [0, dur) for seamless loops; the film must also end where it started (docs/MOTION_REEL.md §22.3, prompt 3). */
+export const loopT = (t: number, dur: number) => ((t % dur) + dur) % dur;
 
 /** Decaying oscillation for hit reactions, starts at 1. `dt` in seconds. */
 export const wobble = (dt: number, decay = 0.15, freq = 5) =>

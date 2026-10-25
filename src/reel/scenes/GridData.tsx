@@ -1,5 +1,5 @@
 import { CLAY, DISPLAY, INK, IVORY, UI, UI_SIZE, ivory } from "../theme";
-import { clamp, easeInBack, easeInOutCubic, easeOutBack, easeOutExpo, hash, lerp, mixHex, prog, spring } from "../math";
+import { clamp, easeInBack, easeInOutCubic, easeOutBack, easeOutExpo, hash, lerp, mixHex, prog, spring } from "../../lib/math";
 import { sec } from "../time";
 
 // Bar 2 (beats 8-12): a 16x9 field of dashes, one rule. Each beat a ripple

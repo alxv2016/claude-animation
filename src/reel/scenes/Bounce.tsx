@@ -1,5 +1,5 @@
 import { CLAY, DISPLAY, INK, IVORY, UI, UI_SIZE, ivory } from "../theme";
-import { clamp, lerp, mixHex, prog, spring } from "../math";
+import { clamp, lerp, mixHex, prog, spring } from "../../lib/math";
 import { sec } from "../time";
 
 // Bar 0 (beats 0-4): a ball hops along the outline of "motion". Each landing

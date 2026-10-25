@@ -1,6 +1,6 @@
 import { loadFont } from "@remotion/fonts";
 import { staticFile } from "remotion";
-import { cubicBezier } from "../reel/math";
+import { cubicBezier } from "../lib/math";
 
 // Typed access to a captured brand's video theme (public/brands/<domain>/video-theme.json,
 // written by brand/style-guide.mjs). See docs/BRAND_CAPTURE.md.

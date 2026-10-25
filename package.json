@@ -1,8 +1,26 @@
 {
-  "name": "claude-animation",
+  "name": "motion-kit",
   "version": "0.1.0",
   "private": true,
+  "description": "Motion-graphics kit for AI agents: Remotion film tooling, shader effects, liquid glass, brand capture, and portable skills.",
   "type": "module",
+  "bin": {
+    "motion-kit": "kit/bin/motion-kit.mjs"
+  },
+  "files": [
+    "kit/",
+    ".agents/",
+    "AGENTS.md",
+    "brand/",
+    "audio/",
+    "render.mjs",
+    "src/effects/",
+    "src/brand/",
+    "src/lib/"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "dev": "remotion studio",
     "audio": "node audio/synth.mjs && node audio/beats.mjs",
@@ -12,7 +30,8 @@
     "upgrade": "remotion upgrade",
     "demo": "node demo/serve.mjs",
     "brand:capture": "node brand/capture.mjs",
-    "brand:guide": "node brand/style-guide.mjs"
+    "brand:guide": "node brand/style-guide.mjs",
+    "mk": "node kit/bin/motion-kit.mjs"
   },
   "dependencies": {
     "@remotion/bundler": "4.0.538",
@@ -23,12 +42,12 @@
     "@remotion/renderer": "4.0.538",
     "react": "19.3.1",
     "react-dom": "19.3.1",
-    "remotion": "4.0.538"
+    "remotion": "4.0.538",
+    "playwright-core": "1.64.1"
   },
   "devDependencies": {
     "@types/react": "19.3.0",
     "fontkit": "2.0.4",
-    "playwright-core": "1.64.1",
     "typescript": "5.9.3"
   }
 }

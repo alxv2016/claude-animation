@@ -1,5 +1,5 @@
 import { CLAY, DISPLAY, INK, UI, UI_SIZE, ivory } from "../theme";
-import { easeInBack, easeOutBack, easeOutExpo, lerp, noise1, prog, wobble } from "../math";
+import { easeInBack, easeOutBack, easeOutExpo, lerp, noise1, prog, wobble } from "../../lib/math";
 import { sec } from "../time";
 
 // Bar 6 (beats 24-28): the build. One clay shape morphs on every eighth,
