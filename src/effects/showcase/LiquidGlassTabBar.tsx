@@ -3,7 +3,7 @@ import { LiquidGlass, type GlassPanel } from "..";
 import { SKY_FRAGMENT, skyUniforms } from "../backgrounds/Sky";
 import { spring } from "../../lib/math";
 
-// A floating liquid-glass tab bar over drifting clouds (docs/EFFECTS.md §7.3): clear
+// A floating liquid-glass tab bar over drifting clouds (.agents/skills/apply-effect/references/catalog.md#ios-patterns): clear
 // glass whose curved ends wrap the sky around them, and a selection lens that travels
 // between tabs with its leading edge on a faster spring than its trailing edge.
 

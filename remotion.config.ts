@@ -6,5 +6,5 @@ Config.setCodec("h264");
 Config.setPixelFormat("yuv420p");
 Config.setCrf(16);
 Config.setOverwriteOutput(true);
-// WebGL effects: GPU rendering, identical output run to run (docs/EFFECTS.md §3).
+// WebGL effects: GPU rendering, identical output run to run (.agents/skills/apply-effect/references/rules.md#traps).
 Config.setChromiumOpenGlRenderer("angle");

@@ -6,7 +6,7 @@ import { RIPPLE_GLSL, rippleUniforms, type Ripple } from "../ripples";
 import type { Uniforms } from "../gl";
 
 // A grid of shaped pixels whose size follows a value field: animated noise in
-// background mode, the footage's luminance in filter mode (docs/EFFECTS.md §4.3, §5.2).
+// background mode, the footage's luminance in filter mode (.agents/skills/apply-effect/references/catalog.md#pixelfield).
 
 export type PixelFieldProps = {
   /** Filter mode: mosaic this video or image. Background mode (noise field) without it. */

@@ -3,7 +3,7 @@ import { hexToLinear } from "../color";
 import { COLOR, GRAIN, HASH, NOISE, frag } from "../glsl";
 import type { Uniforms } from "../gl";
 
-// Drifting clouds on a sky gradient (docs/EFFECTS.md §4.5). Domain-warped fBm gives
+// Drifting clouds on a sky gradient (.agents/skills/apply-effect/references/catalog.md#sky). Domain-warped fBm gives
 // the cloud density; sampling it again toward the light gives soft self-shadowing.
 // Detailed enough for liquid glass to bend visibly.
 

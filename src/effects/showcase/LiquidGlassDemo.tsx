@@ -4,7 +4,7 @@ import { LiquidGlass, type GlassPanel } from "..";
 import { lerp, spring } from "../../lib/math";
 import { SKY_FRAGMENT, skyUniforms } from "../backgrounds/Sky";
 
-// iOS-style screen in liquid glass (docs/EFFECTS.md §7.3): a lock-screen widget, control
+// iOS-style screen in liquid glass (.agents/skills/apply-effect/references/catalog.md#ios-patterns): a lock-screen widget, control
 // tiles, two buttons that melt into one capsule, and a tab bar whose selection lens
 // travels with leading and trailing edges on different springs, so it stretches.
 

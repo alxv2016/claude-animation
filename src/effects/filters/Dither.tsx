@@ -6,7 +6,7 @@ import { RIPPLE_GLSL, rippleUniforms, type Ripple } from "../ripples";
 import type { Uniforms } from "../gl";
 
 // Ordered dithering, as a background (animated noise waves) or a filter over
-// video and images (docs/EFFECTS.md §4.4, §5.1). The image is snapped to a cell
+// video and images (.agents/skills/apply-effect/references/catalog.md#dither). The image is snapped to a cell
 // grid, toned, then quantised to a palette with a per-cell threshold pattern.
 
 export type DitherProps = {

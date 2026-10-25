@@ -4,7 +4,7 @@ import { bindFullscreenTriangle, createProgram, createTexture, setUniforms, sour
 
 // A WebGL2 layer that paints one fullscreen fragment shader per frame. It holds GL
 // resources between renders, never visual state: every pixel is a function of the
-// uniforms, which derive from the frame number (docs/EFFECTS.md §1).
+// uniforms, which derive from the frame number (.agents/skills/apply-effect/references/rules.md).
 
 export type ShaderHandle = { draw: () => void };
 
@@ -44,7 +44,7 @@ export const ShaderCanvas = forwardRef<ShaderHandle, ShaderCanvasProps>(function
     const p = latest.current;
     if (!state.current || state.current.fragment !== p.fragment) {
       const gl = state.current?.gl ?? canvas.getContext("webgl2", { preserveDrawingBuffer: true, premultipliedAlpha: true, antialias: false });
-      if (!gl) throw new Error("WebGL2 unavailable: render with chromiumOptions.gl = 'angle' (docs/EFFECTS.md §3)");
+      if (!gl) throw new Error("WebGL2 unavailable: render with chromiumOptions.gl = 'angle' (.agents/skills/apply-effect/references/rules.md#traps)");
       bindFullscreenTriangle(gl);
       state.current = { gl, program: createProgram(gl, p.fragment), fragment: p.fragment, textures: state.current?.textures ?? new Map() };
     }

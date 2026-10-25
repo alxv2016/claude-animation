@@ -6,6 +6,7 @@ import { EffectsShowcase, SHOWCASE_FRAMES } from "./effects/showcase/EffectsShow
 import { LiquidGlassDemo } from "./effects/showcase/LiquidGlassDemo";
 import { LiquidGlassTabBar } from "./effects/showcase/LiquidGlassTabBar";
 import { FrameSheet, sheetSize, type FrameSheetProps } from "./review/FrameSheet";
+import { FilterVideo, filterVideoMetadata, type FilterVideoProps } from "./effects";
 
 export const RemotionRoot: React.FC = () => {
   return (
@@ -23,6 +24,16 @@ export const RemotionRoot: React.FC = () => {
       <Composition id="EffectsShowcase" component={EffectsShowcase} durationInFrames={SHOWCASE_FRAMES} fps={FPS} width={W} height={H} />
       <Composition id="LiquidGlassTabBar" component={LiquidGlassTabBar} durationInFrames={360} fps={FPS} width={W} height={H} />
       <Composition id="LiquidGlassDemo" component={LiquidGlassDemo} durationInFrames={330} fps={FPS} width={1080} height={1920} />
+      <Composition
+        id="FilterVideo"
+        component={FilterVideo}
+        durationInFrames={300}
+        fps={30}
+        width={1920}
+        height={1080}
+        defaultProps={{ src: "samples/footage.mp4", effect: "dither" } as FilterVideoProps}
+        calculateMetadata={filterVideoMetadata}
+      />
       <Composition
         id="FrameSheet"
         component={FrameSheet}

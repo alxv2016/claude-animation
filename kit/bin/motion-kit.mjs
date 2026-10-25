@@ -17,9 +17,15 @@ Usage: motion-kit <command> [options]
   update                                        Refresh the vendored kit library (src/motion-kit/)
   brand capture <url> [--no-fonts]              Capture a website's brand → public/brands/<domain>/
   brand guide <domain>                          Video theme + docs/brands/<domain>/STYLE_GUIDE.md
-  render <composition>                          Full render → out/<composition>.mp4
-  still <composition> <frame>                   One frame → out/frame-<composition>-<frame>.png
-  frames <composition> <f,f,…>                  Frames in one grid (needs a FrameSheet composition)
+  render <composition> [--crf n] [--out file] [--props json]
+                                                Full render → out/<composition>.mp4 (H.264, CRF 16, AAC)
+  still <composition> <frame> [--scale n] [--props json]
+                                                One frame → out/frame-<composition>-<frame>.png
+  sheet <composition> [--frames a,b | --every n | --beats file.json [--offset 0.5] | --count n] [--cols 4] [--width 480] [--out file]
+                                                Contact sheet of any composition → out/sheet-<composition>.png
+  filter <video> --effect dither|pixel|gradient-map [--params json] [--out file] [--crf n] [--no-audio]
+                                                Filter a whole video, keeping its sound
+  verify <file> [--lufs -14]                    Check codec, loudness, peak and bitrate before delivery
   skills list                                   Skills and agents this kit ships
   skills install [--scope project|user] [--no-claude] [--force]
                                                 Install skills and agents into .agents/ (+ .claude/ links)
@@ -48,18 +54,40 @@ switch (cmd) {
     else if (sub === "guide") runScript("brand/style-guide.mjs", rest);
     else fail("usage: motion-kit brand capture <url> | brand guide <domain>");
     break;
-  case "render":
-    if (!sub) fail("usage: motion-kit render <composition>");
-    runScript("render.mjs", ["film", sub]);
+  case "render": {
+    const core = await import("../lib/render-core.mjs");
+    const opts = core.options(args);
+    if (!opts._[0]) fail("usage: motion-kit render <composition> [--crf n] [--out file] [--props json]");
+    const out = await core.film(opts._[0], { out: opts.out, crf: opts.crf ? Number(opts.crf) : undefined, inputProps: opts.props ? JSON.parse(opts.props) : {} });
+    console.log(out);
     break;
-  case "still":
-    if (!sub || rest[0] === undefined) fail("usage: motion-kit still <composition> <frame>");
-    runScript("render.mjs", ["still", rest[0], sub]);
+  }
+  case "still": {
+    const core = await import("../lib/render-core.mjs");
+    const opts = core.options(args);
+    if (opts._.length < 2) fail("usage: motion-kit still <composition> <frame> [--scale n] [--props json]");
+    console.log(await core.still(opts._[0], Number(opts._[1]), { scale: opts.scale ? Number(opts.scale) : 1, inputProps: opts.props ? JSON.parse(opts.props) : {} }));
     break;
+  }
   case "frames":
     if (!sub || !rest[0]) fail("usage: motion-kit frames <composition> <f,f,…>");
     runScript("render.mjs", ["frames", sub, rest[0]]);
     break;
+  case "sheet": {
+    const { sheet } = await import("../commands/sheet.mjs");
+    await sheet(args);
+    break;
+  }
+  case "filter": {
+    const { filter } = await import("../commands/filter.mjs");
+    await filter(args);
+    break;
+  }
+  case "verify": {
+    const { verify } = await import("../commands/verify.mjs");
+    verify(args);
+    break;
+  }
   case "skills": {
     const skills = await import("../commands/skills.mjs");
     if (sub === "list") skills.list(KIT);

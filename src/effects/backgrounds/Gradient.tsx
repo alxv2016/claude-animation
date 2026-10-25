@@ -3,7 +3,7 @@ import { hexToOklab, packColors } from "../color";
 import { COLOR, GRAIN, HASH, NOISE, frag } from "../glsl";
 import type { Uniforms } from "../gl";
 
-// Grainy animated gradient — the primary background (docs/EFFECTS.md §4.1).
+// Grainy animated gradient — the primary background (.agents/skills/apply-effect/references/catalog.md#gradient).
 // Colours blend in OKLab; a two-level domain warp makes them flow; silk adds soft
 // banded sheen; per-frame grain keeps flat areas from banding in H.264.
 

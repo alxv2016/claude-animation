@@ -478,7 +478,7 @@ The cube and its text ring are CSS 3D, rendered by Chrome.
 
 ### 9.10 Masked reveals and typing
 
-Text enters by sliding out of a mask or typing on, never by fading in (studio rule §22.2: banned looks).
+Text enters by sliding out of a mask or typing on, never by fading in (studio rule, §22.2: banned looks).
 
 - **Mask roll**: each letter is an `inline-block` inside an `overflow: hidden` line box and translates
   from 100 % (105 % for the wordmark) to 0 with `easeOutExpo`. Used by the counter, the Lanes title,
@@ -674,7 +674,7 @@ Every cue sits on the grid; each one is paired with a visual event.
 
 ### 13.5 Mastering and loudness
 
-- **Target −14 LUFS integrated with a −1.5 dBFS sample-peak ceiling** (studio rule §22.2: −14 LUFS).
+- **Target −14 LUFS integrated with a −1.5 dBFS sample-peak ceiling** (studio rule, §22.2: −14 LUFS).
 - **Loop**: measure → set gain → limit → re-measure, up to 6 passes, until within 0.05 LU.
 - **Meter**: ITU-R BS.1770-4 `[spec]` — K-weighting (high shelf + high-pass at 48 kHz), 400 ms blocks
   with 100 ms hop, −70 LUFS absolute gate, −10 LU relative gate.
@@ -696,7 +696,8 @@ the video.
   stills carry no audio.
 - **The WAV must exist before rendering** — `npm run audio` writes it; `public/` is the only folder
   `staticFile` reads.
-- **Verify sound in the file, not in a player**, before treating "no sound" as a render bug:
+- **Verify sound in the file, not in a player**, before treating "no sound" as a render bug —
+  `npm run mk -- verify out/reel.mp4` runs these checks (render-and-deliver skill):
   1. `npx remotion ffprobe` lists an `aac` stream, stereo, 48 kHz, `disposition:default=1`, 15.02 s.
   2. Decoded to WAV with `npx remotion ffmpeg`, per-second RMS matches `public/reel.wav` (−11 to
      −17 dB, §18) — a silent or truncated mux shows as a gap or `-inf`.
@@ -737,7 +738,7 @@ Results: §18.
 
 ## 15. Look and typography
 
-The reel uses one display face, one UI face and one accent (studio rule §22.2: look).
+The reel uses one display face, one UI face and one accent (studio rule, §22.2: look).
 
 | Token                 | Value          | Role                                                                  |
 | --------------------- | -------------- | --------------------------------------------------------------------- |
@@ -754,9 +755,9 @@ The reel uses one display face, one UI face and one accent (studio rule §22.2: 
 
 - **Grounds rotate** ink → clay → ink → ivory → ink → ivory across scenes for variety at a cut.
 - **Chapter captions `01`–`07`** in mono, with the number in `CLAY`, sit next to their subject — never
-  in a frame corner (studio rule §22.2: no corner labels).
+  in a frame corner (studio rule, §22.2: no corner labels).
 - **Minimum UI text is `UI_SIZE` = 56 px** (§1, rule 8); the cube's orbiting ring (40 px) is decorative.
-- **Avoided defaults** (studio rule §22.2: banned): no centred title on a gradient, no fade-ins, no frame
+- **Avoided defaults** (studio rule, §22.2: banned): no centred title on a gradient, no fade-ins, no frame
   borders, no glow, no particle bursts — the spark is a designed mark drawn ray by ray.
 
 Where it lives: [`theme.ts`](../src/reel/theme.ts) — `INK`, `IVORY`, `CLAY`, `DISPLAY`, `UI`, `UI_SIZE`.
@@ -765,23 +766,22 @@ Where it lives: [`theme.ts`](../src/reel/theme.ts) — `INK`, `IVORY`, `CLAY`, `
 
 ## 16. Review loop
 
-The film is reviewed as stills before any full render (studio rule §22.2: loop before you show me anything).
+The reel was reviewed with the studio rules' loop (R16–R19); the procedure and rubric are in the
+[review-film skill](../.agents/skills/review-film/SKILL.md). This section holds what is specific to the
+reel.
 
-- **Contact sheet** (`npm run sheet`): one frame per beat, one bar per row, 4 × 8 thumbnails at
-  480 × 270 px. `node render.mjs sheet 0.25` offsets every sample by a quarter beat to see reactions
-  after the hits.
-- **Transition strip** (`node render.mjs strip <b,b,…>`): any list of beats, for scrubbing a transition
-  frame by frame.
-- **Both are a Remotion composition** (`ContactSheet`) that renders `ReelFrame` at each beat; no ffmpeg
-  filters are needed (§3).
-- **Score each sheet 1–10** on hook in the first 2 s, readability at phone size, motion quality, variety,
-  brand accuracy and sound sync; fix the three worst; repeat until every score is 8 or more; then do the
-  full render. Current scores: §18.
+- **Per-beat sheet for the reel**: `npm run mk -- sheet Reel --beats src/reel/beats.json`, or the
+  reel's own `ContactSheet` composition (`npm run sheet`, 4 × 8 thumbnails at 480 × 270 px). The
+  CLI sheet renders the real `Reel` composition, so its thumbnails include motion blur; `ContactSheet`
+  renders `ReelFrame` without it.
+- **Offset and strips**: `--offset 0.5` on the CLI sheet, or `node render.mjs sheet 0.25` and
+  `node render.mjs strip <b,b,…>` for the reel's sheet.
 - **Motion quality needs strips, not just the beat sheet** — on-beat frames hide transitions and early
   or late hits.
+- **Current scores**: §18.
 
 Where it lives: [`ContactSheet.tsx`](../src/reel/ContactSheet.tsx) — `ContactSheet`;
-[`render.mjs`](../render.mjs) — `sheet` and `strip` modes.
+[`render.mjs`](../render.mjs) — `sheet` and `strip` modes; `kit/commands/sheet.mjs` — the CLI sheet.
 
 ---
 
@@ -789,16 +789,16 @@ Where it lives: [`ContactSheet.tsx`](../src/reel/ContactSheet.tsx) — `ContactS
 
 `render.mjs` bundles once and renders the film, a contact sheet, a strip, or a single still.
 
-| Setting            | Value                      | Why                                                                                              |
-| ------------------ | -------------------------- | ------------------------------------------------------------------------------------------------ |
-| Size, rate, length | 1920 × 1080, 60 fps, 900 f | 60 fps for smooth springs and blur                                                               |
-| Codec              | H.264, `yuv420p`           | Studio rule; plays everywhere                                                                    |
-| CRF                | 16                         | Studio rule                                                                                      |
-| Audio              | AAC, 320 kb/s              | Transparent at this length; not decoded by VS Code's preview `[?]` (§3, §13.6)                   |
-| `concurrency`      | 3                          | Bounded memory under 8-sample blur                                                               |
-| Blur samples       | 8 at 180° shutter          | Highest count that renders without crashing (§3)                                                 |
-| GL backend         | `angle`                    | WebGL effects render on the GPU and identically run to run ([EFFECTS.md §1](EFFECTS.md#1-rules)) |
-| Port               | `3555` (`RENDER_PORT`)     | Remotion's port probe can collide with a running Studio on :3000                                 |
+| Setting            | Value                      | Why                                                                                                                                   |
+| ------------------ | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| Size, rate, length | 1920 × 1080, 60 fps, 900 f | 60 fps for smooth springs and blur                                                                                                    |
+| Codec              | H.264, `yuv420p`           | Studio rule; plays everywhere                                                                                                         |
+| CRF                | 16                         | Studio rule                                                                                                                           |
+| Audio              | AAC, 320 kb/s              | Transparent at this length; not decoded by VS Code's preview `[?]` (§3, §13.6)                                                        |
+| `concurrency`      | 3                          | Bounded memory under 8-sample blur                                                                                                    |
+| Blur samples       | 8 at 180° shutter          | Highest count that renders without crashing (§3)                                                                                      |
+| GL backend         | `angle`                    | WebGL effects render on the GPU and identically run to run ([apply-effect rules](../.agents/skills/apply-effect/references/rules.md)) |
+| Port               | `3555` (`RENDER_PORT`)     | Remotion's port probe can collide with a running Studio on :3000                                                                      |
 
 - **`remotion.config.ts` repeats the codec settings** (H.264, `yuv420p`, CRF 16) for `npx remotion render`
   and Studio; `render.mjs` passes its own and does not read the config.
@@ -914,30 +914,30 @@ made under the studio rules (§22.2).
 
 ### 22.2 Studio rules
 
-The studio rules apply to every film made in this repo, not only this reel; this section is their
-home. Each row states one rule and how this reel meets it.
+The studio rules (R1–R19) are defined in the review-film skill's [studio rules](../.agents/skills/review-film/references/studio-rules.md), which is their
+home. This table holds how the reel meets each.
 
-| Group       | Studio rule                                                                                                               | How the reel meets it                                                                           | See         |
-| ----------- | ------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- | ----------- |
-| Render      | Every film is a pure function of time: `window.seek(t)` paints frame `t`                                                  | `ReelFrame` computes everything from `b = beatAt(frame / FPS)`; Remotion replaces `window.seek` | §1, §4, §20 |
-| Render      | No CSS transitions, no `setTimeout`, no `requestAnimationFrame` in render mode, no state carried between frames           | None in `src/` (grepped); springs are closed-form                                               | §1, §8      |
-| Render      | Seeded noise only (mulberry32), never `Math.random`                                                                       | `hash` and `noise1` are built on `mulberry32`; no `Math.random` in `src/`                       | §9.12       |
-| Render      | Render with `node render.mjs`; encode H.264 `yuv420p`, CRF 16                                                             | `render.mjs` drives Remotion with those settings                                                | §17, §20    |
-| Look        | Banned default: centred title on a gradient                                                                               | Flat grounds only; the opening word is a stage for the ball, not a title card                   | §15         |
-| Look        | Banned default: everything fading in                                                                                      | Entries are masks, scale springs, draw-ons and irises                                           | §9.10, §20  |
-| Look        | Banned default: corner labels and frame borders                                                                           | Chapter captions sit beside their subject                                                       | §15         |
-| Look        | Banned default: glow on UI chrome                                                                                         | No glow, blur or shadow on UI; the only shadow is the cube's floor shadow                       | §9.9        |
-| Look        | Banned default: generic particle bursts                                                                                   | The spark is a 12-ray mark drawn ray by ray                                                     | §10         |
-| Look        | One display face, one UI face                                                                                             | Instrument Serif and Geist Mono                                                                 | §15         |
-| Look        | One accent colour, unless the brief says otherwise                                                                        | `CLAY`; the brief set no other                                                                  | §15         |
-| Look        | Something new happens on screen every 2 to 4 s                                                                            | A new scene every bar (1.875 s) and an event on every beat (0.47 s)                             | §6          |
-| Sound       | Score and SFX are synthesized in code, unless a track is supplied                                                         | `audio/synth.mjs`; no track was supplied, no samples                                            | §13         |
-| Sound       | Place hits on the measured beat grid (`beats.json`)                                                                       | Grid measured from the WAV; scenes read it through `time.ts`                                    | §5, §14     |
-| Sound       | Loudness −14 LUFS                                                                                                         | Mastering loop to −14 LUFS; −13.8 LUFS after AAC                                                | §13.5, §18  |
-| Review loop | Before showing anything, render one frame per beat as a contact sheet and look at it                                      | `ContactSheet` composition, `npm run sheet`                                                     | §16         |
-| Review loop | Score it 1–10 on hook in the first 2 s, readability at phone size, motion quality, variety, brand accuracy and sound sync | Six criteria scored per round                                                                   | §16, §18    |
-| Review loop | Fix the 3 worst problems; repeat until every score is 8 or more                                                           | Final scores 8–9                                                                                | §16, §18    |
-| Review loop | Only then do the full render                                                                                              | `npm run render`                                                                                | §17         |
+| Rule                                       | How the reel meets it                                                                           | See         |
+| ------------------------------------------ | ----------------------------------------------------------------------------------------------- | ----------- |
+| R1 Pure function of time                   | `ReelFrame` computes everything from `b = beatAt(frame / FPS)`; Remotion replaces `window.seek` | §1, §4, §20 |
+| R2 No transitions, timers or carried state | None in `src/` (grepped); springs are closed-form                                               | §1, §8      |
+| R3 Seeded noise only                       | `hash` and `noise1` are built on `mulberry32`; no `Math.random` in `src/`                       | §9.12       |
+| R4 Render through the kit, H.264 CRF 16    | `render.mjs` drives Remotion with those settings                                                | §17, §20    |
+| R5 No centred title on a gradient          | Flat grounds only; the opening word is a stage for the ball, not a title card                   | §15         |
+| R6 No fade-ins for everything              | Entries are masks, scale springs, draw-ons and irises                                           | §9.10, §20  |
+| R7 No corner labels or frame borders       | Chapter captions sit beside their subject                                                       | §15         |
+| R8 No glow on UI chrome                    | No glow, blur or shadow on UI; the only shadow is the cube's floor shadow                       | §9.9        |
+| R9 No generic particle bursts              | The spark is a 12-ray mark drawn ray by ray                                                     | §10         |
+| R10 One display face, one UI face          | Instrument Serif and Geist Mono                                                                 | §15         |
+| R11 One accent colour                      | `CLAY`; the brief set no other                                                                  | §15         |
+| R12 Something new every 2–4 s              | A new scene every bar (1.875 s) and an event on every beat (0.47 s)                             | §6          |
+| R13 Score synthesized in code              | `audio/synth.mjs`; no track was supplied, no samples                                            | §13         |
+| R14 Hits on the measured grid              | Grid measured from the WAV; scenes read it through `time.ts`                                    | §5, §14     |
+| R15 −14 LUFS                               | Mastering loop to −14 LUFS; −13.8 LUFS after AAC                                                | §13.5, §18  |
+| R16 Per-beat contact sheet first           | `ContactSheet` composition, `npm run sheet`                                                     | §16         |
+| R17 Score six criteria                     | Six criteria scored per round                                                                   | §16, §18    |
+| R18 Fix the 3 worst; repeat to 8+          | Final scores 8–9                                                                                | §16, §18    |
+| R19 Full render only then                  | `npm run render`                                                                                | §17         |
 
 ### 22.3 Example prompts
 

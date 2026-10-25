@@ -10,6 +10,9 @@ repo is the kit and its test bench (a showreel and an effects showcase built wit
 npx --package=github:alxv2016/claude-animation motion-kit init --install   # Remotion + kit library
 npx motion-kit skills install          # skills → .agents/ (any tool), linked into .claude/
 npx motion-kit doctor                  # check the setup
+npx motion-kit filter my.mp4 --effect dither   # dither / pixel / gradient-map a whole video
+npx motion-kit sheet <composition>     # contact sheet for review
+npx motion-kit verify out/<film>.mp4   # codec, loudness, bitrate before delivery
 npm run dev                            # Remotion Studio
 ```
 

@@ -3,7 +3,7 @@ import { hexToLinear } from "../color";
 import { COLOR, GRAIN, HASH, frag } from "../glsl";
 import type { Uniforms } from "../gl";
 
-// A ray-marched wave surface under a gradient sky (docs/EFFECTS.md §4.2).
+// A ray-marched wave surface under a gradient sky (.agents/skills/apply-effect/references/catalog.md#gradientwaves).
 // Height = four directional wave trains with sharpened crests; each pixel's ray
 // marches to the surface, refines the hit, and shades by height, slope and fog.
 

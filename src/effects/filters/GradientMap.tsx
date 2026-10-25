@@ -4,7 +4,7 @@ import { COLOR, COVER, GRAIN, HASH, frag } from "../glsl";
 import type { Uniforms } from "../gl";
 
 // Gradient map + film grain over footage: luminance picks a colour from stops
-// mixed in OKLab — duotones, tritones, brand tints (docs/EFFECTS.md §5.3).
+// mixed in OKLab — duotones, tritones, brand tints (.agents/skills/apply-effect/references/catalog.md#gradientmap).
 
 export type GradientMapProps = {
   source: MediaInput;

@@ -6,7 +6,8 @@ import { hexToSrgb } from "../color";
 import { COLOR, COVER, SDF, frag } from "../glsl";
 import { bindFullscreenTriangle, createProgram, createTarget, createTexture, setUniforms, sourceSize, uploadTexture, type Uniforms } from "../gl";
 
-// Liquid glass UI (docs/EFFECTS.md §7): glass panels that refract, frost and light
+// Liquid glass UI (.agents/skills/apply-effect/references/catalog.md#liquid-glass; optics: docs/EFFECTS.md
+// §7.2 in the motion-kit repo): glass panels that refract, frost and light
 // the backdrop behind them, in the style of Apple's Liquid Glass. Panels closer than
 // `smooth` melt into one shape, so a pill can flow from one tab to the next.
 // WebGL cannot read the page, so the backdrop is drawn in the same canvas.
@@ -216,7 +217,7 @@ export const LiquidGlass: React.FC<LiquidGlassProps> = ({ backdrop, panels, glas
     if (!canvas) return;
     if (!state.current) {
       const gl = canvas.getContext("webgl2", { preserveDrawingBuffer: true, antialias: false });
-      if (!gl) throw new Error("WebGL2 unavailable: render with chromiumOptions.gl = 'angle' (docs/EFFECTS.md §3)");
+      if (!gl) throw new Error("WebGL2 unavailable: render with chromiumOptions.gl = 'angle' (.agents/skills/apply-effect/references/rules.md#traps)");
       bindFullscreenTriangle(gl);
       state.current = {
         gl,

@@ -4,7 +4,7 @@ import { ShaderCanvas, type ShaderHandle } from "./ShaderCanvas";
 import type { Uniforms } from "./gl";
 
 // Feeds a video or image into a shader as the `uSource` texture, so any effect can
-// run as a filter over footage (docs/EFFECTS.md §5). The media element stays in the
+// run as a filter over footage (.agents/skills/apply-effect/references/catalog.md#filters). The media element stays in the
 // DOM, invisible; each decoded frame is uploaded and the shader redrawn.
 
 export type MediaInput =

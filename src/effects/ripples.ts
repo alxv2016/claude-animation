@@ -1,5 +1,5 @@
 // Scripted ripples: the video replacement for pointer clicks. Each ripple is an
-// expanding ring that starts at a time, usually a beat (docs/EFFECTS.md §6).
+// expanding ring that starts at a time, usually a beat (.agents/skills/apply-effect/references/catalog.md#ripples-and-beat-sync).
 
 export type Ripple = {
   /** 0–1 across the canvas, left → right. */

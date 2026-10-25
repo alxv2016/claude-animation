@@ -10,10 +10,10 @@ const LIBRARY = [
   ["src/brand", "src/motion-kit/brand"],
   ["src/lib", "src/motion-kit/lib"],
 ];
-/** Review and demo compositions in the kit repo; not part of the library. */
-const SKIP = new Set(["showcase"]);
+/** Kit-repo files that depend on the reel; the glass demos in showcase/ ship as examples. */
+const SKIP = new Set(["EffectsShowcase.tsx"]);
 const DEFAULT_KIT_SPEC = "github:alxv2016/claude-animation";
-const GITIGNORE = ["node_modules", "out", "public/brands/*/fonts/"];
+const GITIGNORE = ["node_modules", "out", "public/brands/*/fonts/", "public/.motion-kit/"];
 
 export async function init({ kit, version, args }) {
   const force = args.includes("--force");
@@ -40,7 +40,7 @@ export async function init({ kit, version, args }) {
   for (const [from, to] of LIBRARY) {
     for (const file of walk(path.join(kit, from))) {
       const rel = path.relative(path.join(kit, from), file);
-      if (rel.split(path.sep).some((part) => SKIP.has(part))) continue;
+      if (SKIP.has(path.basename(rel))) continue;
       const body = fs.readFileSync(file, "utf8");
       write(path.join(to, rel), /\.tsx?$/.test(rel) ? header + body : body, force || update);
     }
