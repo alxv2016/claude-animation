@@ -21,8 +21,11 @@ function frontMatter(file) {
 function catalog(kit) {
   const skillsDir = path.join(kit, ".agents/skills");
   const agentsDir = path.join(kit, ".agents/agents");
+  // Skills another installer put here (`npx skills add` records them in skills-lock.json) are not the kit's.
+  const lock = path.join(kit, "skills-lock.json");
+  const foreign = new Set(fs.existsSync(lock) ? Object.keys(JSON.parse(fs.readFileSync(lock, "utf8")).skills ?? {}) : []);
   const skills = fs.existsSync(skillsDir)
-    ? fs.readdirSync(skillsDir).filter((d) => fs.existsSync(path.join(skillsDir, d, "SKILL.md"))).map((d) => ({ dir: d, ...frontMatter(path.join(skillsDir, d, "SKILL.md")) }))
+    ? fs.readdirSync(skillsDir).filter((d) => !foreign.has(d) && fs.existsSync(path.join(skillsDir, d, "SKILL.md"))).map((d) => ({ dir: d, ...frontMatter(path.join(skillsDir, d, "SKILL.md")) }))
     : [];
   const agents = fs.existsSync(agentsDir)
     ? fs.readdirSync(agentsDir).filter((f) => f.endsWith(".md")).map((f) => ({ file: f, ...frontMatter(path.join(agentsDir, f)) }))
@@ -100,6 +103,9 @@ function indexInAgentsMd(base, skills, agents, report) {
     "",
     "Installed by `npx motion-kit skills install`. Each skill is `.agents/skills/<name>/SKILL.md`: read it",
     "when a task matches its description, and follow it. Agents in `.agents/agents/` are role prompts.",
+    "",
+    "Remotion's own skills (`npx skills add remotion-dev/skills`), if installed, cover Remotion's API. Where",
+    "they and these skills disagree on timing, look or sound, these skills and their studio rules win.",
     "",
     "| Skill | Use when |",
     "| --- | --- |",

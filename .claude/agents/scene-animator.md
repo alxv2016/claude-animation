@@ -1,0 +1,1 @@
+../../.agents/agents/scene-animator.md

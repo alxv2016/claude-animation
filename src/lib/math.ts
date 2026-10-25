@@ -101,7 +101,7 @@ export function swapAlpha(t: number, tIn: number, tOut: number, delay = 0.08, fa
   return Math.min(clamp((t - tIn - delay) / fadeIn), clamp((tOut - fadeOut - t) / fadeOut));
 }
 
-/** Wraps time into [0, dur) for seamless loops; the film must also end where it started (docs/MOTION_REEL.md §22.3, prompt 3). */
+/** Wraps time into [0, dur) for seamless loops; the film must also end where it started (.agents/skills/make-motion-film/types/ui-motion.md). */
 export const loopT = (t: number, dur: number) => ((t % dur) + dur) % dur;
 
 /** Decaying oscillation for hit reactions, starts at 1. `dt` in seconds. */

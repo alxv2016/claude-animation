@@ -116,3 +116,25 @@ export function readWav(path, fs) {
   }
   return channels;
 }
+
+/** Look-ahead peak limiter (2 ms look-ahead, 80 ms release) at `gain`, hard-clamped to `ceiling`. */
+export function lookaheadLimit(channels, gain, ceiling) {
+  const N = channels[0].length;
+  const la = Math.round(0.002 * SR);
+  const rel = 1 - Math.exp(-1 / (0.08 * SR));
+  const req = new Float64Array(N);
+  for (let n = 0; n < N; n++) {
+    let peak = 0;
+    for (const ch of channels) peak = Math.max(peak, Math.abs(ch[n]) * gain);
+    req[n] = peak > ceiling ? ceiling / peak : 1;
+  }
+  const out = channels.map(() => new Float64Array(N));
+  let g = 1;
+  for (let n = 0; n < N; n++) {
+    let target = 1;
+    for (let k = n; k < Math.min(N, n + la); k++) target = Math.min(target, req[k]);
+    g = target < g ? target : g + (target - g) * rel;
+    for (let c = 0; c < channels.length; c++) out[c][n] = Math.max(-ceiling, Math.min(ceiling, channels[c][n] * gain * g));
+  }
+  return out;
+}

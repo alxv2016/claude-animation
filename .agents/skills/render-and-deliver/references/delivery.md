@@ -30,7 +30,7 @@
   compress (80–90 Mb/s at CRF 16, against about 5 Mb/s for flat colour) → a delivery copy at CRF
   20–23, or less grain.
 - **`Error: Page crashed!` mid-render** → too much per frame for Chrome's memory, typically
-  `CameraMotionBlur` above 8 samples over heavy layers → 8 samples or fewer.
+  `MotionBlur` above 8 samples over heavy layers → 8 samples or fewer.
 - **"Does this look like a foreign page?"** → something else answers on the render port → set
   `RENDER_PORT` to a free port.
 - **The first render downloads 171 MB** → Remotion's Chrome Headless Shell, once per project →

@@ -11,6 +11,7 @@ import { FilterVideo, filterVideoMetadata, type FilterVideoProps } from "./effec
 export const RemotionRoot: React.FC = () => {
   return (
     <>
+      {/* motion-kit:films */}
       <Composition id="Reel" component={Reel} durationInFrames={DURATION_FRAMES} fps={FPS} width={W} height={H} />
       <Composition
         id="ContactSheet"

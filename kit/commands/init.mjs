@@ -13,7 +13,7 @@ const LIBRARY = [
 /** Kit-repo files that depend on the reel; the glass demos in showcase/ ship as examples. */
 const SKIP = new Set(["EffectsShowcase.tsx"]);
 const DEFAULT_KIT_SPEC = "github:alxv2016/claude-animation";
-const GITIGNORE = ["node_modules", "out", "public/brands/*/fonts/", "public/.motion-kit/"];
+const GITIGNORE = ["node_modules", "out", "public/brands/*/fonts/", "public/.motion-kit/", "refs/"];
 
 export async function init({ kit, version, args }) {
   const force = args.includes("--force");

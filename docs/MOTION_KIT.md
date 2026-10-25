@@ -14,19 +14,19 @@ Source of truth: [`kit/`](../kit/) (CLI, commands, project templates), [`.agents
 | ------------ | --------------------------------------- |
 | `[measured]` | Measured in this repo; conditions in §9 |
 
-| §   | Section                                   | Look here for                                                    |
-| --- | ----------------------------------------- | ---------------------------------------------------------------- |
-| 1   | [Rules](#1-rules)                         | What the kit, skills and agents must and must not do             |
-| 2   | [Task lookup](#2-task-lookup)             | Start a project, install skills, add a skill, update the library |
-| 3   | [Traps](#3-traps)                         | npx forms, first-run download, ports, old Claude Code versions   |
-| 4   | [How it works](#4-how-it-works)           | From the GitHub repo to a working project                        |
-| 5   | [CLI](#5-cli)                             | Every command and what it runs                                   |
-| 6   | [Repo layout](#6-repo-layout)             | What ships in the package and what stays in this repo            |
-| 7   | [Skills and agents](#7-skills-and-agents) | Format, references, install scopes, the Claude Code bridge       |
-| 8   | [Decisions](#8-decisions)                 | Choices made and the alternatives that don't work                |
-| 9   | [Measurements](#9-measurements)           | Package size, clean-project test, tool discovery                 |
-| 10  | [Licensing](#10-licensing)                | Remotion, captured brand assets, the kit itself                  |
-| 11  | [Open items](#11-open-items)              | What is not built yet and what would close it                    |
+| §   | Section                                   | Look here for                                                       |
+| --- | ----------------------------------------- | ------------------------------------------------------------------- |
+| 1   | [Rules](#1-rules)                         | What the kit, skills and agents must and must not do                |
+| 2   | [Task lookup](#2-task-lookup)             | Start a project, make a film, install skills, update the library    |
+| 3   | [Traps](#3-traps)                         | npx forms, first-run download, ports, motion blur, Claude Code      |
+| 4   | [How it works](#4-how-it-works)           | From the GitHub repo to a working project; a film from brief to MP4 |
+| 5   | [CLI](#5-cli)                             | Every command and what it runs                                      |
+| 6   | [Repo layout](#6-repo-layout)             | What ships in the package and what stays in this repo               |
+| 7   | [Skills and agents](#7-skills-and-agents) | Format, references, install scopes, the Claude Code bridge          |
+| 8   | [Decisions](#8-decisions)                 | Choices made and the alternatives that don't work                   |
+| 9   | [Measurements](#9-measurements)           | Package size, clean-project test, tool discovery                    |
+| 10  | [Licensing](#10-licensing)                | Remotion, captured brand assets, the kit itself                     |
+| 11  | [Open items](#11-open-items)              | What is not built yet and what would close it                       |
 
 ---
 
@@ -66,6 +66,10 @@ Source of truth: [`kit/`](../kit/) (CLI, commands, project templates), [`.agents
 | Check a setup                        | `npx motion-kit doctor`                                                    | Node, render browser, ffmpeg, config, skills                     |
 | Use the CLI inside this repo         | `npm run mk -- <command>`                                                  | npx does not link a package's own `bin`                          |
 | Add a skill                          | `.agents/skills/<name>/SKILL.md` (+ `references/`), then `skills install`  | §7                                                               |
+| Start a film                         | `npx motion-kit new-film <slug> --bpm 120 --bars 8 --formats 9:16,16:9`    | Then the make-motion-film skill; §4                              |
+| Score a film and measure its beats   | `npx motion-kit score src/films/<slug>`                                    | score-and-beats skill                                            |
+| Study a reference video              | `npx motion-kit reference <video>`                                         | capture-reference-style skill                                    |
+| Add Remotion's own skills            | `npx skills add remotion-dev/skills`                                       | Optional; theirs, not the kit's (§8)                             |
 
 ---
 
@@ -77,6 +81,12 @@ Source of truth: [`kit/`](../kit/) (CLI, commands, project templates), [`.agents
   project on first use `[measured]` → expected; needs network once.
 - **"Does this look like a foreign page?" when rendering** → a running Studio holds Remotion's default
   port → the kit renders on 3555; set `RENDER_PORT` to change it.
+- **"port 3555 … is not available"** → two kit renders running at once, in any projects → run them
+  one after another, or give one a different `RENDER_PORT` `[measured]`.
+- **Shadows and gradients band, flat colours shift, only in renders** → Remotion's `CameraMotionBlur`
+  adds samples at 1/n opacity and the 8-bit compositor rounds each, snapping every channel to a
+  multiple of n (`#e9e5da` → `#e8e8d8` at 8 samples) `[measured]` → use the kit's `MotionBlur`, which
+  draws sample k at 1/k opacity over the running result; static pixels keep their exact value.
 - **Claude Code ignores `AGENTS.md`** → versions before 2.1.277 only read `CLAUDE.md` → the kit repo's
   `CLAUDE.md` is one line, `@AGENTS.md`; add the same to a project that uses an older version.
 - **Claude Code does not see `.agents/`** → it discovers skills in `.claude/skills/` only → `skills
@@ -108,6 +118,22 @@ flowchart LR
 
 - **Scripts resolve their dependencies from the kit** (`@remotion/renderer`, `playwright-core`) and
   their paths from the project (`src/index.ts`, `public/`, `docs/`, `out/`).
+
+A film runs from brief to MP4 through the kit's commands; the make-motion-film skill drives it.
+
+```mermaid
+flowchart LR
+  NF[new-film] -->|film.json, brief.md, chapters.json, score.mjs, Film.tsx| DIR[src/films/slug/]
+  DIR -->|score.mjs| SC[score]
+  SC -->|−14 LUFS| WAV[public/slug/score.wav]
+  SC -->|measured from the WAV| BJ[beats.json, cues.json]
+  BJ -->|beatClock| FILM[FilmFrame: pure function of b]
+  FILM --> SH[sheet → review]
+  SH --> RN[render, one per format] --> VF[verify]
+  REF[reference] -.->|style guide, shot list| DIR
+  BR[brand capture] -.->|screenshots, theme| FILM
+```
+
 - **The vendored library is plain source the project owns**: Remotion bundles it like any other file,
   with no build step.
 
@@ -117,21 +143,26 @@ flowchart LR
 
 [`kit/bin/motion-kit.mjs`](../kit/bin/motion-kit.mjs) — the interface skills call.
 
-| Command                                                                                   | Runs                      | Writes (in the project)                                               |
-| ----------------------------------------------------------------------------------------- | ------------------------- | --------------------------------------------------------------------- |
-| `init [--force] [--install] [--kit <spec>]`                                               | `kit/commands/init.mjs`   | `src/motion-kit/`, templates, `package.json`, `.gitignore`            |
-| `update`                                                                                  | `init --update`           | `src/motion-kit/` (overwritten)                                       |
-| `brand capture <url> [--no-fonts]`                                                        | `brand/capture.mjs`       | `public/brands/<domain>/`                                             |
-| `brand guide <domain>`                                                                    | `brand/style-guide.mjs`   | `video-theme.json`, `docs/brands/<domain>/STYLE_GUIDE.md`             |
-| `render <composition> [--crf n] [--out file] [--props json]`                              | `kit/lib/render-core.mjs` | `out/<composition>.mp4` (H.264, CRF 16, AAC)                          |
-| `still <composition> <frame> [--scale n] [--props json]`                                  | `kit/lib/render-core.mjs` | `out/frame-<composition>-<frame>.png`                                 |
-| `sheet <composition> [--frames … \| --every n \| --beats file [--offset f] \| --count n]` | `kit/commands/sheet.mjs`  | `out/sheet-<composition>.png`: stills in a grid, any composition      |
-| `filter <video> --effect dither\|pixel\|gradient-map [--params json]`                     | `kit/commands/filter.mjs` | `out/<name>-<effect>.mp4` at the video's size, rate, length and sound |
-| `verify <file> [--lufs -14]`                                                              | `kit/commands/verify.mjs` | — (exit 1 on a failed check)                                          |
-| `frames <composition> <f,f,…>`                                                            | `render.mjs frames`       | `out/frames-<composition>.png` (this repo's `FrameSheet`, §3)         |
-| `skills list`                                                                             | `kit/commands/skills.mjs` | —                                                                     |
-| `skills install [--scope project\|user] [--no-claude] [--force]`                          | `kit/commands/skills.mjs` | `.agents/`, `.claude/` links, `AGENTS.md` block                       |
-| `doctor`                                                                                  | `kit/commands/doctor.mjs` | —                                                                     |
+| Command                                                                                               | Runs                         | Writes (in the project)                                                        |
+| ----------------------------------------------------------------------------------------------------- | ---------------------------- | ------------------------------------------------------------------------------ |
+| `init [--force] [--install] [--kit <spec>]`                                                           | `kit/commands/init.mjs`      | `src/motion-kit/`, templates, `package.json`, `.gitignore`                     |
+| `update`                                                                                              | `init --update`              | `src/motion-kit/` (overwritten)                                                |
+| `brand capture <url> [--no-fonts]`                                                                    | `brand/capture.mjs`          | `public/brands/<domain>/`                                                      |
+| `brand guide <domain>`                                                                                | `brand/style-guide.mjs`      | `video-theme.json`, `docs/brands/<domain>/STYLE_GUIDE.md`                      |
+| `render <composition> [--crf n] [--out file] [--props json]`                                          | `kit/lib/render-core.mjs`    | `out/<composition>.mp4` (H.264, CRF 16, AAC)                                   |
+| `still <composition> <frame> [--scale n] [--props json]`                                              | `kit/lib/render-core.mjs`    | `out/frame-<composition>-<frame>.png`                                          |
+| `sheet <composition> [--frames … \| --every n \| --beats file [--offset f] \| --count n]`             | `kit/commands/sheet.mjs`     | `out/sheet-<composition>.png`: stills in a grid, any composition               |
+| `filter <video> --effect dither\|pixel\|gradient-map [--params json]`                                 | `kit/commands/filter.mjs`    | `out/<name>-<effect>.mp4` at the video's size, rate, length and sound          |
+| `verify <file> [--lufs -14]`                                                                          | `kit/commands/verify.mjs`    | — (exit 1 on a failed check)                                                   |
+| `frames <composition> <f,f,…>`                                                                        | `render.mjs frames`          | `out/frames-<composition>.png` (this repo's `FrameSheet`, §3)                  |
+| `new-film <slug> [--title t] [--bpm 120] [--bars 8] [--fps 60] [--formats 16:9,…] [--chapters "A,B"]` | `kit/commands/film.mjs`      | `src/films/<slug>/` from `kit/templates/film/`; registers it in `src/Root.tsx` |
+| `score <film dir \| score.mjs>`                                                                       | `kit/commands/score.mjs`     | `public/<slug>/score.wav`, `cues.json`, measured `beats.json`, `film.json`     |
+| `beats <audio> [--beats n] [--band low\|full] [--bpm 90-180] [--out file]`                            | `kit/commands/score.mjs`     | A measured `beats.json` for any audio or video file                            |
+| `master <audio> [--out file] [--lufs -14]`                                                            | `kit/commands/score.mjs`     | A supplied track at −14 LUFS, −1.5 dBFS ceiling                                |
+| `reference <video> [--name n] [--every 0.5] [--rate 10]`                                              | `kit/commands/reference.mjs` | `refs/<name>/`: `frames/`, `contact.png`, `analysis.json`                      |
+| `skills list`                                                                                         | `kit/commands/skills.mjs`    | —                                                                              |
+| `skills install [--scope project\|user] [--no-claude] [--force]`                                      | `kit/commands/skills.mjs`    | `.agents/`, `.claude/` links, `AGENTS.md` block                                |
+| `doctor`                                                                                              | `kit/commands/doctor.mjs`    | —                                                                              |
 
 - **`init` never overwrites without `--force`**, except the vendored library under `update`.
 - **`--kit <spec>`** sets the `motion-kit` dependency written to `package.json` (default
@@ -148,7 +179,9 @@ flowchart LR
 | `.agents/skills`, `.agents/agents`                                              | Yes            | Portable skills and agents                                                                                        |
 | `src/effects/`, `src/brand/`, `src/lib/`                                        | Yes            | Library vendored by `init`, with `FilterVideo` and the two glass demos as examples (`EffectsShowcase` is skipped) |
 | `kit/lib/`                                                                      | Yes            | Render core (GL backend, port, master encode) and ffprobe/ffmpeg helpers                                          |
-| `brand/`, `render.mjs`, `audio/`                                                | Yes            | Scripts the CLI runs (`audio/` is reel-specific today, §11)                                                       |
+| `kit/templates/film/`                                                           | Yes            | Files `new-film` writes                                                                                           |
+| `brand/`, `render.mjs`, `audio/`                                                | Yes            | Scripts the CLI runs; `audio/engine.mjs` and `piano.mjs` are the score engine every film uses                     |
+| `src/films/`, `refs/`                                                           | No             | Films made in this repo; reference studies (git-ignored: someone else's work)                                     |
 | `src/reel/`, `src/effects/showcase/EffectsShowcase.tsx`, `src/review/`, `demo/` | Not vendored   | This repo's films, review tools and viewer                                                                        |
 | `public/`, `docs/`, `out/`                                                      | No             | This repo's media, docs and renders                                                                               |
 
@@ -171,29 +204,40 @@ flowchart LR
 - **The `AGENTS.md` block** between `<!-- motion-kit:skills:start -->` and `…:end -->` lists every
   installed skill and agent; tools without skill discovery read it there.
 
-| Skill                                                                                                           | Status                            |
-| --------------------------------------------------------------------------------------------------------------- | --------------------------------- |
-| [`capture-brand`](../.agents/skills/capture-brand/SKILL.md)                                                     | Built                             |
-| [`apply-effect`](../.agents/skills/apply-effect/SKILL.md)                                                       | Built                             |
-| [`review-film`](../.agents/skills/review-film/SKILL.md)                                                         | Built                             |
-| [`render-and-deliver`](../.agents/skills/render-and-deliver/SKILL.md)                                           | Built                             |
-| `make-motion-film` (+ type playbooks), `score-and-beats`, `capture-reference-style`                             | After the film-kit refactor (§11) |
-| Agents [`brand-curator`](../.agents/agents/brand-curator.md), [`film-critic`](../.agents/agents/film-critic.md) | Built                             |
-| Agents `scene-animator`, `style-analyst`                                                                        | Planned (§11)                     |
+| Skill                                                                                                                 | Status |
+| --------------------------------------------------------------------------------------------------------------------- | ------ |
+| [`capture-brand`](../.agents/skills/capture-brand/SKILL.md)                                                           | Built  |
+| [`apply-effect`](../.agents/skills/apply-effect/SKILL.md)                                                             | Built  |
+| [`review-film`](../.agents/skills/review-film/SKILL.md)                                                               | Built  |
+| [`render-and-deliver`](../.agents/skills/render-and-deliver/SKILL.md)                                                 | Built  |
+| [`make-motion-film`](../.agents/skills/make-motion-film/SKILL.md), with six type playbooks in `types/`                | Built  |
+| [`score-and-beats`](../.agents/skills/score-and-beats/SKILL.md)                                                       | Built  |
+| [`capture-reference-style`](../.agents/skills/capture-reference-style/SKILL.md)                                       | Built  |
+| Agents [`brand-curator`](../.agents/agents/brand-curator.md), [`film-critic`](../.agents/agents/film-critic.md)       | Built  |
+| Agents [`scene-animator`](../.agents/agents/scene-animator.md), [`style-analyst`](../.agents/agents/style-analyst.md) | Built  |
+
+- **Video types are playbooks inside one skill** (`make-motion-film/types/*.md`), not separate skills:
+  the pipeline is the same for every type; only inputs, structure, look and sound differ. Each
+  playbook holds its example prompts verbatim.
 
 ---
 
 ## 8. Decisions
 
-| Decision                                           | Why                                                                         | Alternatives that don't work, and why                                                             |
-| -------------------------------------------------- | --------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
-| A CLI as the interface skills call                 | Same command in every project and from every tool                           | Repo `npm run` scripts — exist only in this repo                                                  |
-| The repo root is the package (`bin`, `files`)      | `npx github:owner/repo` installs a repo's root package                      | A `packages/motion-kit` workspace — npm cannot install a sub-folder of a GitHub repo              |
-| `init` vendors the library into `src/motion-kit/`  | Remotion bundles project source directly; the project can read and adapt it | Importing TypeScript from `node_modules` — needs a build step or bundler config per project       |
-| `.agents/` canonical, `.claude/` symlinks per item | One copy, readable by any tool; Claude Code discovers it `[measured]`       | Copies in both — drift; one folder-level symlink — collides with a project's own `.claude/skills` |
-| `CLAUDE.md` = `@AGENTS.md`                         | One instruction file for every tool, including Claude Code before 2.1.277   | Separate `CLAUDE.md` content — two files to keep in step                                          |
-| Skill rules live in `references/`                  | They must travel with the skill; one home per fact                          | Links to this repo's `docs/` — break in other projects                                            |
-| GitHub distribution first; `private: true`         | No npm account or release process needed yet; no accidental publish         | npm publish now — premature while the skill set is incomplete                                     |
+| Decision                                                                           | Why                                                                               | Alternatives that don't work, and why                                                                   |
+| ---------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| A CLI as the interface skills call                                                 | Same command in every project and from every tool                                 | Repo `npm run` scripts — exist only in this repo                                                        |
+| The repo root is the package (`bin`, `files`)                                      | `npx github:owner/repo` installs a repo's root package                            | A `packages/motion-kit` workspace — npm cannot install a sub-folder of a GitHub repo                    |
+| `init` vendors the library into `src/motion-kit/`                                  | Remotion bundles project source directly; the project can read and adapt it       | Importing TypeScript from `node_modules` — needs a build step or bundler config per project             |
+| `.agents/` canonical, `.claude/` symlinks per item                                 | One copy, readable by any tool; Claude Code discovers it `[measured]`             | Copies in both — drift; one folder-level symlink — collides with a project's own `.claude/skills`       |
+| `CLAUDE.md` = `@AGENTS.md`                                                         | One instruction file for every tool, including Claude Code before 2.1.277         | Separate `CLAUDE.md` content — two files to keep in step                                                |
+| Skill rules live in `references/`                                                  | They must travel with the skill; one home per fact                                | Links to this repo's `docs/` — break in other projects                                                  |
+| GitHub distribution first; `private: true`                                         | No npm account or release process needed yet; no accidental publish               | npm publish now — premature while the skill set is incomplete                                           |
+| The kit's own `MotionBlur`                                                         | Exact colours on static pixels; no banding in shadows and gradients               | Remotion's `CameraMotionBlur` and `HtmlInCanvasMotionBlur` — both add 1/n-opacity layers in 8 bits (§3) |
+| Beat grid measured from the rendered WAV                                           | Picture follows what the ear hears; same path for synthesized and supplied tracks | Times computed from the BPM — drift from the real onsets by the synth's attack and the encoder's offset |
+| `reference` reads cuts from every frame                                            | Cut times exact to a frame `[measured]`                                           | Resampling to 10 fps with `-r` — drops and repeats frames, cuts 0.1–0.2 s late `[measured]`             |
+| Remotion's skills referenced, not vendored                                         | Their repo has no licence, and they change with each Remotion release             | Copying them into `.agents/` — no right to redistribute, and they go stale                              |
+| Reference style guides in `docs/references/<name>/`, frames in git-ignored `refs/` | The guide is the project's; the frames are someone else's work                    | Committing the frames — redistributes the reference                                                     |
 
 ---
 
@@ -201,22 +245,29 @@ flowchart LR
 
 Measured 2026-10-25 on an Apple Silicon Mac (Node 22.14.0, npm 11.6.4).
 
-| Measurement                                                                                                    | Value                                                                                    |
-| -------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
-| Package (`npm pack`)                                                                                           | 59.8 kB, 41 files, 176 kB unpacked                                                       |
-| Clean project: `init --install`                                                                                | 262 packages in 4 s                                                                      |
-| Clean project: typecheck after `init`                                                                          | No errors                                                                                |
-| Clean project: `doctor`                                                                                        | All checks pass (after a 171 MB Chrome download)                                         |
-| Clean project: `still Hello 120`                                                                               | Rendered: liquid glass over `Sky`                                                        |
-| Clean project: `brand capture https://example.com`, `brand guide`                                              | Both complete; guide links to the installed skill                                        |
-| Claude Code 2.1.195, fresh session in this repo                                                                | Lists `capture-brand` (via the `.claude/` symlink); loads `AGENTS.md` (via `CLAUDE.md`)  |
-| Claude Code 2.1.195, fresh session: skills and agents                                                          | Lists all four skills and both agents through `.claude/` symlinks                        |
-| `film-critic` run on `LiquidGlassTabBar` via `claude -p`                                                       | Scorecard with frame evidence; hook 6, variety 4 (R12); no source files changed          |
-| `filter` on `public/samples/footage.mp4` (halftone) and `out/reel.mp4` (gradient map, with audio)              | Both rendered; all 720 frames of the first scanned, none black or glitched               |
-| `sheet Reel --beats src/reel/beats.json`                                                                       | Same frames as the reel's `ContactSheet`, with motion blur                               |
-| `verify` on the filtered reel                                                                                  | All checks pass; −13.8 LUFS, −1.4 dBTP                                                   |
-| A project set up before `FilterVideo` existed: `update`, `skills install --force`, `filter`, `sheet`, `verify` | All work; `filter` renders from the kit's own entry, independent of the project's `Root` |
-| From GitHub (`#motion-kit-phase-1`) into an empty folder: `init --install`, typecheck, `skills install`        | All complete                                                                             |
+| Measurement                                                                                                    | Value                                                                                                                               |
+| -------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| Package (`npm pack`)                                                                                           | 123.5 kB, 87 files, 374 kB unpacked                                                                                                 |
+| Clean project: `init --install`                                                                                | 262 packages in 4 s                                                                                                                 |
+| Clean project: typecheck after `init`                                                                          | No errors                                                                                                                           |
+| Clean project: `doctor`                                                                                        | All checks pass (after a 171 MB Chrome download)                                                                                    |
+| Clean project: `still Hello 120`                                                                               | Rendered: liquid glass over `Sky`                                                                                                   |
+| Clean project: `brand capture https://example.com`, `brand guide`                                              | Both complete; guide links to the installed skill                                                                                   |
+| Claude Code 2.1.195, fresh session in this repo                                                                | Lists `capture-brand` (via the `.claude/` symlink); loads `AGENTS.md` (via `CLAUDE.md`)                                             |
+| Claude Code 2.1.195, fresh session: skills and agents                                                          | Lists all four skills and both agents through `.claude/` symlinks                                                                   |
+| `film-critic` run on `LiquidGlassTabBar` via `claude -p`                                                       | Scorecard with frame evidence; hook 6, variety 4 (R12); no source files changed                                                     |
+| `filter` on `public/samples/footage.mp4` (halftone) and `out/reel.mp4` (gradient map, with audio)              | Both rendered; all 720 frames of the first scanned, none black or glitched                                                          |
+| `sheet Reel --beats src/reel/beats.json`                                                                       | Same frames as the reel's `ContactSheet`, with motion blur                                                                          |
+| `verify` on the filtered reel                                                                                  | All checks pass; −13.8 LUFS, −1.4 dBTP                                                                                              |
+| A project set up before `FilterVideo` existed: `update`, `skills install --force`, `filter`, `sheet`, `verify` | All work; `filter` renders from the kit's own entry, independent of the project's `Root`                                            |
+| From GitHub (`#motion-kit-phase-1`) into an empty folder: `init --install`, typecheck, `skills install`        | All complete                                                                                                                        |
+| Clean project: `new-film launch --formats 9:16,16:9`, `score`                                                  | Registered both compositions; −14.02 LUFS, peak −1.50 dBFS; 16/16 beats detected at 120.04 BPM, max residual 3.5 ms                 |
+| Clean project: a test film using `Assemble`, `MorphBox`, `Cursor`                                              | Typecheck passes; contact sheets in both formats show every state; `render` and `verify` pass for both (9 s, −14.4 LUFS, −1.5 dBTP) |
+| `MotionBlur` against `CameraMotionBlur` on a still frame                                                       | Static pixels exact (`#e9e5da` stays `#e9e5da`; `CameraMotionBlur`: `#e8e8d8`); moving edges blurred                                |
+| `reference` on the test film (cuts at 2.0 and 6.0 s)                                                           | Cuts at 2.000 and 6.000 s; with 10 fps `-r` resampling they read 2.2 and 6.2 s                                                      |
+| `reference` on the reel                                                                                        | Hard cuts 7.5, 11.25, 13.133 s; its designed transitions (iris, blinds, dolly) correctly not counted; 5 s for 15 s of video         |
+| Clean project: `new-film intro --formats 1:1`, `score`, typecheck, `still`                                     | All complete; the template's placeholder renders through `MotionBlur`                                                               |
+| Claude Code 2.1.195, fresh session in this repo                                                                | Lists all seven skills and all four agents                                                                                          |
 
 ---
 
@@ -232,9 +283,12 @@ Measured 2026-10-25 on an Apple Silicon Mac (Node 22.14.0, npm 11.6.4).
 
 ## 11. Open items
 
-| Item                                                                                                                                             | Status | Unblocked by                                                                     |
-| ------------------------------------------------------------------------------------------------------------------------------------------------ | ------ | -------------------------------------------------------------------------------- |
-| Film kit: per-film score and beat measurement (today `audio/` is reel-specific); `frames` uses this repo's `FrameSheet` (`sheet` works anywhere) | Open   | The film-kit refactor, before `make-motion-film`                                 |
-| `make-motion-film` with playbooks (showreel, story, intro, product film, UI motion, app UI glass), `score-and-beats`, `capture-reference-style`  | Open   | The film kit; a piano voice; a multi-format layout system (MOTION_REEL.md §22.3) |
-| A licence for the kit                                                                                                                            | Open   | Choosing one                                                                     |
-| npm publishing                                                                                                                                   | Later  | Deciding to publish; removing `private`                                          |
+| Item                                                                                                 | Status | Unblocked by                                                     |
+| ---------------------------------------------------------------------------------------------------- | ------ | ---------------------------------------------------------------- |
+| `frames` uses this repo's `FrameSheet` (`sheet` works anywhere)                                      | Open   | Retiring `frames` in favour of `sheet`                           |
+| 9:16 safe areas (`SAFE` in `src/lib/layout.ts`) are estimates                                        | Open   | Measuring each platform's overlays on a phone                    |
+| The piano and the scores are checked by numbers (spectrum, loudness, beat recovery), not by ear      | Open   | A listening pass                                                 |
+| `MotionBlur` at 10 samples                                                                           | Open   | A render of a heavy film at 10; `CameraMotionBlur` crashed there |
+| A full film made by an agent from a brief with `make-motion-film`, with `scene-animator` in parallel | Open   | Running one of the example prompts end to end                    |
+| A licence for the kit                                                                                | Open   | Choosing one                                                     |
+| npm publishing                                                                                       | Later  | Deciding to publish; removing `private`                          |

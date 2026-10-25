@@ -1,5 +1,4 @@
 import { AbsoluteFill, Html5Audio, Sequence, staticFile, useCurrentFrame, useRemotionEnvironment } from "remotion";
-import { CameraMotionBlur } from "@remotion/motion-blur";
 import { Bounce, COUNTER, irisRadius } from "./scenes/Bounce";
 import { Rows } from "./scenes/Rows";
 import { GridData } from "./scenes/GridData";
@@ -9,6 +8,7 @@ import { Morph } from "./scenes/Morph";
 import { Logo } from "./scenes/Logo";
 import { INK } from "./theme";
 import { noise1 } from "../lib/math";
+import { MotionBlur } from "../effects/MotionBlur";
 import { DURATION_FRAMES, FPS, beatAt, sec, timeAtBeat } from "./time";
 import chapters from "./chapters.json";
 
@@ -59,9 +59,9 @@ export const Reel: React.FC = () => {
   return (
     <AbsoluteFill>
       {isRendering ? (
-        <CameraMotionBlur samples={8} shutterAngle={180}>
+        <MotionBlur samples={8} shutterAngle={180}>
           <AtCurrentFrame />
-        </CameraMotionBlur>
+        </MotionBlur>
       ) : (
         <AtCurrentFrame />
       )}

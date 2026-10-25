@@ -28,7 +28,7 @@ Units: **beats** (`b`) are the reel's clock; `s` seconds; `f` frames at 60 fps; 
 | 2    | [Task lookup](#2-task-lookup)                                         | Which file and symbol to change for a given edit                                                            |
 | 3    | [Traps](#3-traps)                                                     | Crashes, silent desyncs, no sound in preview, misleading output, with fixes                                 |
 | 4    | [How it works](#4-how-it-works)                                       | Pipeline from score to MP4; `ReelFrame`; scene windows and layering                                         |
-| 5    | [Beat grid and timing](#5-beat-grid-and-timing)                       | BPM, beat ↔ seconds ↔ frames, `beatAt`, `sec`                                                             |
+| 5    | [Beat grid and timing](#5-beat-grid-and-timing)                       | BPM, beat ↔ seconds ↔ frames, `beatAt`, `sec`                                                               |
 | 6    | [Timeline](#6-timeline)                                               | Bar-by-bar beat map: scene, ground, technique, sound cue                                                    |
 | 7    | [Easing curves and ramps](#7-easing-curves-and-ramps)                 | Every easing function, its formula and character; exponential and power ramps                               |
 | 7.3  | [Ramps](#73-ramps)                                                    | Zoom, iris, shake and dolly ramp formulas and why each shape                                                |
@@ -48,9 +48,9 @@ Units: **beats** (`b`) are the reel's clock; `s` seconds; `f` frames at 60 fps; 
 | 19   | [Decisions](#19-decisions)                                            | Choices made and the alternatives that don't work                                                           |
 | 20   | [Exceptions](#20-exceptions)                                          | Departures from the studio rules and why they're allowed                                                    |
 | 21   | [Open items](#21-open-items)                                          | Unverified values and what would settle them                                                                |
-| 22   | [Brief, persona and studio rules](#22-brief-persona-and-studio-rules) | The brief and persona; on-screen copy; the studio rules every film follows; the three example prompts       |
+| 22   | [Brief, persona and studio rules](#22-brief-persona-and-studio-rules) | The brief and persona; on-screen copy; how the reel meets the studio rules; where the example prompts live  |
 | 22.1 | [Brief and persona](#221-brief-and-persona)                           | Who the reel speaks as; on-screen copy                                                                      |
-| 22.3 | [Example prompts](#223-example-prompts)                               | Eight prompts, verbatim; prompt 3's rules against this reel; what each needs                                |
+| 22.3 | [Example prompts](#223-example-prompts)                               | Where each of the eight prompts lives; what the kit added for them; prompt 3's rules against this reel      |
 | 23   | [Preview: Studio and demo page](#23-preview-studio-and-demo-page)     | Scrubbing and playback while editing; the standalone viewer; chapters                                       |
 
 ---
@@ -63,7 +63,7 @@ The reel is a pure function of time, timed in beats from the measured grid.
 
 1. **Compute every visual value from the beat number `b` alone** — scenes take `b` as a prop and hold
    no state.
-   - Why: Remotion renders frames out of order, in parallel tabs, and `CameraMotionBlur` renders
+   - Why: Remotion renders frames out of order, in parallel tabs, and `MotionBlur` renders
      fractional frames; anything carried between frames renders differently per run (studio rule
      §22.2: render contract).
 2. **Time everything in beats, read from [`beats.json`](../src/reel/beats.json) through
@@ -79,8 +79,9 @@ The reel is a pure function of time, timed in beats from the measured grid.
    spring from the current position (§8).
 6. **Use seeded randomness only** — `hash`, `noise1`, `mulberry32` in
    [`math.ts`](../src/lib/math.ts) and [`audio/dsp.mjs`](../audio/dsp.mjs).
-7. **Regenerate the beat grid after any score change**: `npm run audio` runs `synth.mjs` then
-   `beats.mjs`, in that order — `beats.mjs` measures the WAV that `synth.mjs` writes.
+7. **Regenerate the beat grid after any score change**: `npm run audio` (`motion-kit score src/reel`)
+   synthesizes [`src/reel/score.mjs`](../src/reel/score.mjs), masters it, and measures `beats.json`
+   from the WAV it just wrote, in one step.
 8. **Keep UI text at `UI_SIZE` (56 px) or larger** — 56 px is ≈ 11 pt on a phone-width 16:9 frame;
    46 px failed the phone readability check (§16).
 9. **Change this doc in the same commit as any value it restates** (timings, constants, cue sheet).
@@ -89,7 +90,7 @@ The reel is a pure function of time, timed in beats from the measured grid.
 
 - **No `Math.random`, `Date`, CSS transitions, `setTimeout` or `requestAnimationFrame`** — they break
   determinism and Remotion's frame capture.
-- **No `CameraMotionBlur` above 8 samples** — 10 samples crashes Chrome on the zoom through the "o"
+- **No motion blur above 8 samples** — 10 samples crashed Chrome on the zoom through the "o"
   (frames 100–119) at any concurrency (§3).
 - **No second accent colour** — `CLAY` is the only accent (§15).
 
@@ -102,8 +103,8 @@ The reel is a pure function of time, timed in beats from the measured grid.
 | Retime an event                                 | The beat constants inside the scene file                          | Beats are global (`b`), not scene-local; §6 maps bars to beats        |
 | Change a curve's feel                           | The easing call in the scene; functions in `math.ts`              | §7 lists every curve and where it is used                             |
 | Make a spring bouncier or stiffer               | `spring(dt, freq, damping)` arguments                             | Lower damping → more overshoot; §8 table                              |
-| Add a sound cue                                 | The score section of `audio/synth.mjs`, then `npm run audio`      | Place cues with `beat(b)`; re-check §14 detection still finds 128 BPM |
-| Change tempo or length                          | `BPM` / `DURATION` in `synth.mjs`; `DURATION_FRAMES` in `time.ts` | 128 BPM × 32 beats = 15.0 s exactly                                   |
+| Add a sound cue                                 | `compose` in `src/reel/score.mjs`, then `npm run audio`           | Place cues with `beat(b)`; re-check §14 detection still finds 128 BPM |
+| Change tempo or length                          | `bpm` / `duration` in `score.mjs`; `DURATION_FRAMES` in `time.ts` | 128 BPM × 32 beats = 15.0 s exactly                                   |
 | Add or replace a scene                          | New file in `src/reel/scenes/`; window in `ReelFrame`             | Plan its entry and exit transition (§10)                              |
 | Change a colour or face                         | [`theme.ts`](../src/reel/theme.ts)                                | One display face, one UI face, one accent (§15)                       |
 | Check the whole film at a glance                | `npm run sheet` → `out/sheet.png`                                 | One frame per beat, one bar per row (§16)                             |
@@ -118,8 +119,9 @@ The reel is a pure function of time, timed in beats from the measured grid.
 
 ## 3. Traps
 
-- **`Error: Page crashed!` during `renderMedia` around frames 100–119** → `CameraMotionBlur` at
-  10 samples stacks ten copies of the 30× zoom and the ball iris; single stills of the same frames
+- **`Error: Page crashed!` during `renderMedia` around frames 100–119** → motion blur at
+  10 samples (measured with Remotion's `CameraMotionBlur`, which `MotionBlur` replaced; the layer
+  count is the same) stacks ten copies of the 30× zoom and the ball iris; single stills of the same frames
   render fine, so the crash only shows under `renderMedia` → keep `samples={8}` (§17). Lowering
   concurrency or switching `gl` to `angle`/`swangle` does not help.
 - **`bad CPU type in executable: ffmpeg`** → `/usr/local/bin/ffmpeg` is an x86-64 build on an Apple
@@ -137,7 +139,7 @@ The reel is a pure function of time, timed in beats from the measured grid.
   rounded frame.
 - **Cube face text turns muddy grey during the dolly** → text opacity tied to the dolly curve sits at
   10–30 % for most of the zoom → fade it on its own short window, `prog(b, 19.5, 19.68)`.
-- **Frame counter shows decimals or skips** → `CameraMotionBlur` passes fractional frames → round
+- **Frame counter shows decimals or skips** → `MotionBlur` passes fractional frames → round
   before display (`GridData` receives `Math.round(frame)`).
 - **Text measured at render time has the wrong width** → Google Fonts load after first layout, so
   `measureText` can read fallback metrics → glyph advances for "motion" are hard-coded from the font
@@ -161,11 +163,11 @@ component composes the scenes and Remotion renders it with the audio.
 
 ```mermaid
 flowchart LR
-  SYNTH[audio/synth.mjs] -->|public/reel.wav, −14 LUFS| BEATS[audio/beats.mjs]
+  SYNTH[src/reel/score.mjs on audio/engine.mjs] -->|public/reel.wav, −14 LUFS| BEATS[audio/beats.mjs]
   BEATS -->|src/reel/beats.json| TIME[src/reel/time.ts]
   TIME -->|beatAt, sec| SCENES[src/reel/scenes/*.tsx]
   SCENES -->|b prop| FRAME[ReelFrame in Reel.tsx]
-  FRAME --> REEL[Reel: CameraMotionBlur + Html5Audio]
+  FRAME --> REEL[Reel: MotionBlur + Html5Audio]
   FRAME --> SHEET[ContactSheet.tsx]
   REEL -->|renderMedia| MP4[out/reel.mp4]
   SHEET -->|renderStill| PNG[out/sheet.png, out/strip.png]
@@ -175,7 +177,7 @@ flowchart LR
 - **`ReelFrame({ frame })` is the whole film as a function of one number.** It computes
   `b = beatAt(frame / FPS)`, applies impact shake (§12.2) and mounts the scenes whose window contains
   `b`. Fractional frames are valid input.
-- **`Reel` wraps `ReelFrame` in `CameraMotionBlur` when rendering and adds `Html5Audio` and
+- **`Reel` wraps `ReelFrame` in `MotionBlur` when rendering and adds `Html5Audio` and
   `ChapterTracks`** (Studio timeline labels, §23). `ContactSheet` renders `ReelFrame` directly at chosen
   beats, without blur or audio.
 - **Scenes overlap during transitions.** Later entries in `ReelFrame` paint on top; an incoming scene
@@ -203,7 +205,7 @@ The reel runs at 128 BPM for 32 beats (8 bars of 4/4), which is exactly 15.0 s.
 
 | Quantity         | Value                   | Source                             |
 | ---------------- | ----------------------- | ---------------------------------- |
-| Tempo (score)    | 128 BPM                 | `BPM` in `synth.mjs`               |
+| Tempo (score)    | 128 BPM                 | `bpm` in `src/reel/score.mjs`      |
 | Tempo (measured) | 128.004 BPM             | `beats.json` `[measured]`          |
 | Beat period      | 0.468735 s              | `beats.json` `period` `[measured]` |
 | Grid offset      | 2.873 ms                | `beats.json` `offset` `[measured]` |
@@ -214,7 +216,7 @@ The reel runs at 128 BPM for 32 beats (8 bars of 4/4), which is exactly 15.0 s.
 - **Beats are fractional and global.** `b = 3.5` is the "and" of beat 4 in bar 0; scenes compare
   against absolute beats (`prog(b, 19.5, 20)`).
 - **A beat is not a whole number of frames** (28.12 f), so hits fall between frames; Remotion renders
-  the nearest frames and `CameraMotionBlur` integrates across the shutter.
+  the nearest frames and `MotionBlur` integrates across the shutter.
 - **The offset is the kick's attack peak, not t = 0.** Visual hits land 2.9 ms after the sample start,
   where the ear hears the transient.
 
@@ -587,15 +589,20 @@ The camera is a transform on a wrapper; there is no camera object.
 
 ### 12.5 Motion blur
 
-- **`CameraMotionBlur` with 8 samples at a 180° shutter** renders each frame as 8 subframes across half
-  a frame interval and blends them, like a film camera's shutter.
+- **`MotionBlur` with 8 samples at a 180° shutter** renders each frame as 8 subframes across the
+  first half of the frame interval and averages them, like a film camera's shutter.
+- **It replaced Remotion's `CameraMotionBlur`**, which adds the samples at 1/8 opacity each: the 8-bit
+  compositor rounds every layer, so every colour snapped to a multiple of 8 — soft shadows banded
+  into rings and flat colours shifted (`#e9e5da` rendered as `#e8e8d8`) `[measured]`. `MotionBlur`
+  draws sample k at 1/k opacity over the running result instead; a pixel that does not move keeps
+  its exact value `[measured]`.
 - **Fast objects still show slight stepping** at 8 samples; 10 is the smooth setting, but it crashes
   the render (§3).
 - **Blur applies only when rendering** (`useRemotionEnvironment().isRendering`); Studio previews the
   unblurred frame so playback runs in real time (§23).
   - Why: 8 samples redraw every frame 8 times, which Studio cannot do at 60 fps.
 
-Where it lives: [`Reel.tsx`](../src/reel/Reel.tsx) — impact shake, `CameraMotionBlur`;
+Where it lives: [`Reel.tsx`](../src/reel/Reel.tsx) — impact shake; [`MotionBlur.tsx`](../src/effects/MotionBlur.tsx) — `MotionBlur`;
 [`Bounce.tsx`](../src/reel/scenes/Bounce.tsx) — `bounceZoom`, `irisRadius`;
 [`Morph.tsx`](../src/reel/scenes/Morph.tsx) — build shake.
 
@@ -603,7 +610,11 @@ Where it lives: [`Reel.tsx`](../src/reel/Reel.tsx) — impact shake, `CameraMoti
 
 ## 13. Sound design
 
-The score and every sound effect are synthesized in JS at 48 kHz stereo; there are no samples.
+The score and every sound effect are synthesized in JS at 48 kHz stereo; there are no samples. The
+instruments are the kit's engine (`audio/engine.mjs`), shared by every film; its reference for film
+makers, including the piano the reel does not use, is the score-and-beats skill's
+[instruments](../.agents/skills/score-and-beats/references/instruments.md). This section holds the
+reel's own score.
 
 ### 13.1 Instruments
 
@@ -682,7 +693,8 @@ Every cue sits on the grid; each one is paired with a visual event.
 - **Output**: 16-bit PCM WAV with TPDF dither (`writeWav`).
 - **Cross-check** with ffmpeg's `loudnorm` filter; readings are in §18.
 
-Where it lives: [`audio/synth.mjs`](../audio/synth.mjs) — instruments, score, mix, mastering;
+Where it lives: [`src/reel/score.mjs`](../src/reel/score.mjs) — the score (`compose`);
+[`audio/engine.mjs`](../audio/engine.mjs) — `createSession`: instruments, mix, mastering, cue log;
 [`audio/dsp.mjs`](../audio/dsp.mjs) — `Biquad`, `integratedLufs`, `writeWav`, `readWav`, `mulberry32`.
 Run: `npm run audio`.
 
@@ -848,8 +860,9 @@ All measured on 2026-10-25, Apple Silicon Mac (8 cores, 24 GB), Node 22.14.0, Re
 | Closed-form springs, summed per change         | Any frame is computable alone                                                      | Simulated (integrated) springs — need previous frames, which breaks parallel and fractional-frame rendering                            |
 | Radial-sample morphing                         | Same point count and order for every shape                                         | Raw SVG path interpolation — different command structures twist or fail                                                                |
 | Glyph metrics from the font file               | Exact ball landing points                                                          | `measureText` at render time — fonts may not be loaded yet (§3)                                                                        |
+| The kit's `MotionBlur`                         | Exact colours where nothing moves; no banding                                      | Remotion's `CameraMotionBlur` — snaps colours to multiples of 8 at 8 samples (§12.5)                                                   |
 | Contact sheet as a Remotion composition        | Works with the bundled ffmpeg; one bundle renders 32 frames                        | ffmpeg `select` + `tile` — the bundled build lacks those filters; the system ffmpeg cannot run (§3)                                    |
-| Own BS.1770 meter in JS                        | Mastering loop runs inside `synth.mjs` with no external tool                       | ffmpeg `ebur128` — not in the bundled build                                                                                            |
+| Own BS.1770 meter in JS                        | Mastering loop runs inside `audio/engine.mjs` with no external tool                | ffmpeg `ebur128` — not in the bundled build                                                                                            |
 | Beat search over 90–180 BPM with outlier refit | Robust to bass and clap transients near the kick                                   | Median inter-onset interval — locks to eighth notes (§3)                                                                               |
 | 8 motion-blur samples                          | Smoothest count that renders                                                       | 10 samples — crashes Chrome (§3); 4 samples — fast objects show visible ghost copies                                                   |
 | 60 fps                                         | Smoother motion for springs and blur                                               | 30 fps — halves the temporal samples of every fast move                                                                                |
@@ -931,7 +944,7 @@ home. This table holds how the reel meets each.
 | R10 One display face, one UI face          | Instrument Serif and Geist Mono                                                                 | §15         |
 | R11 One accent colour                      | `CLAY`; the brief set no other                                                                  | §15         |
 | R12 Something new every 2–4 s              | A new scene every bar (1.875 s) and an event on every beat (0.47 s)                             | §6          |
-| R13 Score synthesized in code              | `audio/synth.mjs`; no track was supplied, no samples                                            | §13         |
+| R13 Score synthesized in code              | `src/reel/score.mjs` on the kit's engine; no track was supplied, no samples                     | §13         |
 | R14 Hits on the measured grid              | Grid measured from the WAV; scenes read it through `time.ts`                                    | §5, §14     |
 | R15 −14 LUFS                               | Mastering loop to −14 LUFS; −13.8 LUFS after AAC                                                | §13.5, §18  |
 | R16 Per-beat contact sheet first           | `ContactSheet` composition, `npm run sheet`                                                     | §16         |
@@ -941,84 +954,30 @@ home. This table holds how the reel meets each.
 
 ### 22.3 Example prompts
 
-Example prompts for films made under the studio rules (§22.2), kept verbatim; this section is their
-home. Prompt 1 is this reel's brief; the others are briefs this reel does not follow. Each is labelled
-with the video type, style source or format it exercises; the planned `make-motion-film` playbooks
-and the `capture-reference-style` skill are built from them.
+Example prompts for films made under the studio rules (§22.2). Their home is the skill that answers
+each, where they are kept verbatim; prompt 1 is this reel's brief.
 
-**Prompt 1: showreel** — the brief for this reel.
+| #   | Prompt                                        | Type or source    | Home                                                                                                          |
+| --- | --------------------------------------------- | ----------------- | ------------------------------------------------------------------------------------------------------------- |
+| 1   | 15 s résumé showreel, "go all out"            | Showreel          | [types/showreel.md](../.agents/skills/make-motion-film/types/showreel.md#example-prompts)                     |
+| 2   | 20 s product film from real screenshots, 9:16 | Product film      | [types/product-film.md](../.agents/skills/make-motion-film/types/product-film.md#example-prompt)              |
+| 3   | One morphing container driven by a cursor     | UI motion         | [types/ui-motion.md](../.agents/skills/make-motion-film/types/ui-motion.md#example-prompt)                    |
+| 4   | 60 s reel with an original piano score        | Showreel (long)   | [types/showreel.md](../.agents/skills/make-motion-film/types/showreel.md#example-prompts)                     |
+| 5   | 10 s self-introduction, no corner text        | Intro             | [types/intro.md](../.agents/skills/make-motion-film/types/intro.md#example-prompt)                            |
+| 6   | 45 s history story, 9:16                      | Story             | [types/story.md](../.agents/skills/make-motion-film/types/story.md#example-prompt)                            |
+| 7   | 30 s agency reel, one accent                  | Showreel (agency) | [types/showreel.md](../.agents/skills/make-motion-film/types/showreel.md#example-prompts)                     |
+| 8   | Style from a reference video                  | Style source      | [capture-reference-style](../.agents/skills/capture-reference-style/references/style-guide.md#example-prompt) |
 
-```text
-make a dynamic 15-second motion graphics video that shows what an
-incredible motion designer you are, like it's your showreel for a résumé.
-go all out.
-```
+What the kit added for prompts 2–8, which this reel does not need:
 
-**Prompt 2: product showreel** — a 20 s film for a real product from real screenshots, 9:16 first.
-Not used here: there is no product, no screenshots and no cursor.
-
-```text
-Make a dynamic 20-second motion graphics video for [PRODUCT] ([URL]), with the energy
-of a motion designer's showreel. Go all out.
-
-Assets
-- Visit the site. Use real screenshots (Playwright), the real logo, real colors and fonts.
-  Save everything to ./assets and list what you found before you animate.
-- Never redraw the product UI from imagination. Crop and animate the real thing.
-
-Story (one beat each, 2 to 4 seconds)
-1. Hook: the problem in 5 words of huge kinetic type.
-2. The product appears, the UI assembles itself piece by piece.
-3. Three features, each as a UI moment with a cursor doing a real action.
-4. One number that proves it works: [METRIC].
-5. Logo lockup + [CTA].
-
-Sound
-- Original music, 120 BPM, synthesized in code. UI clicks and whooshes on the beat.
-
-Format: 1080x1920 (9:16) first, then 1:1 and 16:9 from the same timeline.
-Before the full render, show me a contact sheet of one frame per beat.
-```
-
-**Prompt 3: product-film UI motion** — one morphing container driven by a cursor, at 120 BPM.
-
-```text
-<inputs>
-Ask me for: my product + URL, 8 to 12 UI states that tell its story, the real data shown in
-each state, brand colors + fonts + one accent, a royalty-free track near 120 BPM, formats.
-</inputs>
-
-<direction>
-Product-film UI motion. One container never cuts: every state is the same element changing
-size, radius and fill while its content swaps behind a short blur. A cursor drives every change.
-Warm neutral canvas, one accent. Springs with at most a tiny overshoot.
-Banned: bouncy easing, glows, gradients on UI chrome, particle bursts, dead time.
-</direction>
-
-<structure>
-120 BPM, 8 bars, something happens on every beat.
-logo → CTA button → email field (typed) → loader → success check → dashboard card
-→ chart draws itself → tooltip on hover → ⌘K palette → toast → logo.
-</structure>
-
-<build>
-1. One HTML file, one canvas, window.seek(t). No CSS transitions, no timers, no carried state.
-2. Closed-form springs. A value with many targets = sum of one spring per change.
-3. Text inside a morphing container enters after the morph starts, leaves before the next one.
-4. Tab indicators: leading and trailing edges on different springs so they stretch.
-5. Beat grid from the track (numpy/librosa). Start on a downbeat. UI sounds on measured peaks.
-6. Render in headless Chrome at 60 fps, 4 subframes per frame, blended for motion blur.
-</build>
-
-<gotchas>
-Never use will-change on anything the camera scales (blurry text).
-The last frame must equal the first, cursor position and velocity included.
-</gotchas>
-
-<start>
-Ask for the inputs, then show me the state list on the beat grid before writing code.
-</start>
-```
+| Prompt | Needs                                                               | Kit                                                                                     |
+| ------ | ------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| 2      | A scripted cursor, screenshots that assemble, 9:16 → 1:1 → 16:9     | `Cursor`, `Assemble`; `new-film --formats`; `useLayout` and safe areas                  |
+| 3      | One container that never cuts; text swapped behind a blur           | `MorphBox`; `track`, `swapAlpha`, `indicator`, `loopT`                                  |
+| 4      | A piano voice; cuts on measured note onsets                         | `piano()` in the engine; `cues.json`                                                    |
+| 5, 7   | A short structure; technique variety                                | The intro and showreel playbooks; the bans were studio rules already                    |
+| 6      | Research and fact-check, a storyboard checkpoint, 9:16 safe zones   | The story playbook; `brief.md` checkpoint; `SAFE`                                       |
+| 8      | Frames every 0.5 s, cuts, palette and grain, an approval checkpoint | `npx motion-kit reference`; the capture-reference-style skill and `style-analyst` agent |
 
 Prompt 3's build rules, against this reel:
 
@@ -1034,54 +993,6 @@ Prompt 3's build rules, against this reel:
 | One container never cuts; a cursor drives every change         | Not applicable: no product UI                                        | —          |
 | Tab indicator edges on different springs                       | Not applicable: no tabs                                              | —          |
 | The last frame equals the first                                | Not applicable: the reel ends on a logo, not a loop                  | —          |
-
-**Prompts 4–7: showreel variants** — the showreel playbook's variants: a 60 s reel scored for piano,
-a 10 s self-introduction with anti-slop guardrails, a 9:16 history story, and an agency persona.
-Their `#` lines credit the people whose patterns they follow.
-
-```text
-# Longer, with a sound bar (pattern from @kloss_xyz's 90-second piano reel)
-make a dynamic 16:9, 60-second motion graphics showreel that shows your real creative limits.
-S-tier sound design, no generic synth pads. Compose an original piano score and sync every
-cut to it. Export 1080p MP4.
-
-# Anti-slop guardrail (pattern from @1littlecoder)
-make a dynamic 10-second motion graphics video that introduces who you are as Opus 5.5.
-Avoid frames and text in the corners, the usual giveaways of AI-made video.
-
-# Story instead of techniques (pattern from @sonnylazuardi)
-use your showreel energy, but tell a story: the history of [TOPIC] from [START] to today,
-surprise me with the storyboard. 45 seconds, vertical 9:16.
-
-# Agency persona
-make a 30-second showreel as if you were a niche branding studio for startup founders.
-Create every graphic from scratch. One accent color. Every shot is a different technique.
-```
-
-**Prompt 8: style from a reference video** — a style source, not a type: the reference's grammar
-(palette, type, shot lengths, transitions, camera, texture, text motion) applied to new content.
-
-```text
-Reference: ./refs/launch.mp4 (and ./refs/frames/*.png)
-
-1. Extract one frame every 0.5s with ffmpeg. Study them.
-2. Write ./docs/style_guide.md: palette (hex), type (family, weight, tracking),
-   shot lengths, transition types, camera moves, texture/grain, how text enters and exits.
-3. Write ./docs/shotlist.md for a [DURATION]s video about [SUBJECT] in THAT style.
-   Take the grammar of the reference, never its content, logos or characters.
-4. Show me both files. Wait for my OK before any code.
-```
-
-What these prompts need that the repo lacks:
-
-| Prompt | Needs                                                                                                                   |
-| ------ | ----------------------------------------------------------------------------------------------------------------------- |
-| 4      | A piano voice and an arranged 60 s score; cuts synced to measured note onsets, not only beats; about 25 scenes          |
-| 5      | A short self-introduction structure; the corner and frame bans are already studio rules (§22.2)                         |
-| 6      | A research and fact-check step, a storyboard checkpoint, 9:16 layout with platform safe zones                           |
-| 7      | A persona brief; technique variety and one accent are already studio rules                                              |
-| 8      | Frame extraction every 0.5 s, cut detection, palette and type analysis, the approval checkpoint                         |
-| 2      | A scripted cursor, screenshots that assemble piece by piece, UI sounds on the beat, 9:16 → 1:1 → 16:9 from one timeline |
 
 ---
 

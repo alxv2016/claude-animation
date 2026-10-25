@@ -26,6 +26,14 @@ Usage: motion-kit <command> [options]
   filter <video> --effect dither|pixel|gradient-map [--params json] [--out file] [--crf n] [--no-audio]
                                                 Filter a whole video, keeping its sound
   verify <file> [--lufs -14]                    Check codec, loudness, peak and bitrate before delivery
+  reference <video> [--name n] [--every 0.5] [--rate 10]
+                                                Study a reference video → refs/<name>/ (frames, contact.png, analysis.json)
+  new-film <slug> [--bpm 120] [--bars 8] [--fps 60] [--formats 16:9,9:16,1:1] [--chapters "A,B,…"] [--title "…"]
+                                                Scaffold src/films/<slug>/ and register it in src/Root.tsx
+  score <film dir | score.mjs>                  Synthesize a film's score → WAV (−14 LUFS), cues.json, beats.json
+  beats <audio> [--beats n] [--band low|full] [--bpm 90-180] [--out file]
+                                                Measure the beat grid of any track
+  master <audio> [--out file.wav] [--lufs -14]  Loudness-normalise a supplied track
   skills list                                   Skills and agents this kit ships
   skills install [--scope project|user] [--no-claude] [--force]
                                                 Install skills and agents into .agents/ (+ .claude/ links)
@@ -86,6 +94,23 @@ switch (cmd) {
   case "verify": {
     const { verify } = await import("../commands/verify.mjs");
     verify(args);
+    break;
+  }
+  case "reference": {
+    const { reference } = await import("../commands/reference.mjs");
+    await reference(args);
+    break;
+  }
+  case "new-film": {
+    const { newFilm } = await import("../commands/film.mjs");
+    newFilm(args);
+    break;
+  }
+  case "score":
+  case "beats":
+  case "master": {
+    const audio = await import("../commands/score.mjs");
+    await audio[cmd](args);
     break;
   }
   case "skills": {

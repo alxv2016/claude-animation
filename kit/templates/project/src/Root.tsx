@@ -4,6 +4,7 @@ import { FilterVideo, filterVideoMetadata, type FilterVideoProps } from "./motio
 
 export const RemotionRoot: React.FC = () => (
   <>
+    {/* motion-kit:films */}
     <Composition id="Hello" component={Hello} durationInFrames={180} fps={60} width={1920} height={1080} />
     {/* Used by `npx motion-kit filter`; size, rate and length come from the input video. */}
     <Composition

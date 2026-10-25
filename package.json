@@ -23,7 +23,7 @@
   },
   "scripts": {
     "dev": "remotion studio",
-    "audio": "node audio/synth.mjs && node audio/beats.mjs",
+    "audio": "node kit/bin/motion-kit.mjs score src/reel",
     "sheet": "node render.mjs sheet",
     "render": "node render.mjs",
     "typecheck": "tsc --noEmit",

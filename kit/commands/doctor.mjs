@@ -1,6 +1,7 @@
 // motion-kit doctor: checks what renders and captures need, and says how to fix what's missing.
 import { spawnSync } from "node:child_process";
 import fs from "node:fs";
+import os from "node:os";
 import path from "node:path";
 
 export async function doctor(kit, version) {
@@ -29,6 +30,9 @@ export async function doctor(kit, version) {
   const config = has("remotion.config.ts") ? fs.readFileSync(path.join(root, "remotion.config.ts"), "utf8") : "";
   add(config.includes('"angle"'), "remotion.config.ts sets the angle GL renderer", 'add Config.setChromiumOpenGlRenderer("angle")');
   add(has(".agents/skills"), "skills installed in .agents/skills", "npx motion-kit skills install");
+  // Optional: Remotion's own skills, for Remotion API questions. Not the kit's to install (no licence to vendor).
+  const remotionSkills = [root, os.homedir()].some((b) => [".agents/skills", ".claude/skills"].some((d) => fs.existsSync(path.join(b, d, "remotion-best-practices"))));
+  checks.push(`${remotionSkills ? "ok  " : "opt "} Remotion's agent skills${remotionSkills ? "" : "\n       → optional, for Remotion API help: npx skills add remotion-dev/skills"}`);
 
   console.log(checks.join("\n"));
 }
