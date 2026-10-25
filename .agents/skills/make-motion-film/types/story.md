@@ -37,7 +37,8 @@ energy. The story sets the structure; techniques serve it.
 
 ## Sound
 
-A score whose sections change with the eras (tempo or instrument), hits on each new date.
+Sound design that changes with the eras (the texture of the effects), an impact and a picture hit on
+each new date. Music only from the user's track (R13).
 
 ## Checks
 

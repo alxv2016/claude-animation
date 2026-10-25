@@ -2,11 +2,13 @@
 
 The motion vocabulary for scenes, each as a closed form so any frame can be computed alone (R1).
 Helpers live in the kit's library (`motion-kit/lib/math`, `motion-kit/effects`); the showreel in the
-kit's repo (`docs/MOTION_REEL.md` §7–§12) shows every one in use with exact numbers.
+kit's repo (`docs/MOTION_REEL.md` §7–§12) shows every one in use with exact numbers, and its per-beat
+sheet ships as the review-film skill's `references/reel-benchmark.jpg` — the bar for every film.
 
 ## Contents
 
 - [Helpers](#helpers)
+- [Springs by role](#springs-by-role)
 - [UI components](#ui-components)
 - [Techniques](#techniques)
 - [Transitions](#transitions)
@@ -31,17 +33,40 @@ kit's repo (`docs/MOTION_REEL.md` §7–§12) shows every one in use with exact 
 | `hash(i, seed)`, `noise1(x, seed)`, `mulberry32(seed)`                                            | Seeded randomness: never `Math.random` (R3)                                                                 |
 | `mixHex(a, b, u)`                                                                                 | Blends two hex colours                                                                                      |
 
+## Springs by role
+
+Pick the spring by what moves, not one curve for everything (R22): `springKD(dt, ...SPRINGS.heavy)`,
+`track(t, keys, ...SPRINGS.snappy)`. `SPRINGS` is in `motion-kit/lib/math`, with each preset's measured
+overshoot. Cheap motion eases from A to B on a fixed curve; expensive motion has mass — it
+accelerates, overshoots a hair, settles.
+
+| Role    | `SPRINGS` | Stiffness / damping | For                                              | Overshoot, settle |
+| ------- | --------- | ------------------- | ------------------------------------------------ | ----------------- |
+| Snappy  | `snappy`  | 320 / 30            | Buttons, toggles, the leading edge of indicators | 0.8 %, 0.23 s     |
+| Default | `default` | 170 / 26            | Cards, containers, the camera                    | none, 0.44 s      |
+| Heavy   | `heavy`   | 120 / 18            | Big type, devices, 3D objects, logo lockups      | 1.1 %, slow start |
+| Playful | `playful` | 260 / 18            | Mascots, stickers, a bouncing ball               | 12 %              |
+
+- **A value with several targets never restarts its spring**: one spring per change, each from its
+  own time, summed (`track`). The motion stays continuous and any frame renders alone.
+- **UI gets at most a tiny overshoot; text being read gets none** (a masked rise on `easeOutExpo` or
+  the brand's curve).
+- **Anticipation on big moves**: a move of 5–8 % against the direction in the quarter beat before the
+  hit (the reel's cube winds back ≈ 6° before each turn), then the spring.
+- **A hit reaction on every impact**: camera shake `16 px · e^(−Δt / 0.09 s)` on the impact frame,
+  or `wobble` on the thing hit, or a colour flash — the ear hears the impact, so the eye must see it.
+
 ## UI components
 
 `motion-kit/effects`. Each takes `time` (seconds) or reads the frame.
 
-| Component               | Use                                                                                                                         |
-| ----------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| `Cursor`                | Scripted pointer: `path` keyframes `[t, x, y]` on springs, `clicks` with press and ring, leans into motion                  |
-| `Assemble`              | A real screenshot that builds itself from tiles springing in, staggered from an `origin`                                    |
-| `MorphBox`              | One container that never cuts: `states` `{ at, x, y, width, height, radius, fill, content }`, content swapped behind a blur |
-| `LiquidGlass`           | Refracting glass panels over a backdrop (apply-effect skill)                                                                |
-| Backgrounds and filters | `Gradient`, `GradientWaves`, `Sky`, `Dither`, `PixelField`, `GradientMap` (apply-effect skill)                              |
+| Component               | Use                                                                                                                                                                                                                                                                                                                  |
+| ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Cursor`                | Scripted pointer: `path` keyframes `[t, x, y]` on springs, `clicks` with press and ring, leans into motion                                                                                                                                                                                                           |
+| `Assemble`              | A real screenshot that builds itself element by element: `pieces` are the real elements' rectangles (rows, cards, screens, devices), each landing in its own slot — rising in its mask, lifting in, or flying from an `origin`; `base` paints the container first. Never cut an image along lines that are not in it |
+| `MorphBox`              | One container that never cuts: `states` `{ at, x, y, width, height, radius, fill, content }`, content swapped behind a blur                                                                                                                                                                                          |
+| `LiquidGlass`           | Refracting glass panels over a backdrop (apply-effect skill)                                                                                                                                                                                                                                                         |
+| Backgrounds and filters | `Gradient`, `GradientWaves`, `Sky`, `Dither`, `PixelField`, `GradientMap` (apply-effect skill)                                                                                                                                                                                                                       |
 
 ## Techniques
 
@@ -64,18 +89,19 @@ kit's repo (`docs/MOTION_REEL.md` §7–§12) shows every one in use with exact 
 
 ## Transitions
 
-Hide every join with motion, a match or a beat; never a crossfade by default.
+Every chapter join is one of these (R21): hide it with motion, a match or an impact. A hard cut nothing
+hides and a crossfade are not joins. Plan each join in `brief.md` and the storyboard before building.
 
-| Transition       | How                                                                                   |
-| ---------------- | ------------------------------------------------------------------------------------- |
-| Match cut        | The last shape of one scene is the first of the next (a ball becomes the next ground) |
-| Iris             | `clip-path: circle()` growing from a point the camera holds still                     |
-| Blinds           | Bands slide off along their own directions, staggered                                 |
-| Continuity morph | Elements of one scene reshape into the next scene's elements                          |
-| Smash cut        | A hard cut on an impact, with camera shake                                            |
-| Dolly in         | Scale a surface up until it fills the frame, then cut to it                           |
-| Converge         | Everything flies to one point, which becomes the next scene's seed                    |
-| Container morph  | `MorphBox`: the same element changes size, radius and fill                            |
+| Transition       | How                                                                                      |
+| ---------------- | ---------------------------------------------------------------------------------------- |
+| Match cut        | The last shape of one scene is the first of the next (a ball becomes the next ground)    |
+| Iris             | `clip-path: circle()` growing from a point the camera holds still                        |
+| Blinds           | Bands slide off along their own directions, staggered                                    |
+| Continuity morph | Elements of one scene reshape into the next scene's elements                             |
+| Smash cut        | A hard cut on an impact, with camera shake — the only cut allowed, and only on an impact |
+| Dolly in         | Scale a surface up until it fills the frame, then cut to it                              |
+| Converge         | Everything flies to one point, which becomes the next scene's seed                       |
+| Container morph  | `MorphBox`: the same element changes size, radius and fill                               |
 
 ## Camera
 
@@ -97,5 +123,9 @@ The camera is a transform on a wrapper.
   technique"): list the techniques in the beat plan's Technique column and check for repeats.
 - **Every entry has a technique**, never a plain fade (R6): masked rise, typing, scale spring,
   draw-on, iris or assemble.
+- **Every beat or two, something new** (R12): an entry, a hit, a camera move, a state change. A
+  headline rising over a still product, then nothing for three beats, is a dead beat.
 - **Motion carries meaning**: a spring with overshoot reads playful, a critically damped spring reads
-  precise, stepping reads rhythmic. Match the brief's voice; product UI wants at most a tiny overshoot.
+  precise, stepping reads rhythmic. Match the brief's voice with the springs by role — a restrained
+  brand moves precisely, not less.
+- **UI follows the UI motion rules** ([ui-motion-rules.md](ui-motion-rules.md), R26).

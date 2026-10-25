@@ -4,13 +4,16 @@
 // 2. Tempo + phase: grid search over a BPM range, maximizing onset strength on the grid.
 // 3. Refine: snap each grid beat to its local onset peak, least-squares fit a line, drop beats more
 //    than 8 ms off (neighbouring transients), refit.
+// 4. For a supplied track: downbeats (the bar phase whose beats hit hardest — big moments go there)
+//    and onsets (full-band transients — UI sounds and small hits can land on them).
 import fs from "node:fs";
 import { SR, Biquad, readWav } from "./dsp.mjs";
 
 const HOP = 0.001;
+const PAD = 5;
 
-export function measureBeats(file, { beats, band = "low", minBpm = 90, maxBpm = 180, source = file } = {}) {
-  const [l, r] = readWav(file, fs);
+/** Onset strength every 1 ms: the rise of log energy over 5 ms in one band, half-wave rectified. */
+function onsetStrength(l, r, band) {
   const filter = band === "low" ? new Biquad("lp", 150, 0.7) : new Biquad("hp", 40, 0.7);
   const hop = Math.round(HOP * SR);
   const env = [-100, -100, -100, -100, -100];
@@ -23,8 +26,12 @@ export function measureBeats(file, { beats, band = "low", minBpm = 90, maxBpm = 
       acc = 0;
     }
   }
-  const PAD = 5;
-  const ose = env.map((e, i) => (i < 5 ? 0 : Math.max(0, e - env[i - 5])));
+  return env.map((e, i) => (i < 5 ? 0 : Math.max(0, e - env[i - 5])));
+}
+
+export function measureBeats(file, { beats, band = "low", minBpm = 90, maxBpm = 180, source = file, beatsPerBar = 4, details = false } = {}) {
+  const [l, r] = readWav(file, fs);
+  const ose = onsetStrength(l, r, band);
   const at = (t) => ose[Math.round(t / HOP) + PAD] ?? 0;
   const peakNear = (t, w) => {
     let best = t, bestV = -1;
@@ -67,7 +74,7 @@ export function measureBeats(file, { beats, band = "low", minBpm = 90, maxBpm = 
   const residuals = kept.map((h) => Math.abs(h.t - (offset + h.k * period)) * 1000);
   const count = beats ?? Math.floor((duration - offset) / period) + 1;
 
-  return {
+  const grid = {
     source,
     bpm: +(60 / period).toFixed(3),
     period: +period.toFixed(6),
@@ -76,4 +83,26 @@ export function measureBeats(file, { beats, band = "low", minBpm = 90, maxBpm = 
     detectedBeats: kept.map((h) => h.k).filter((k) => k < count),
     maxResidualMs: +Math.max(...residuals).toFixed(2),
   };
+  if (!details) return grid;
+
+  // Downbeats: the phase of the bar whose beats carry the most onset strength.
+  const strength = (k) => peakNear(offset + k * period, 0.02).v;
+  let phase = 0, bestSum = -1;
+  for (let p = 0; p < beatsPerBar; p++) {
+    let sum = 0;
+    for (let k = p; k < count; k += beatsPerBar) sum += strength(k);
+    if (sum > bestSum) { bestSum = sum; phase = p; }
+  }
+  // Onsets: full-band peaks at least 80 ms apart and well above the track's typical rise.
+  const full = band === "full" ? ose : onsetStrength(l, r, "full");
+  const sorted = [...full].sort((a, b) => a - b);
+  const floor = Math.max(6, sorted[Math.floor(sorted.length * 0.995)] * 0.5);
+  const onsets = [];
+  for (let i = PAD + 1; i < full.length - 1; i++) {
+    if (full[i] < floor || full[i] < full[i - 1] || full[i] < full[i + 1]) continue;
+    const t = (i - PAD) * HOP;
+    if (onsets.length && t - onsets.at(-1) < 0.08) continue;
+    onsets.push(+t.toFixed(3));
+  }
+  return { ...grid, downbeats: grid.beats.filter((_, k) => k % beatsPerBar === phase), onsets };
 }

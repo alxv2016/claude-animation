@@ -1,21 +1,28 @@
-// The score engine: instruments, mix and mastering for scores written in code (studio rule R13).
-// A film's score module calls these through createSession(); `npx motion-kit score` renders it,
-// masters it to −14 LUFS and measures its beat grid (score-and-beats skill).
+// The sound engine: sound effects, mix and mastering for a film's sound written in code (studio
+// rule R13). A film's score module calls these through createSession(); `npx motion-kit score`
+// renders it, mixes it over the user's music track if there is one, and masters it to −14 LUFS
+// (score-and-beats skill). Films get sound effects only: the kit never composes music. The music
+// instruments (kick … piano) exist for the reel's own score and are exposed only with `music: true`.
 import { SR, Biquad, mulberry32, integratedLufs } from "./dsp.mjs";
 import { pianoVoice } from "./piano.mjs";
 
-export function createSession({ bpm = 120, duration, seed = 1337, target = -14, ceilingDb = -1.5, tailFade = 0.25 }) {
+/**
+ * `bed`: the user's music track as [left, right] at 48 kHz, mixed under the effects.
+ * `grid`: `{ offset, period }` in seconds, so `beat(n)` follows a measured track instead of `bpm`.
+ */
+export function createSession({ bpm = 120, duration, seed = 1337, target = -14, ceilingDb = -1.5, tailFade = 0.25, music = false, bed = null, grid = null }) {
   const BPM = bpm;
-  const BEAT = 60 / BPM;
+  const BEAT = grid ? grid.period : 60 / BPM;
+  const OFFSET = grid ? grid.offset : 0;
   const DURATION = duration;
   const N = Math.round(DURATION * SR);
   const TARGET_LUFS = target;
   const CEILING = 10 ** (ceilingDb / 20);
 
-  const rand = mulberry32(1337);
+  const rand = mulberry32(seed);
   const noise = () => rand() * 2 - 1;
   const midi = (m) => 440 * 2 ** ((m - 69) / 12);
-  const beat = (b) => b * BEAT;
+  const beat = (b) => OFFSET + b * BEAT;
 
   const main = [new Float64Array(N), new Float64Array(N)];
   const pump = [new Float64Array(N), new Float64Array(N)];
@@ -170,6 +177,83 @@ export function createSession({ bpm = 120, duration, seed = 1337, target = -14, 
     }
   }
 
+  // --- UI and motion sound effects ----------------------------------------------
+  // Each sits on a picture event: a click on the frame a press lands, a swoosh peaking on the
+  // frame a move arrives. Noise-based and unpitched, so they never read as a melody.
+
+  /** UI click: two resonant noise bursts, a bright snap over a short body. */
+  function click(t0, g = 1, pan = 0) {
+    const snap = new Biquad("bp", 3400, 4);
+    const body = new Biquad("bp", 1250, 3);
+    voice(t0, 0.04, (t) => {
+      const n = noise();
+      return (snap.run(n) * Math.exp(-t / 0.0012) * 2.4 + body.run(n) * Math.exp(-t / 0.005) * 1.5) * g;
+    }, { pan, send: 0.06 });
+  }
+
+  /** Finger tap on glass: a soft low knock with a muted transient. */
+  function tap(t0, g = 1, pan = 0) {
+    const lp = new Biquad("lp", 900, 0.8);
+    let phase = 0;
+    voice(t0, 0.09, (t) => {
+      phase += (2 * Math.PI * (90 + 220 * Math.exp(-t * 30))) / SR;
+      return (Math.sin(phase) * Math.exp(-t / 0.018) * 0.8 + lp.run(noise()) * Math.exp(-t / 0.006) * 1.2) * g;
+    }, { pan, send: 0.05 });
+  }
+
+  /** An element appearing: a short upward bubble, 30 ms. */
+  function pop(t0, g = 1, pan = 0) {
+    let phase = 0;
+    voice(t0, 0.12, (t) => {
+      phase += (2 * Math.PI * (420 + 520 * (1 - Math.exp(-t / 0.012)))) / SR;
+      return Math.sin(phase) * Math.min(1, t / 0.0015) * Math.exp(-t / 0.03) * g;
+    }, { pan, send: 0.12 });
+  }
+
+  /** A soft landing, lighter than `impact`: a falling low sine and a muffled knock. */
+  function thud(t0, g = 1, pan = 0) {
+    const lp = new Biquad("lp", 400, 0.7);
+    let phase = 0;
+    voice(t0, 0.3, (t) => {
+      phase += (2 * Math.PI * (55 + 70 * Math.exp(-t * 40))) / SR;
+      return Math.tanh((Math.sin(phase) * Math.exp(-t / 0.08) + lp.run(noise()) * Math.exp(-t / 0.01) * 0.6) * 1.3) * g;
+    }, { pan, send: 0.15 });
+  }
+
+  /**
+   * Air moving past, peaking at `tPeak` (the frame the move arrives or passes the camera): band-passed
+   * noise that swells for 75 % of `len`, then falls away fast, its band rising into the peak and
+   * dropping after it, panned across.
+   */
+  function sweep(tPeak, len, g, bands, pan0, pan1, send) {
+    const filters = bands.map(([f, q]) => ({ f, bp: new Biquad("bp", f, q) }));
+    const start = Math.round((tPeak - 0.75 * len) * SR);
+    const n = Math.round(len * SR);
+    for (let k = 0; k < n; k++) {
+      const u = k / n;
+      // Doppler: the band climbs to 1.0× at the peak from 0.35×, then drops to 0.6×.
+      const shift = u < 0.75 ? 0.35 + 0.65 * (u / 0.75) ** 1.5 : 1 - 0.4 * ((u - 0.75) / 0.25);
+      if (k % 32 === 0) for (const b of filters) b.bp.set(b.f * shift);
+      const env = u < 0.75 ? (u / 0.75) ** 2.5 : Math.exp(-((u - 0.75) / 0.25) * 4);
+      const x = noise();
+      let v = 0;
+      for (const b of filters) v += b.bp.run(x);
+      v *= (env * g * 1.8) / filters.length;
+      const pan = pan0 + (pan1 - pan0) * u;
+      write(main, start + k, v * Math.cos(((pan + 1) * Math.PI) / 4), v * Math.sin(((pan + 1) * Math.PI) / 4));
+      write(verb, start + k, v * send, v * send);
+    }
+  }
+
+  /** A big move: low and high air together, peaking at `tPeak`. */
+  function swoosh(tPeak, len = 0.6, g = 1, pan0 = -0.7, pan1 = 0.7) {
+    sweep(tPeak, len, g, [[700, 1.1], [2800, 1.3]], pan0, pan1, 0.18);
+  }
+
+  /** A small fast move (a card, a word, a tab): thin high air, peaking at `tPeak`. */
+  function swish(tPeak, len = 0.22, g = 1, pan0 = -0.3, pan1 = 0.3) {
+    sweep(tPeak, len, g, [[5200, 1.6]], pan0, pan1, 0.1);
+  }
 
   /** Acoustic piano note (see piano.mjs): midi note, velocity 0–1, held for `len` seconds. */
   function piano(t0, note, velocity = 0.7, len = 1, pan) {
@@ -223,7 +307,8 @@ export function createSession({ bpm = 120, duration, seed = 1337, target = -14, 
       for (let n = 0; n < N; n++) {
         const t = n / SR;
         const tail = Math.min(1, (DURATION - t) / tailFade);
-        mix[c][n] = hp.run(main[c][n] + pump[c][n] * sidechain(t) + wet[c][n] * 0.6) * tail;
+        const under = bed ? (bed[c][n] ?? 0) : 0;
+        mix[c][n] = hp.run(main[c][n] + pump[c][n] * sidechain(t) + wet[c][n] * 0.6 + under) * tail;
       }
     }
 
@@ -266,25 +351,40 @@ export function createSession({ bpm = 120, duration, seed = 1337, target = -14, 
     events.push({ type, t: +at(args).toFixed(5), args: args.slice(1).map((a) => (typeof a === "number" ? +a.toFixed(4) : a)) });
     return fn(...args);
   };
-  return {
-    SR, bpm: BPM, beatSeconds: BEAT, duration: DURATION,
-    beat: (b) => b * BEAT,
-    midi,
-    noise,
-    rand,
-    kick: logged("kick", kick),
-    clap: logged("clap", clap),
-    hat: logged("hat", hat),
-    pluck: logged("pluck", pluck),
-    chime: logged("chime", chime),
+  const effects = {
+    click: logged("click", click),
+    tap: logged("tap", tap),
+    pop: logged("pop", pop),
+    thud: logged("thud", thud),
+    swoosh: logged("swoosh", swoosh),
+    swish: logged("swish", swish),
     tick: logged("tick", tick),
-    bass: logged("bass", bass),
-    pad: logged("pad", pad),
     impact: logged("impact", impact),
     whoosh: logged("whoosh", whoosh),
     reverseCymbal: logged("reverseCymbal", reverseCymbal, (args) => args[0] - args[1]),
     riser: logged("riser", riser),
-    piano: logged("piano", piano),
+  };
+  // The reel's own score only (docs/MOTION_REEL.md §13): films never compose music (R13).
+  const instruments = music
+    ? {
+        midi,
+        kick: logged("kick", kick),
+        clap: logged("clap", clap),
+        hat: logged("hat", hat),
+        pluck: logged("pluck", pluck),
+        chime: logged("chime", chime),
+        bass: logged("bass", bass),
+        pad: logged("pad", pad),
+        piano: logged("piano", piano),
+      }
+    : {};
+  return {
+    SR, bpm: grid ? 60 / BEAT : BPM, beatSeconds: BEAT, duration: DURATION,
+    beat,
+    noise,
+    rand,
+    ...effects,
+    ...instruments,
     master,
     events,
   };

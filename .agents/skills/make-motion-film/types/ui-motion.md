@@ -2,22 +2,26 @@
 
 Product-film UI motion: one container that never cuts. Every state is the same element changing
 size, radius and fill while its content swaps behind a short blur, and a cursor drives every change.
+"Animate this, here's the URL" with UI to show is this type, or a product film whose UI moments
+follow the same rules.
 
 ## Inputs
 
-| Input                            | Required | Default                            |
-| -------------------------------- | -------- | ---------------------------------- |
-| Product and URL                  | Yes      | —                                  |
-| 8–12 UI states with real data    | Yes      | — (propose from the site; confirm) |
-| Brand colours, fonts, one accent | No       | capture-brand from the URL         |
-| Track                            | No       | Synthesized near 120 BPM           |
-| Formats                          | No       | 16:9                               |
+| Input                            | Required | Default                                                              |
+| -------------------------------- | -------- | -------------------------------------------------------------------- |
+| Product and URL                  | Yes      | —                                                                    |
+| 8–12 UI states with real data    | Yes      | — (propose from the site; confirm)                                   |
+| Brand colours, fonts, one accent | No       | capture-brand from the URL                                           |
+| Track                            | No       | The user's royalty-free track near 120 BPM; effects only without one |
+| Formats                          | No       | 16:9                                                                 |
 
 ## Steps the playbook adds
 
-1. **The state list on the beat grid** in `brief.md`: each state's beat, size, radius, fill, content
-   and the cursor action that triggers it.
-2. **Checkpoint**: show the state list; wait for the OK before any code.
+1. **Ask for the inputs** above that the request does not give; propose the states from the
+   captured site and confirm them.
+2. **The state list on the beat grid** in `brief.md` and the storyboard: each state's beat, size,
+   radius, fill, content and real data, and the cursor action that triggers it.
+3. **Checkpoint** (R20): show the storyboard and state list; wait for the OK before any code.
 
 ## Structure
 
@@ -32,30 +36,16 @@ itself → tooltip on hover → ⌘K palette → toast → logo.
 - **Loop**: the last state equals the first — position, size and the cursor's position and velocity
   — so the film loops. Use `loopT` for anything that cycles.
 
-## Look
+## Look and build
 
-Warm neutral canvas, one accent, springs with at most a tiny overshoot (damping 26–30 at stiffness
-170–220).
-
-Banned for this type: bouncy easing, glows, gradients on UI chrome, particle bursts, dead time.
-
-## Build rules
-
-| Rule                                                                    | How in the kit                                         |
-| ----------------------------------------------------------------------- | ------------------------------------------------------ |
-| No CSS transitions, no timers, no carried state                         | R1–R2; every value from `local`                        |
-| A value with many targets = sum of one spring per change                | `track`; `MorphBox` does this for every property       |
-| Text enters after the morph starts, leaves before the next one          | `swapAlpha`; `MorphBox` does this for `content`        |
-| Tab indicators stretch: leading and trailing edges on different springs | `indicator`                                            |
-| Beat grid from the track; start on a downbeat; UI sounds on peaks       | `npx motion-kit beats` / `score`; beat 0 is a downbeat |
-| Motion blur from subframes at 60 fps                                    | `MotionBlur`, 8 samples (the prompt's 4 leaves ghosts) |
-| Never `will-change` on anything the camera scales                       | It rasterizes text, which blurs                        |
-| The last frame equals the first                                         | Compare `still <id> 0` with the last frame             |
+The [UI motion rules](../references/ui-motion-rules.md) — direction, build rules and gotchas — are
+this film's whole look and build, and they apply to UI in every other film type too (R26). Warm
+neutral canvas and one accent unless a brand's style guide says otherwise.
 
 ## Sound
 
-A light groove; a `tick` on every click, a soft `pluck` on each state's arrival, a `chime` on the
-success check.
+A `click` on every cursor press, a `swish` peaking as each state arrives, a `pop` on the success
+check; over the user's track if there is one, with UI sounds on its measured onsets (R13).
 
 ## Checks
 

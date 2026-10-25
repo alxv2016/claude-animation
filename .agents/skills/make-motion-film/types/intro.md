@@ -26,7 +26,8 @@ fast, ending on a name or mark.
 
 ## Sound
 
-A short phrase that resolves on the name: a riser into an impact, or a chord on the mark.
+Effects that resolve on the name: a riser into an impact with a picture hit on the mark. Music only
+from the user's track (R13).
 
 ## Checks
 

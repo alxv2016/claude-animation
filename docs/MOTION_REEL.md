@@ -28,7 +28,7 @@ Units: **beats** (`b`) are the reel's clock; `s` seconds; `f` frames at 60 fps; 
 | 2    | [Task lookup](#2-task-lookup)                                         | Which file and symbol to change for a given edit                                                            |
 | 3    | [Traps](#3-traps)                                                     | Crashes, silent desyncs, no sound in preview, misleading output, with fixes                                 |
 | 4    | [How it works](#4-how-it-works)                                       | Pipeline from score to MP4; `ReelFrame`; scene windows and layering                                         |
-| 5    | [Beat grid and timing](#5-beat-grid-and-timing)                       | BPM, beat ↔ seconds ↔ frames, `beatAt`, `sec`                                                               |
+| 5    | [Beat grid and timing](#5-beat-grid-and-timing)                       | BPM, beat ↔ seconds ↔ frames, `beatAt`, `sec`                                                             |
 | 6    | [Timeline](#6-timeline)                                               | Bar-by-bar beat map: scene, ground, technique, sound cue                                                    |
 | 7    | [Easing curves and ramps](#7-easing-curves-and-ramps)                 | Every easing function, its formula and character; exponential and power ramps                               |
 | 7.3  | [Ramps](#73-ramps)                                                    | Zoom, iris, shake and dolly ramp formulas and why each shape                                                |
@@ -611,10 +611,11 @@ Where it lives: [`Reel.tsx`](../src/reel/Reel.tsx) — impact shake; [`MotionBlu
 ## 13. Sound design
 
 The score and every sound effect are synthesized in JS at 48 kHz stereo; there are no samples. The
-instruments are the kit's engine (`audio/engine.mjs`), shared by every film; its reference for film
-makers, including the piano the reel does not use, is the score-and-beats skill's
-[instruments](../.agents/skills/score-and-beats/references/instruments.md). This section holds the
-reel's own score.
+instruments are the kit's engine (`audio/engine.mjs`). The reel's composed score predates studio rule
+R13 — films made with the kit get sound effects only and the user brings any music — so the reel's
+`score.mjs` sets `music: true`, the only score that does; the effects films use are the
+score-and-beats skill's [effects](../.agents/skills/score-and-beats/references/instruments.md). This
+section holds the reel's own score.
 
 ### 13.1 Instruments
 
@@ -927,30 +928,37 @@ made under the studio rules (§22.2).
 
 ### 22.2 Studio rules
 
-The studio rules (R1–R19) are defined in the review-film skill's [studio rules](../.agents/skills/review-film/references/studio-rules.md), which is their
-home. This table holds how the reel meets each.
+The studio rules (R1–R26) are defined in the review-film skill's [studio rules](../.agents/skills/review-film/references/studio-rules.md), which is their
+home. This table holds how the reel meets each. Its per-beat sheet ships beside them as the bar every
+film is held to ([reel-benchmark.jpg](../.agents/skills/review-film/references/reel-benchmark.jpg)).
 
-| Rule                                       | How the reel meets it                                                                           | See         |
-| ------------------------------------------ | ----------------------------------------------------------------------------------------------- | ----------- |
-| R1 Pure function of time                   | `ReelFrame` computes everything from `b = beatAt(frame / FPS)`; Remotion replaces `window.seek` | §1, §4, §20 |
-| R2 No transitions, timers or carried state | None in `src/` (grepped); springs are closed-form                                               | §1, §8      |
-| R3 Seeded noise only                       | `hash` and `noise1` are built on `mulberry32`; no `Math.random` in `src/`                       | §9.12       |
-| R4 Render through the kit, H.264 CRF 16    | `render.mjs` drives Remotion with those settings                                                | §17, §20    |
-| R5 No centred title on a gradient          | Flat grounds only; the opening word is a stage for the ball, not a title card                   | §15         |
-| R6 No fade-ins for everything              | Entries are masks, scale springs, draw-ons and irises                                           | §9.10, §20  |
-| R7 No corner labels or frame borders       | Chapter captions sit beside their subject                                                       | §15         |
-| R8 No glow on UI chrome                    | No glow, blur or shadow on UI; the only shadow is the cube's floor shadow                       | §9.9        |
-| R9 No generic particle bursts              | The spark is a 12-ray mark drawn ray by ray                                                     | §10         |
-| R10 One display face, one UI face          | Instrument Serif and Geist Mono                                                                 | §15         |
-| R11 One accent colour                      | `CLAY`; the brief set no other                                                                  | §15         |
-| R12 Something new every 2–4 s              | A new scene every bar (1.875 s) and an event on every beat (0.47 s)                             | §6          |
-| R13 Score synthesized in code              | `src/reel/score.mjs` on the kit's engine; no track was supplied, no samples                     | §13         |
-| R14 Hits on the measured grid              | Grid measured from the WAV; scenes read it through `time.ts`                                    | §5, §14     |
-| R15 −14 LUFS                               | Mastering loop to −14 LUFS; −13.8 LUFS after AAC                                                | §13.5, §18  |
-| R16 Per-beat contact sheet first           | `ContactSheet` composition, `npm run sheet`                                                     | §16         |
-| R17 Score six criteria                     | Six criteria scored per round                                                                   | §16, §18    |
-| R18 Fix the 3 worst; repeat to 8+          | Final scores 8–9                                                                                | §16, §18    |
-| R19 Full render only then                  | `npm run render`                                                                                | §17         |
+| Rule                                       | How the reel meets it                                                                                        | See                |
+| ------------------------------------------ | ------------------------------------------------------------------------------------------------------------ | ------------------ |
+| R1 Pure function of time                   | `ReelFrame` computes everything from `b = beatAt(frame / FPS)`; Remotion replaces `window.seek`              | §1, §4, §20        |
+| R2 No transitions, timers or carried state | None in `src/` (grepped); springs are closed-form                                                            | §1, §8             |
+| R3 Seeded noise only                       | `hash` and `noise1` are built on `mulberry32`; no `Math.random` in `src/`                                    | §9.12              |
+| R4 Render through the kit, H.264 CRF 16    | `render.mjs` drives Remotion with those settings                                                             | §17, §20           |
+| R5 No centred title on a gradient          | Flat grounds only; the opening word is a stage for the ball, not a title card                                | §15                |
+| R6 No fade-ins for everything              | Entries are masks, scale springs, draw-ons and irises                                                        | §9.10, §20         |
+| R7 No corner labels or frame borders       | Chapter captions sit beside their subject                                                                    | §15                |
+| R8 No glow on UI chrome                    | No glow, blur or shadow on UI; the only shadow is the cube's floor shadow                                    | §9.9               |
+| R9 No generic particle bursts              | The spark is a 12-ray mark drawn ray by ray                                                                  | §10                |
+| R10 One display face, one UI face          | Instrument Serif and Geist Mono                                                                              | §15                |
+| R11 One accent colour                      | `CLAY`; the brief set no other                                                                               | §15                |
+| R12 Something new every beat or two        | A new scene every bar (1.875 s) and an event on every beat (0.47 s)                                          | §6                 |
+| R13 Sound effects on picture events        | An effect on every beat's event; the composed score predates R13 and is the reel's exception (`music: true`) | §13                |
+| R14 Hits on the measured grid              | Grid measured from the WAV; scenes read it through `time.ts`                                                 | §5, §14            |
+| R15 −14 LUFS                               | Mastering loop to −14 LUFS; −13.8 LUFS after AAC                                                             | §13.5, §18         |
+| R16 Per-beat contact sheet first           | `ContactSheet` composition, `npm run sheet`                                                                  | §16                |
+| R17 Score the criteria                     | Six criteria scored per round (composition, depth and polish were added after the reel)                      | §16, §18           |
+| R18 Fix the 3 worst; repeat to 8+          | Final scores 8–9                                                                                             | §16, §18           |
+| R19 Full render only then                  | `npm run render`                                                                                             | §17                |
+| R20 Storyboard approved first              | Predates the rule: the reel's brief was a one-line prompt                                                    | §22.1              |
+| R21 Every join designed                    | Seven joins, seven transitions: match cut, blinds, continuity morph, smash cut, dolly, converge, iris        | §10                |
+| R22 Springs by role, hits on impacts       | Anticipation and overshoot on every big move; shake on the three impacts; hit reactions on most beats        | §9.4, §9.11, §12.2 |
+| R23–R24 Independent review, three rounds   | Predate the rules: the reel was reviewed by its author                                                       | §16                |
+| R25 Animatic approved first                | Predates the rule                                                                                            | §17                |
+| R26 UI motion rules                        | No product UI in the reel                                                                                    | —                  |
 
 ### 22.3 Example prompts
 

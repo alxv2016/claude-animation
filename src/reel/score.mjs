@@ -5,6 +5,8 @@ export default {
   duration: 15,
   beats: 32,
   output: "public/reel.wav",
+  // The reel predates the kit's effects-only rule (R13); it keeps its composed score.
+  music: true,
   compose(s) {
     const { beat, midi, kick, clap, hat, pluck, chime, tick, bass, pad, impact, whoosh, reverseCymbal, riser } = s;
     // --- the score ---------------------------------------------------------------
