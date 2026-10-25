@@ -57,16 +57,16 @@ Source of truth: [`kit/`](../kit/) (CLI, commands, project templates), [`.agents
 
 ## 2. Task lookup
 
-| I need to…                           | Run                                                                        | Notes                                                                        |
-| ------------------------------------ | -------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
-| Start a new film project             | `npx --package=github:alxv2016/claude-animation motion-kit init --install` | In an empty folder or an existing app `[?]` until verified from GitHub (§11) |
-| Install the skills for this project  | `npx motion-kit skills install`                                            | `.agents/` + `.claude/` links + `AGENTS.md` block                            |
-| Install the skills for every project | `npx motion-kit skills install --scope user`                               | `~/.agents/` + `~/.claude/` links                                            |
-| Skip the Claude Code links           | `… skills install --no-claude`                                             |                                                                              |
-| Refresh the vendored library         | `npx motion-kit update`                                                    | Overwrites `src/motion-kit/`                                                 |
-| Check a setup                        | `npx motion-kit doctor`                                                    | Node, render browser, ffmpeg, config, skills                                 |
-| Use the CLI inside this repo         | `npm run mk -- <command>`                                                  | npx does not link a package's own `bin`                                      |
-| Add a skill                          | `.agents/skills/<name>/SKILL.md` (+ `references/`), then `skills install`  | §7                                                                           |
+| I need to…                           | Run                                                                        | Notes                                                            |
+| ------------------------------------ | -------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| Start a new film project             | `npx --package=github:alxv2016/claude-animation motion-kit init --install` | In an empty folder or an existing app; `#<branch>` pins a branch |
+| Install the skills for this project  | `npx motion-kit skills install`                                            | `.agents/` + `.claude/` links + `AGENTS.md` block                |
+| Install the skills for every project | `npx motion-kit skills install --scope user`                               | `~/.agents/` + `~/.claude/` links                                |
+| Skip the Claude Code links           | `… skills install --no-claude`                                             |                                                                  |
+| Refresh the vendored library         | `npx motion-kit update`                                                    | Overwrites `src/motion-kit/`                                     |
+| Check a setup                        | `npx motion-kit doctor`                                                    | Node, render browser, ffmpeg, config, skills                     |
+| Use the CLI inside this repo         | `npm run mk -- <command>`                                                  | npx does not link a package's own `bin`                          |
+| Add a skill                          | `.agents/skills/<name>/SKILL.md` (+ `references/`), then `skills install`  | §7                                                               |
 
 ---
 
@@ -192,15 +192,16 @@ flowchart LR
 
 Measured 2026-10-25 on an Apple Silicon Mac (Node 22.14.0, npm 11.6.4).
 
-| Measurement                                                       | Value                                                                                   |
-| ----------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
-| Package (`npm pack`)                                              | 59.8 kB, 41 files, 176 kB unpacked                                                      |
-| Clean project: `init --install`                                   | 262 packages in 4 s                                                                     |
-| Clean project: typecheck after `init`                             | No errors                                                                               |
-| Clean project: `doctor`                                           | All checks pass (after a 171 MB Chrome download)                                        |
-| Clean project: `still Hello 120`                                  | Rendered: liquid glass over `Sky`                                                       |
-| Clean project: `brand capture https://example.com`, `brand guide` | Both complete; guide links to the installed skill                                       |
-| Claude Code 2.1.195, fresh session in this repo                   | Lists `capture-brand` (via the `.claude/` symlink); loads `AGENTS.md` (via `CLAUDE.md`) |
+| Measurement                                                                                             | Value                                                                                   |
+| ------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| Package (`npm pack`)                                                                                    | 59.8 kB, 41 files, 176 kB unpacked                                                      |
+| Clean project: `init --install`                                                                         | 262 packages in 4 s                                                                     |
+| Clean project: typecheck after `init`                                                                   | No errors                                                                               |
+| Clean project: `doctor`                                                                                 | All checks pass (after a 171 MB Chrome download)                                        |
+| Clean project: `still Hello 120`                                                                        | Rendered: liquid glass over `Sky`                                                       |
+| Clean project: `brand capture https://example.com`, `brand guide`                                       | Both complete; guide links to the installed skill                                       |
+| Claude Code 2.1.195, fresh session in this repo                                                         | Lists `capture-brand` (via the `.claude/` symlink); loads `AGENTS.md` (via `CLAUDE.md`) |
+| From GitHub (`#motion-kit-phase-1`) into an empty folder: `init --install`, typecheck, `skills install` | All complete                                                                            |
 
 ---
 
@@ -218,7 +219,6 @@ Measured 2026-10-25 on an Apple Silicon Mac (Node 22.14.0, npm 11.6.4).
 
 | Item                                                                                                                                                     | Status | Unblocked by                                                                     |
 | -------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ | -------------------------------------------------------------------------------- |
-| `npx --package=github:alxv2016/claude-animation motion-kit init` is untested from GitHub `[?]`                                                           | Open   | Pushing this change and running it in an empty folder                            |
 | Skills `apply-effect`, `review-film`, `render-and-deliver`; agents `brand-curator`, `film-critic`                                                        | Next   | Writing them on the pattern of `capture-brand`                                   |
 | Film kit: per-film score, beat measurement and contact sheet (today `audio/` and the reel's sheet are reel-specific); `FrameSheet` usable in any project | Open   | The film-kit refactor, before `make-motion-film`                                 |
 | `make-motion-film` with playbooks (showreel, story, intro, product film, UI motion, app UI glass), `score-and-beats`, `capture-reference-style`          | Open   | The film kit; a piano voice; a multi-format layout system (MOTION_REEL.md §22.3) |
