@@ -11,7 +11,8 @@ npx --package=github:alxv2016/claude-animation motion-kit init --install   # Rem
 npx motion-kit skills install          # skills → .agents/ (any tool), linked into .claude/
 npx motion-kit doctor                  # check the setup
 npx motion-kit new-film launch --bpm 120 --bars 8 --formats 9:16,16:9   # scaffold a film
-npx motion-kit score src/films/launch  # synthesize its score, measure its beat grid
+npx motion-kit storyboard src/films/launch   # the storyboard to approve before any code
+npx motion-kit score src/films/launch  # its sound effects (over your track, if any) and beat grid
 npx motion-kit reference refs/ref.mp4  # study a reference video's cuts, palette and grain
 npx motion-kit filter my.mp4 --effect dither   # dither / pixel / gradient-map a whole video
 npx motion-kit sheet <composition>     # contact sheet for review
@@ -20,7 +21,9 @@ npm run dev                            # Remotion Studio
 ```
 
 Agents read [AGENTS.md](AGENTS.md) and follow its skills — ask for a showreel, a product film, a
-story or UI motion and the make-motion-film skill plans, scores, builds and reviews it. The kit is
+story or UI motion and the make-motion-film skill plans it, shows you a storyboard to approve,
+builds it with sound effects (you bring any music), reviews it and shows you an animatic before the
+final render. The kit is
 described in [docs/MOTION_KIT.md](docs/MOTION_KIT.md).
 Remotion needs a company licence above a certain company size — see remotion.dev/license.
 

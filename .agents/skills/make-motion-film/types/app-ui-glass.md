@@ -22,6 +22,8 @@ refracting a detailed wallpaper behind them. Usually 9:16 (a phone screen) or 16
 
 ## Look
 
+The UI follows the [UI motion rules](../references/ui-motion-rules.md) (R26), with a tap for the cursor.
+
 - **The backdrop must have detail**: glass shows nothing over a flat colour. `Sky`, a photo or video.
 - **Crisp content on top**: DOM text and SVG icons over the glass, never inside the shader.
 - **The glass patterns** — tab-bar selection lens, merging buttons, widgets, the floating tab bar —
@@ -32,7 +34,8 @@ refracting a detailed wallpaper behind them. Usually 9:16 (a phone screen) or 16
 
 ## Sound
 
-Soft and tactile: `tick` on each tap, a low `pluck` on merges, a quiet pad. No impact hits.
+Soft and tactile: `tap` on each touch, `swish` peaking as the lens arrives, `thud` at low gain on
+merges. No impact hits, no music unless the user supplies a track (R13).
 
 ## Checks
 

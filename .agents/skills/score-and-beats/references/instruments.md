@@ -1,13 +1,12 @@
-# Instruments, score module and beat grid
+# Effects, score module and beat grid
 
 ## Contents
 
 - [Score module](#score-module)
 - [Session](#session)
-- [Instruments](#instruments)
-- [Piano](#piano)
+- [Effects](#effects)
+- [Sync to picture](#sync-to-picture)
 - [Mix and master](#mix-and-master)
-- [Patterns](#patterns)
 - [Outputs](#outputs)
 - [Beat measurement](#beat-measurement)
 - [Traps](#traps)
@@ -16,131 +15,112 @@
 
 `score.mjs` default-exports:
 
-| Key                | Required | Default                                | Does                                                               |
-| ------------------ | -------- | -------------------------------------- | ------------------------------------------------------------------ |
-| `bpm`              | Yes      | —                                      | Tempo                                                              |
-| `bars`             | Yes*     | —                                      | Length in bars (*or give `duration`)                               |
-| `beatsPerBar`      | No       | `4`                                    |                                                                    |
-| `tail`             | No       | `0`                                    | Seconds after the last bar for reverb and the last hit             |
-| `duration`         | No       | `bars · beatsPerBar · 60 / bpm + tail` | Length in seconds                                                  |
-| `beats`            | No       | Beats before the tail                  | How many beats `beats.json` lists                                  |
-| `beatBand`         | No       | `"low"`                                | `"low"` (kick band, < 150 Hz) or `"full"` for music without a kick |
-| `minBpm`, `maxBpm` | No       | `90`, `180`                            | Tempo search range for the measurement                             |
-| `seed`             | No       | `1337`                                 | Seeds `rand()` and `noise()`                                       |
-| `lufs`             | No       | `-14`                                  | Loudness target                                                    |
-| `output`           | No       | `public/<folder>/score.wav`            | Where the WAV goes                                                 |
-| `compose(s)`       | Yes      | —                                      | Places every cue; `s` is the session below                         |
+| Key                | Required | Default                                            | Does                                                                                    |
+| ------------------ | -------- | -------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| `bpm`              | Yes\*    | —                                                  | Tempo of the planned grid (\*measured from `track` when there is one)                   |
+| `bars`             | Yes\*    | —                                                  | Length in bars (\*or give `duration`)                                                   |
+| `beatsPerBar`      | No       | `4`                                                |                                                                                         |
+| `tail`             | No       | `0`                                                | Seconds after the last bar for the last effect to ring out                              |
+| `duration`         | No       | track offset + `bars · beatsPerBar` beats + `tail` | Length in seconds                                                                       |
+| `beats`            | No       | Beats before the tail                              | How many beats `beats.json` lists                                                       |
+| `track`            | No       | —                                                  | The user's music (any audio or video file): measured, mixed unchanged under the effects |
+| `trackLufs`        | No       | `-16`                                              | The track's level under the effects, before the master                                  |
+| `beatBand`         | No       | `"low"`                                            | Measure the track's kick band (`"low"`) or everything (`"full"`)                        |
+| `minBpm`, `maxBpm` | No       | `70`, `180`                                        | Tempo search range for the track                                                        |
+| `seed`             | No       | `1337`                                             | Seeds `rand()` and `noise()`                                                            |
+| `lufs`             | No       | `-14`                                              | Loudness target of the master                                                           |
+| `output`           | No       | `public/<folder>/score.wav`                        | Where the WAV goes                                                                      |
+| `compose(s)`       | Yes      | —                                                  | Places every effect; `s` is the session below                                           |
+
+`music: true` exposes the engine's music instruments; it exists only for the kit repo's own reel
+(`src/reel/score.mjs`), which predates R13. Films never set it.
 
 ## Session
 
-| Member                                 | Gives                                                             |
-| -------------------------------------- | ----------------------------------------------------------------- |
-| `beat(n)`                              | Seconds of beat `n` (fractions allowed: `beat(4.5)` is the "and") |
-| `midi(note)`                           | Frequency in Hz of a MIDI note (69 = A4 = 440 Hz)                 |
-| `bpm`, `beatSeconds`, `duration`, `SR` | Tempo, seconds per beat, length, 48000                            |
-| `rand()`, `noise()`                    | Seeded random in [0, 1) and [−1, 1)                               |
+| Member                                 | Gives                                                                                                |
+| -------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `beat(n)`                              | Seconds of beat `n` (fractions allowed: `beat(4.5)` is the "and"); with a `track`, its measured beat |
+| `bpm`, `beatSeconds`, `duration`, `SR` | Tempo, seconds per beat, length, 48000                                                               |
+| `rand()`, `noise()`                    | Seeded random in [0, 1) and [−1, 1)                                                                  |
 
-## Instruments
+## Effects
 
-Times `t0` and lengths `len` in seconds; `g` is gain (about 0.3–1); `pan` −1 (left) to 1 (right).
-Frequencies `f` in Hz (use `midi(n)`); `notes` are MIDI numbers.
+Times in seconds; `g` is gain (about 0.3–1); `pan` −1 (left) to 1 (right). All are unpitched or
+pitched only within one sound, so none reads as a melody.
 
-| Call                                                               | Sound                                               | Use                                     |
-| ------------------------------------------------------------------ | --------------------------------------------------- | --------------------------------------- |
-| `kick(t0, g)`                                                      | Pitched-down sine with a click; ducks pads and bass | The pulse; the grid is measured from it |
-| `clap(t0, g, pan = 0.1)`                                           | Three noise bursts and a tail                       | Backbeat (beats 2 and 4)                |
-| `hat(t0, g, open = false, pan)`                                    | High-passed noise, 22 ms closed / 110 ms open       | Off-beats, sixteenth ghosts             |
-| `pluck(t0, f, g, pan)`                                             | FM pluck, bright and short                          | Arpeggios; one note per element         |
-| `chime(t0, f, g, pan)`                                             | Inharmonic FM bell, 0.8 s decay                     | Reveals, a number landing               |
-| `tick(t0, g, f = 2600, pan)`                                       | 10 ms click                                         | UI clicks, typing, counters             |
-| `bass(t0, len, f, g)`                                              | Sine with a 2nd harmonic, driven                    | Root notes, eighths                     |
-| `pad(t0, len, notes, g, cutoff = 1600)`                            | Detuned saws, low-passed                            | Chords under a scene                    |
-| `piano(t0, note, velocity = 0.7, len = 1, pan)`                    | Modelled acoustic piano ([below](#piano))           | Melody, chords, a piano score           |
-| `impact(t0, g)`                                                    | Sub boom and crack                                  | Smash cuts, the drop, the logo          |
-| `whoosh(t0, len, g, f0 = 400, f1 = 4000, pan0 = −0.6, pan1 = 0.6)` | Swept band-passed noise, panned across              | Moves, wipes, a cursor's travel         |
-| `reverseCymbal(tEnd, len, g)`                                      | Noise swelling into `tEnd`, cut at the hit          | Into a scene change                     |
-| `riser(t0, len, g)`                                                | Noise and a saw opening up over `len`               | Builds, 1–2 bars                        |
+| Call                                      | Sound                                                       | For                                              |
+| ----------------------------------------- | ----------------------------------------------------------- | ------------------------------------------------ |
+| `click(t0, g, pan)`                       | A bright snap over a short body, 5 ms                       | Cursor presses, a pill or button landing         |
+| `tap(t0, g, pan)`                         | A soft low knock on glass                                   | Touch, counters, small elements settling         |
+| `pop(t0, g, pan)`                         | A short upward bubble, 30 ms                                | An element appearing, a check, an iris opening   |
+| `thud(t0, g, pan)`                        | A falling low sine and a muffled knock                      | Kinetic type slamming, something landing         |
+| `swish(tPeak, len = 0.22, g, pan0, pan1)` | Thin high air, swelling to `tPeak`, then gone               | A small fast move: a word, a card, a tab         |
+| `swoosh(tPeak, len = 0.6, g, pan0, pan1)` | Low and high air, band rising into `tPeak`, falling after   | A big move: a device arriving, a camera move     |
+| `impact(t0, g)`                           | Sub boom and crack                                          | Scene changes, smash cuts, the lockup            |
+| `riser(t0, len, g)`                       | Noise and a saw opening up over `len`                       | Builds, 1–2 bars                                 |
+| `reverseCymbal(tEnd, len, g)`             | Noise swelling into `tEnd`, cut at the hit                  | Into a scene change                              |
+| `whoosh(t0, len, g, f0, f1, pan0, pan1)`  | Swept band-passed noise from `t0`, peaking at 75 % of `len` | Older scores; prefer `swoosh`, timed by its peak |
+| `tick(t0, g, f, pan)`                     | A 10 ms sine beep                                           | Older scores; prefer `click` or `tap`            |
 
-Every call is logged to `cues.json` with its time; `reverseCymbal` logs its start (`tEnd − len`).
+Every call is logged to `cues.json` at its sync time: `t0`, the peak for `swish` and `swoosh`, the
+start for `reverseCymbal` (`tEnd − len`).
 
-## Piano
+## Sync to picture
 
-`piano(t0, note, velocity, len, pan)` models a struck string, with no samples:
+The effect sits on the frame of its picture event, not merely on a beat near it.
 
-- **Stiff-string partials**: up to 18 overtones, each slightly sharp (inharmonicity
-  `B = 6e-5 · 2^((note − 48) / 12)`, more in the treble).
-- **Struck at 1/8 of the string**, so the 8th partial is missing, as on a real piano.
-- **Two strings per note**, each partial detuned by a fraction of a cent either way, so they beat slowly against each other.
-- **Two-stage decay**: a fast initial drop, then a long aftersound (about 10 s low in the bass, a
-  fraction of a second at the top).
-- **Velocity** sets loudness and brightness; a felt-hammer thump on the attack; the damper cuts the
-  note at `len`.
-- **Pan** defaults to the keyboard position (bass left, treble right).
-
-Writing for it: voice chords as a pianist would (close in the middle register, MIDI 48–72; bass
-octaves below 48), roll chords by 5–15 ms per note, vary velocity 0.4–0.8, and leave room for the
-aftersound — piano scores breathe at 70–100 BPM. For a piano-only score set `beatBand: "full"`: there
-is no kick to measure from.
-
-## Mix and master
-
-- **Sidechain**: pads and bass duck 65 % on every kick (4 ms attack, 130 ms release).
-- **Reverb**: a Schroeder hall; each instrument has its own send.
-- **Master**: 28 Hz high-pass, a 0.25 s fade at the end, loudness to −14 LUFS (ITU-R BS.1770) with a
-  look-ahead limiter at −1.5 dBFS, 16-bit WAV with dither.
-
-## Patterns
+| Picture event                         | Effect                            | Timing                                                                                                                 |
+| ------------------------------------- | --------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| A move arrives (spring or ease)       | `swoosh` or `swish`               | `tPeak` at arrival: a spring's start + about 0.3 s (`default`), 0.2 s (`snappy`); an ease's start + 60 % of its length |
+| A cursor press, a button lands        | `click`                           | The press frame (the `Cursor` click time)                                                                              |
+| Type slams in                         | `thud`                            | The slam's beat                                                                                                        |
+| An element appears                    | `pop`                             | Its first visible frame                                                                                                |
+| A scene change, a smash cut, a lockup | `impact`, `reverseCymbal` into it | The cut's beat; the picture shakes on the same frame (R22)                                                             |
+| A build                               | `riser` over 1–2 bars             | Ends half a beat before the drop; silence, then `impact`                                                               |
 
 ```js
-// One chord per bar, a groove, and hits on scene changes (scene changes on beats 8 and 16).
-compose({ beat, midi, kick, clap, hat, bass, pad, piano, whoosh, impact, reverseCymbal }) {
-  const chords = [[57, 60, 64], [53, 57, 60, 64], [52, 55, 60, 64], [55, 59, 62]]; // Am Fmaj7 C/E G
-  const roots = [33, 29, 36, 31];
-  for (let bar = 0; bar < 8; bar++) {
-    pad(beat(bar * 4), beat(4), chords[bar % 4], 0.3);
-    for (let e = 0; e < 8; e++) bass(beat(bar * 4 + e / 2), beat(0.45), midi(roots[bar % 4]), 0.45);
-    for (let b = 0; b < 4; b++) {
-      kick(beat(bar * 4 + b), 0.85);
-      hat(beat(bar * 4 + b + 0.5), 0.3);
-      if (b % 2) clap(beat(bar * 4 + b), 0.5);
-    }
-  }
-  for (const b of [8, 16]) { reverseCymbal(beat(b), beat(1), 0.5); impact(beat(b), 0.8); }
+// Effects only: a device lands on beat 4, a word rises from beat 5, a cursor clicks on 6, the cut on 8.
+compose({ beat, swoosh, swish, click, impact, reverseCymbal }) {
+  swoosh(beat(4) + 0.3, 0.5, 0.7);          // default spring from beat 4 arrives ≈ 0.3 s later
+  swish(beat(5) + 0.25, 0.22, 0.45);
+  click(beat(6), 0.7);
+  reverseCymbal(beat(8), beat(1), 0.35);
+  impact(beat(8), 0.8);
 }
 ```
 
-| Moment                 | Cue                                                               |
-| ---------------------- | ----------------------------------------------------------------- |
-| Scene change           | `impact` or `kick` 1.0; `reverseCymbal` into it                   |
-| Element enters         | `pluck` per element, rising pitch along a stagger                 |
-| Number lands, reveal   | `chime`                                                           |
-| Cursor click, key type | `tick`                                                            |
-| Camera move, wipe      | `whoosh` across the move's length                                 |
-| Build                  | `riser` over 1–2 bars, then half a beat of silence, then `impact` |
+## Mix and master
+
+- **Track**: decoded, level-matched to `trackLufs`, mixed unchanged under the effects.
+- **Reverb**: a Schroeder hall; each effect has its own send.
+- **Master**: 28 Hz high-pass, a 0.25 s fade at the end, loudness to −14 LUFS (ITU-R BS.1770) with a
+  look-ahead limiter at −1.5 dBFS, 16-bit WAV with dither.
 
 ## Outputs
 
-| File                      | Holds                                                             |
-| ------------------------- | ----------------------------------------------------------------- |
-| `public/<slug>/score.wav` | 48 kHz stereo, −14 LUFS                                           |
-| `cues.json`               | `{ bpm, duration, events: [{ type, t, args }] }`, `t` in seconds  |
-| `beats.json`              | `{ bpm, period, offset, beats, detectedBeats, maxResidualMs, … }` |
-| `film.json`               | `audio` and `durationInFrames` updated                            |
+| File                      | Holds                                                                                                       |
+| ------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `public/<slug>/score.wav` | 48 kHz stereo, −14 LUFS                                                                                     |
+| `cues.json`               | `{ bpm, duration, events: [{ type, t, args }] }`, `t` in seconds                                            |
+| `beats.json`              | `{ bpm, period, offset, beats }`; from a track also `detectedBeats`, `maxResidualMs`, `downbeats`, `onsets` |
+| `film.json`               | `audio` and `durationInFrames` updated                                                                      |
 
 ## Beat measurement
 
-`beats` and `score` measure the grid from the audio: an onset-strength curve (low band: the kick under
-150 Hz; full band: everything above 40 Hz), a grid search over tempo and phase within `minBpm`–`maxBpm`,
-each beat snapped to its nearest strong onset within ±30 ms, a least-squares line fitted through them,
-and beats more than 8 ms off the line dropped and the line refitted. `detectedBeats` lists the beats
-that survived; `maxResidualMs` is the worst of them.
+For a track, `score` and `beats` measure the grid from the audio: an onset-strength curve (low band:
+the kick under 150 Hz; full band: everything above 40 Hz), a grid search over tempo and phase within
+`minBpm`–`maxBpm`, each beat snapped to its nearest strong onset within ±30 ms, a least-squares line
+fitted through them, and beats more than 8 ms off the line dropped and the line refitted.
+`downbeats` are the bar phase whose beats hit hardest; `onsets` are full-band transients at least
+80 ms apart. Effects-only films need none of this: their grid is the planned one.
 
 ## Traps
 
-| Symptom                                    | Cause                                             | Fix                                                      |
-| ------------------------------------------ | ------------------------------------------------- | -------------------------------------------------------- |
-| Tempo measured as double or half           | The search range admits the eighth-note grid      | Narrow `minBpm`/`maxBpm` around the real tempo           |
-| Few beats detected in a piano or pad score | No kick in the low band                           | `beatBand: "full"`                                       |
-| Score louder or quieter than −14 after AAC | AAC shifts loudness by a few tenths               | Normal; `verify` allows ±1 LU                            |
-| Piano notes sound hollow or thin           | Notes too high or too short for their aftersound  | Voice in MIDI 48–72; `len` ≥ 1 beat for sustained chords |
-| Film and WAV lengths differ                | `score` not rerun after changing `bars` or `tail` | Rerun `npx motion-kit score`                             |
+| Symptom                                    | Cause                                               | Fix                                                     |
+| ------------------------------------------ | --------------------------------------------------- | ------------------------------------------------------- |
+| A swoosh lands before or after its move    | Timed by its start, or by the beat, not the arrival | `tPeak` at the arrival frame ([sync](#sync-to-picture)) |
+| Tempo measured as double or half           | The search range admits the eighth-note grid        | Narrow `minBpm`/`maxBpm` around the real tempo          |
+| Few beats detected in a track              | No kick in the low band                             | `beatBand: "full"`                                      |
+| Loudness a few tenths off after AAC        | AAC shifts loudness slightly                        | Normal; `verify` allows ±1 LU                           |
+| Film and WAV lengths differ                | `score` not rerun after changing `bars` or `tail`   | Rerun `npx motion-kit score`                            |
+| `kick is not a function` in a film's score | Music instruments are not given to films (R13)      | Use effects; the user brings the music                  |

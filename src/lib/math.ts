@@ -70,6 +70,21 @@ export const spring = (dt: number, freq = 2.2, damping = 0.45) => springStep(dt,
 export const springKD = (dt: number, stiffness = 170, damping = 26, mass = 1) =>
   springStep(dt, Math.sqrt(stiffness / mass), damping / (2 * Math.sqrt(stiffness * mass)));
 
+/**
+ * Springs by role, `[stiffness, damping]` for `springKD(dt, ...SPRINGS.heavy)` and `track`
+ * (make-motion-film skill, techniques.md "Springs by role"). Overshoot and 2 % settle measured.
+ */
+export const SPRINGS = {
+  /** Buttons, toggles, leading edges: 0.8 %, 0.23 s. */
+  snappy: [320, 30],
+  /** Cards, containers, camera: none, 0.44 s. */
+  default: [170, 26],
+  /** Big type, devices, 3D objects, logo lockups: slow, 1.1 %, 0.36 s from a lower stiffness. */
+  heavy: [120, 18],
+  /** Mascots, stickers: visible, 12 %. Never on UI or text being read. */
+  playful: [260, 18],
+} as const;
+
 /** Keyframes `[time, value]` (sorted, seconds) as a sum of one spring per change: continuous through retargets. */
 export function track(t: number, keys: readonly (readonly [number, number])[], stiffness = 170, damping = 26) {
   let v = keys[0][1];

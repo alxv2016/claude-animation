@@ -16,6 +16,6 @@ export { FilterVideo, filterVideoMetadata, type FilterVideoProps } from "./Filte
 
 export { LiquidGlass, DEFAULT_GLASS, type Backdrop, type GlassPanel, type GlassStyle, type LiquidGlassProps } from "./ui/LiquidGlass";
 export { Cursor, type CursorProps } from "./ui/Cursor";
-export { Assemble, type AssembleProps } from "./ui/Assemble";
+export { Assemble, type AssembleProps, type AssemblePiece } from "./ui/Assemble";
 export { MorphBox, type MorphBoxProps, type MorphState } from "./ui/MorphBox";
 export { MotionBlur, type MotionBlurProps } from "./MotionBlur";

@@ -17,8 +17,9 @@ Usage: motion-kit <command> [options]
   update                                        Refresh the vendored kit library (src/motion-kit/)
   brand capture <url> [--no-fonts]              Capture a website's brand → public/brands/<domain>/
   brand guide <domain>                          Video theme + docs/brands/<domain>/STYLE_GUIDE.md
-  render <composition> [--crf n] [--out file] [--props json]
-                                                Full render → out/<composition>.mp4 (H.264, CRF 16, AAC)
+  render <composition> [--crf n] [--out file] [--props json] [--animatic]
+                                                Full render → out/<composition>.mp4 (H.264, CRF 16, AAC);
+                                                --animatic: half size, quick → out/<composition>-animatic.mp4
   still <composition> <frame> [--scale n] [--props json]
                                                 One frame → out/frame-<composition>-<frame>.png
   sheet <composition> [--frames a,b | --every n | --beats file.json [--offset 0.5] | --count n] [--cols 4] [--width 480] [--out file]
@@ -30,7 +31,10 @@ Usage: motion-kit <command> [options]
                                                 Study a reference video → refs/<name>/ (frames, contact.png, analysis.json)
   new-film <slug> [--bpm 120] [--bars 8] [--fps 60] [--formats 16:9,9:16,1:1] [--chapters "A,B,…"] [--title "…"]
                                                 Scaffold src/films/<slug>/ and register it in src/Root.tsx
-  score <film dir | score.mjs>                  Synthesize a film's score → WAV (−14 LUFS), cues.json, beats.json
+  storyboard <film dir> [--cols n] [--width px] [--out file]
+                                                The storyboard to approve, from storyboard.json → out/storyboard-<slug>.png
+  score <film dir | score.mjs>                  Synthesize a film's sound effects (over the user's track, if any)
+                                                → WAV (−14 LUFS), cues.json, beats.json
   beats <audio> [--beats n] [--band low|full] [--bpm 90-180] [--out file]
                                                 Measure the beat grid of any track
   master <audio> [--out file.wav] [--lufs -14]  Loudness-normalise a supplied track
@@ -65,8 +69,15 @@ switch (cmd) {
   case "render": {
     const core = await import("../lib/render-core.mjs");
     const opts = core.options(args);
-    if (!opts._[0]) fail("usage: motion-kit render <composition> [--crf n] [--out file] [--props json]");
-    const out = await core.film(opts._[0], { out: opts.out, crf: opts.crf ? Number(opts.crf) : undefined, inputProps: opts.props ? JSON.parse(opts.props) : {} });
+    if (!opts._[0]) fail("usage: motion-kit render <composition> [--crf n] [--out file] [--props json] [--animatic]");
+    // An animatic: the whole film at half size, for checking timing and sound before the full render.
+    const animatic = opts.animatic === true;
+    const out = await core.film(opts._[0], {
+      out: opts.out ?? (animatic ? `out/${opts._[0]}-animatic.mp4` : undefined),
+      crf: opts.crf ? Number(opts.crf) : animatic ? 23 : undefined,
+      scale: animatic ? 0.5 : 1,
+      inputProps: opts.props ? JSON.parse(opts.props) : {},
+    });
     console.log(out);
     break;
   }
@@ -84,6 +95,11 @@ switch (cmd) {
   case "sheet": {
     const { sheet } = await import("../commands/sheet.mjs");
     await sheet(args);
+    break;
+  }
+  case "storyboard": {
+    const { storyboard } = await import("../commands/storyboard.mjs");
+    await storyboard(args);
     break;
   }
   case "filter": {

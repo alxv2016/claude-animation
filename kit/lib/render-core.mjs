@@ -28,7 +28,7 @@ export async function select(id, inputProps = {}, entry) {
   return { serveUrl: url, composition, inputProps };
 }
 
-export async function film(id, { inputProps = {}, out, crf = MASTER.crf, onProgress, entry } = {}) {
+export async function film(id, { inputProps = {}, out, crf = MASTER.crf, scale = 1, onProgress, entry } = {}) {
   const { serveUrl: url, composition } = await select(id, inputProps, entry);
   const outputLocation = out ?? `out/${id}.mp4`;
   await renderMedia({
@@ -37,6 +37,7 @@ export async function film(id, { inputProps = {}, out, crf = MASTER.crf, onProgr
     inputProps,
     ...MASTER,
     crf,
+    scale,
     concurrency: 3,
     chromiumOptions: CHROMIUM,
     port: PORT,

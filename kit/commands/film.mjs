@@ -44,7 +44,7 @@ export function newFilm(args) {
   register(slug);
   console.log(`${dir}/  Film.tsx score.mjs film.json beats.json chapters.json brief.md`);
   console.log(`registered in src/Root.tsx: ${formats.map((f, i) => (i === 0 ? slug : `${slug}-${f.replace(":", "x")}`)).join(", ")}`);
-  console.log(`next: fill in brief.md, then npx motion-kit score ${dir}`);
+  console.log(`next: fill in brief.md and storyboard.json, npx motion-kit storyboard ${dir}, and get the user's approval (R20)`);
 }
 
 function register(slug) {
@@ -66,24 +66,30 @@ function brief({ title, slug, bpm, bars, fps, formats, names, span, period }) {
   const rows = names.map((n, i) => {
     const b0 = Math.round(i * span);
     const b1 = Math.round((i + 1) * span);
-    return `| ${i + 1} | ${n} | ${b0}–${b1} | ${(b0 * period).toFixed(2)}–${(b1 * period).toFixed(2)} s | | | |`;
+    return `| ${i + 1} | ${n} | ${b0}–${b1} | ${(b0 * period).toFixed(2)}–${(b1 * period).toFixed(2)} s | | | | |`;
   });
   return `# ${title} — brief
 
-The plan on the beat grid: what happens on every beat, agreed before any scene code
-(make-motion-film skill). ${bpm} BPM, ${bars} bars, ${fps} fps, ${formats.join(", ")}.
+The plan on the beat grid: what happens on every beat, approved by the user as a storyboard before
+any scene code (make-motion-film skill, studio rule R20). ${bpm} BPM, ${bars} bars, ${fps} fps,
+${formats.join(", ")}.
 
 ## Brief
 
+- **The film in one line**: (what the viewer sees, and should feel at the end)
 - **Type**: (showreel · story · intro · product film · UI motion · app UI glass)
 - **Audience and goal**:
 - **Style source**: (studio default · captured brand: docs/brands/<domain>/ · reference: docs/references/<name>/)
-- **Inputs**: (URL, screenshots, data, copy, supplied track)
+- **Inputs**: (URL, screenshots, data, copy)
+- **Music**: (the user's track under public/, or "effects only" — the kit never composes music, R13)
 
 ## Beat plan
 
-| # | Chapter | Beats | Time | On screen (every beat) | Technique | Sound |
-| --- | --- | --- | --- | --- | --- | --- |
+Something new on every beat or two (R12); every join a designed transition (R21); every impact a
+picture hit (R22); every effect on a picture event (R13).
+
+| # | Chapter | Beats | Time | On screen (every beat) | Technique | Join into the next | Sound (effect → picture event) |
+| --- | --- | --- | --- | --- | --- | --- | --- |
 ${rows.join("\n")}
 
 ## Copy
