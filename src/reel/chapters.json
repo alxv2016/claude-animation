@@ -1,0 +1,10 @@
+[
+  { "start": 0, "name": "Squash & stretch", "scene": "Bounce" },
+  { "start": 4, "name": "12 principles", "scene": "Rows" },
+  { "start": 8, "name": "Systems", "scene": "GridData" },
+  { "start": 12, "name": "Data", "scene": "GridData" },
+  { "start": 16, "name": "Depth", "scene": "Cube" },
+  { "start": 20, "name": "Easing", "scene": "Lanes" },
+  { "start": 24, "name": "Build", "scene": "Morph" },
+  { "start": 28, "name": "Sign-off", "scene": "Logo" }
+]

@@ -1,0 +1,1615 @@
+{
+  "url": "https://www.anthropic.com",
+  "domain": "anthropic.com",
+  "capturedAt": "2026-10-25T12:37:48.492Z",
+  "capture": {
+    "seconds": 8.6,
+    "browser": "157.0.8080.0 (local-puppeteer-browser)",
+    "playwright": "playwright-core",
+    "desktop": {
+      "width": 1440,
+      "height": 900
+    },
+    "mobile": {
+      "width": 390,
+      "height": 844
+    },
+    "log": [
+      "desktop: dismissed consent button /accept all/i",
+      "stylesheets fetched outside the page: 0 of 0",
+      "mobile: dismissed consent button /^accept$/i"
+    ]
+  },
+  "meta": {
+    "title": "Home \\ Anthropic",
+    "description": "Anthropic is an AI safety and research company that's working to build reliable, interpretable, and steerable AI systems.",
+    "ogImage": "https://www-cdn.anthropic.com/images/4zrzovbb/website/6d4a0d28992ade92d6fa63646fd9c9d318245c6c-2400x1260.jpg",
+    "themeColor": "#141413",
+    "icons": [
+      {
+        "rel": "shortcut icon",
+        "href": "https://www.anthropic.com/favicon.ico",
+        "sizes": null
+      },
+      {
+        "rel": "icon",
+        "href": "https://www.anthropic.com/images/icons/favicon-32x32.png",
+        "sizes": null
+      },
+      {
+        "rel": "apple-touch-icon",
+        "href": "https://www.anthropic.com/images/icons/apple-touch-icon.png",
+        "sizes": null
+      },
+      {
+        "rel": "apple-touch-icon",
+        "href": "https://www.anthropic.com/images/icons/apple-touch-icon.png",
+        "sizes": "180x180"
+      },
+      {
+        "rel": "mask-icon",
+        "href": "https://www.anthropic.com/images/icons/safari-pinned-tab.svg",
+        "sizes": null
+      }
+    ],
+    "headlines": [
+      "AI research and products that put safety at the frontier. AI will have a vast impact on the world. Anthropic is a public",
+      "2026 Public Benefit Report",
+      "Learn moreLearn more"
+    ]
+  },
+  "palette": {
+    "pageBackground": "#faf9f5",
+    "backgroundByArea": [
+      {
+        "value": "#faf9f5",
+        "weight": 3740828
+      },
+      {
+        "value": "#f5f4ed",
+        "weight": 2223687
+      },
+      {
+        "value": "#141413",
+        "weight": 1168822
+      },
+      {
+        "value": "#e8e6dc",
+        "weight": 42552
+      },
+      {
+        "value": "#ffffff",
+        "weight": 1
+      }
+    ],
+    "textByLength": [
+      {
+        "value": "#5e5d59",
+        "weight": 751
+      },
+      {
+        "value": "#141413",
+        "weight": 485
+      },
+      {
+        "value": "#30302e",
+        "weight": 419
+      },
+      {
+        "value": "#87867f",
+        "weight": 311
+      },
+      {
+        "value": "#faf9f5",
+        "weight": 47
+      },
+      {
+        "value": "#3d3d3a",
+        "weight": 46
+      },
+      {
+        "value": "#b0aea5",
+        "weight": 23
+      }
+    ],
+    "neutrals": [
+      {
+        "hex": "#ffffff",
+        "L": 1,
+        "C": 0,
+        "usage": 1,
+        "interactive": 1,
+        "namedBy": [
+          "--color-gray-000",
+          "--color-light",
+          "--color-slate-000"
+        ],
+        "score": 0
+      },
+      {
+        "hex": "#faf9f5",
+        "L": 0.982,
+        "C": 0.005,
+        "usage": 7,
+        "interactive": 2,
+        "namedBy": [
+          "--color-gray-050",
+          "--color-ivory-light",
+          "--color-slate-050",
+          "--theme-background-primary"
+        ],
+        "score": 2
+      },
+      {
+        "hex": "#f5f4ed",
+        "L": 0.966,
+        "C": 0.009,
+        "usage": 18,
+        "interactive": 10,
+        "namedBy": [
+          "--color-gray-100",
+          "--color-slate-100",
+          "--theme-background-secondary",
+          "--theme-button-tertiary-background"
+        ],
+        "score": 5
+      },
+      {
+        "hex": "#e8e6dc",
+        "L": 0.924,
+        "C": 0.014,
+        "usage": 20,
+        "interactive": 10,
+        "namedBy": [
+          "--color-gray-200",
+          "--color-ivory-dark",
+          "--color-slate-200",
+          "--theme-background-tertiary"
+        ],
+        "score": 9
+      },
+      {
+        "hex": "#dedcd1",
+        "L": 0.893,
+        "C": 0.015,
+        "usage": 17,
+        "interactive": 0,
+        "namedBy": [
+          "--color-gray-250",
+          "--color-slate-250",
+          "--theme-border-secondary",
+          "--theme-button-secondary-border"
+        ],
+        "score": 3
+      },
+      {
+        "hex": "#b0aea5",
+        "L": 0.75,
+        "C": 0.013,
+        "usage": 2,
+        "interactive": 2,
+        "namedBy": [
+          "--color-cloud-medium",
+          "--color-gray-400",
+          "--color-slate-400"
+        ],
+        "score": 1
+      },
+      {
+        "hex": "#87867f",
+        "L": 0.619,
+        "C": 0.01,
+        "usage": 11,
+        "interactive": 0,
+        "namedBy": [
+          "--color-cloud-dark",
+          "--color-gray-500",
+          "--color-slate-500",
+          "--theme-foreground-quaternary"
+        ],
+        "score": 1
+      },
+      {
+        "hex": "#5e5d59",
+        "L": 0.478,
+        "C": 0.006,
+        "usage": 21,
+        "interactive": 7,
+        "namedBy": [
+          "--color-gray-600",
+          "--color-slate-600",
+          "--color-slate-light",
+          "--theme-foreground-tertiary"
+        ],
+        "score": 3
+      },
+      {
+        "hex": "#3d3d3a",
+        "L": 0.359,
+        "C": 0.005,
+        "usage": 15,
+        "interactive": 6,
+        "namedBy": [
+          "--color-gray-700",
+          "--color-slate-700",
+          "--color-slate-medium",
+          "--theme-button-tertiary-foreground"
+        ],
+        "score": 2
+      },
+      {
+        "hex": "#30302e",
+        "L": 0.308,
+        "C": 0.004,
+        "usage": 6,
+        "interactive": 3,
+        "namedBy": [
+          "--color-gray-750",
+          "--color-slate-750",
+          "--theme-button-secondary-foreground",
+          "--theme-foreground-secondary"
+        ],
+        "score": 1
+      }
+    ],
+    "accentCandidates": [
+      {
+        "hex": "#d97757",
+        "L": 0.672,
+        "C": 0.131,
+        "usage": 0,
+        "interactive": 0,
+        "namedBy": [
+          "--color-clay",
+          "--color-clay-primary"
+        ],
+        "score": 25
+      },
+      {
+        "hex": "#c6613f",
+        "L": 0.608,
+        "C": 0.138,
+        "usage": 0,
+        "interactive": 0,
+        "namedBy": [
+          "--color-clay-interactive"
+        ],
+        "score": 25
+      }
+    ]
+  },
+  "colorTokens": [
+    {
+      "name": "--color-cactus",
+      "hex": "#bcd1ca",
+      "alpha": 1
+    },
+    {
+      "name": "--color-clay",
+      "hex": "#d97757",
+      "alpha": 1
+    },
+    {
+      "name": "--color-clay-interactive",
+      "hex": "#c6613f",
+      "alpha": 1
+    },
+    {
+      "name": "--color-clay-primary",
+      "hex": "#d97757",
+      "alpha": 1
+    },
+    {
+      "name": "--color-cloud-dark",
+      "hex": "#87867f",
+      "alpha": 1
+    },
+    {
+      "name": "--color-cloud-light",
+      "hex": "#d1cfc5",
+      "alpha": 1
+    },
+    {
+      "name": "--color-cloud-medium",
+      "hex": "#b0aea5",
+      "alpha": 1
+    },
+    {
+      "name": "--color-coral",
+      "hex": "#ebcece",
+      "alpha": 1
+    },
+    {
+      "name": "--color-dark",
+      "hex": "#0f0f0e",
+      "alpha": 1
+    },
+    {
+      "name": "--color-error",
+      "hex": "#bf4d43",
+      "alpha": 1
+    },
+    {
+      "name": "--color-fig",
+      "hex": "#c46686",
+      "alpha": 1
+    },
+    {
+      "name": "--color-focus",
+      "hex": "#2c84db",
+      "alpha": 1
+    },
+    {
+      "name": "--color-gray-000",
+      "hex": "#ffffff",
+      "alpha": 1
+    },
+    {
+      "name": "--color-gray-050",
+      "hex": "#faf9f5",
+      "alpha": 1
+    },
+    {
+      "name": "--color-gray-100",
+      "hex": "#f5f4ed",
+      "alpha": 1
+    },
+    {
+      "name": "--color-gray-1000",
+      "hex": "#000000",
+      "alpha": 1
+    },
+    {
+      "name": "--color-gray-150",
+      "hex": "#f0eee6",
+      "alpha": 1
+    },
+    {
+      "name": "--color-gray-200",
+      "hex": "#e8e6dc",
+      "alpha": 1
+    },
+    {
+      "name": "--color-gray-250",
+      "hex": "#dedcd1",
+      "alpha": 1
+    },
+    {
+      "name": "--color-gray-300",
+      "hex": "#d1cfc5",
+      "alpha": 1
+    },
+    {
+      "name": "--color-gray-350",
+      "hex": "#c2c0b6",
+      "alpha": 1
+    },
+    {
+      "name": "--color-gray-400",
+      "hex": "#b0aea5",
+      "alpha": 1
+    },
+    {
+      "name": "--color-gray-450",
+      "hex": "#9c9a92",
+      "alpha": 1
+    },
+    {
+      "name": "--color-gray-500",
+      "hex": "#87867f",
+      "alpha": 1
+    },
+    {
+      "name": "--color-gray-550",
+      "hex": "#73726c",
+      "alpha": 1
+    },
+    {
+      "name": "--color-gray-600",
+      "hex": "#5e5d59",
+      "alpha": 1
+    },
+    {
+      "name": "--color-gray-650",
+      "hex": "#4d4c48",
+      "alpha": 1
+    },
+    {
+      "name": "--color-gray-700",
+      "hex": "#3d3d3a",
+      "alpha": 1
+    },
+    {
+      "name": "--color-gray-750",
+      "hex": "#30302e",
+      "alpha": 1
+    },
+    {
+      "name": "--color-gray-800",
+      "hex": "#262624",
+      "alpha": 1
+    },
+    {
+      "name": "--color-gray-850",
+      "hex": "#1f1e1d",
+      "alpha": 1
+    },
+    {
+      "name": "--color-gray-900",
+      "hex": "#1a1918",
+      "alpha": 1
+    },
+    {
+      "name": "--color-gray-950",
+      "hex": "#141413",
+      "alpha": 1
+    },
+    {
+      "name": "--color-heather",
+      "hex": "#cbcadb",
+      "alpha": 1
+    },
+    {
+      "name": "--color-iris",
+      "hex": "#dfdbfd",
+      "alpha": 1
+    },
+    {
+      "name": "--color-iris-deep",
+      "hex": "#4a3aa7",
+      "alpha": 1
+    },
+    {
+      "name": "--color-ivory-dark",
+      "hex": "#e8e6dc",
+      "alpha": 1
+    },
+    {
+      "name": "--color-ivory-light",
+      "hex": "#faf9f5",
+      "alpha": 1
+    },
+    {
+      "name": "--color-ivory-medium",
+      "hex": "#f0eee6",
+      "alpha": 1
+    },
+    {
+      "name": "--color-light",
+      "hex": "#ffffff",
+      "alpha": 1
+    },
+    {
+      "name": "--color-oat",
+      "hex": "#e3dacc",
+      "alpha": 1
+    },
+    {
+      "name": "--color-olive",
+      "hex": "#788c5d",
+      "alpha": 1
+    },
+    {
+      "name": "--color-periwinkle",
+      "hex": "#cde2fb",
+      "alpha": 1
+    },
+    {
+      "name": "--color-periwinkle-deep",
+      "hex": "#184f95",
+      "alpha": 1
+    },
+    {
+      "name": "--color-periwinkle-interactive",
+      "hex": "#154c92",
+      "alpha": 1
+    },
+    {
+      "name": "--color-sky",
+      "hex": "#6a9bcc",
+      "alpha": 1
+    },
+    {
+      "name": "--color-sky-interactive",
+      "hex": "#90c3f6",
+      "alpha": 1
+    },
+    {
+      "name": "--color-slate-000",
+      "hex": "#ffffff",
+      "alpha": 1
+    },
+    {
+      "name": "--color-slate-050",
+      "hex": "#faf9f5",
+      "alpha": 1
+    },
+    {
+      "name": "--color-slate-100",
+      "hex": "#f5f4ed",
+      "alpha": 1
+    },
+    {
+      "name": "--color-slate-1000",
+      "hex": "#0f0f0e",
+      "alpha": 1
+    },
+    {
+      "name": "--color-slate-150",
+      "hex": "#f0eee6",
+      "alpha": 1
+    },
+    {
+      "name": "--color-slate-200",
+      "hex": "#e8e6dc",
+      "alpha": 1
+    },
+    {
+      "name": "--color-slate-250",
+      "hex": "#dedcd1",
+      "alpha": 1
+    },
+    {
+      "name": "--color-slate-300",
+      "hex": "#d1cfc5",
+      "alpha": 1
+    },
+    {
+      "name": "--color-slate-350",
+      "hex": "#c2c0b6",
+      "alpha": 1
+    },
+    {
+      "name": "--color-slate-400",
+      "hex": "#b0aea5",
+      "alpha": 1
+    },
+    {
+      "name": "--color-slate-450",
+      "hex": "#9c9a92",
+      "alpha": 1
+    },
+    {
+      "name": "--color-slate-500",
+      "hex": "#87867f",
+      "alpha": 1
+    },
+    {
+      "name": "--color-slate-550",
+      "hex": "#73726c",
+      "alpha": 1
+    },
+    {
+      "name": "--color-slate-600",
+      "hex": "#5e5d59",
+      "alpha": 1
+    },
+    {
+      "name": "--color-slate-650",
+      "hex": "#4d4c48",
+      "alpha": 1
+    },
+    {
+      "name": "--color-slate-700",
+      "hex": "#3d3d3a",
+      "alpha": 1
+    },
+    {
+      "name": "--color-slate-750",
+      "hex": "#30302e",
+      "alpha": 1
+    },
+    {
+      "name": "--color-slate-800",
+      "hex": "#262624",
+      "alpha": 1
+    },
+    {
+      "name": "--color-slate-850",
+      "hex": "#1f1e1d",
+      "alpha": 1
+    },
+    {
+      "name": "--color-slate-900",
+      "hex": "#1a1918",
+      "alpha": 1
+    },
+    {
+      "name": "--color-slate-950",
+      "hex": "#141413",
+      "alpha": 1
+    },
+    {
+      "name": "--color-slate-dark",
+      "hex": "#141413",
+      "alpha": 1
+    },
+    {
+      "name": "--color-slate-light",
+      "hex": "#5e5d59",
+      "alpha": 1
+    },
+    {
+      "name": "--color-slate-medium",
+      "hex": "#3d3d3a",
+      "alpha": 1
+    },
+    {
+      "name": "--color-tint-10",
+      "hex": "#1d1d1d",
+      "alpha": 0.1
+    },
+    {
+      "name": "--color-tint-20",
+      "hex": "#191919",
+      "alpha": 0.2
+    },
+    {
+      "name": "--theme-background-primary",
+      "hex": "#faf9f5",
+      "alpha": 1
+    },
+    {
+      "name": "--theme-background-quaternary",
+      "hex": "#d1cfc5",
+      "alpha": 1
+    },
+    {
+      "name": "--theme-background-secondary",
+      "hex": "#f5f4ed",
+      "alpha": 1
+    },
+    {
+      "name": "--theme-background-tertiary",
+      "hex": "#e8e6dc",
+      "alpha": 1
+    },
+    {
+      "name": "--theme-border-primary",
+      "hex": "#c2c0b6",
+      "alpha": 1
+    },
+    {
+      "name": "--theme-border-secondary",
+      "hex": "#dedcd1",
+      "alpha": 1
+    },
+    {
+      "name": "--theme-border-tertiary",
+      "hex": "#f0eee6",
+      "alpha": 1
+    },
+    {
+      "name": "--theme-button-primary-background",
+      "hex": "#141413",
+      "alpha": 1
+    },
+    {
+      "name": "--theme-button-primary-border",
+      "hex": "#141413",
+      "alpha": 1
+    },
+    {
+      "name": "--theme-button-primary-foreground",
+      "hex": "#faf9f5",
+      "alpha": 1
+    },
+    {
+      "name": "--theme-button-secondary-background",
+      "hex": "#e8e6dc",
+      "alpha": 1
+    },
+    {
+      "name": "--theme-button-secondary-border",
+      "hex": "#dedcd1",
+      "alpha": 1
+    },
+    {
+      "name": "--theme-button-secondary-foreground",
+      "hex": "#30302e",
+      "alpha": 1
+    },
+    {
+      "name": "--theme-button-tertiary-background",
+      "hex": "#f5f4ed",
+      "alpha": 1
+    },
+    {
+      "name": "--theme-button-tertiary-border",
+      "hex": "#e8e6dc",
+      "alpha": 1
+    },
+    {
+      "name": "--theme-button-tertiary-foreground",
+      "hex": "#3d3d3a",
+      "alpha": 1
+    },
+    {
+      "name": "--theme-focus-ring",
+      "hex": "#154c92",
+      "alpha": 1
+    },
+    {
+      "name": "--theme-foreground-body",
+      "hex": "#141413",
+      "alpha": 1
+    },
+    {
+      "name": "--theme-foreground-primary",
+      "hex": "#141413",
+      "alpha": 1
+    },
+    {
+      "name": "--theme-foreground-quaternary",
+      "hex": "#87867f",
+      "alpha": 1
+    },
+    {
+      "name": "--theme-foreground-secondary",
+      "hex": "#30302e",
+      "alpha": 1
+    },
+    {
+      "name": "--theme-foreground-tertiary",
+      "hex": "#5e5d59",
+      "alpha": 1
+    }
+  ],
+  "typography": {
+    "h1": {
+      "sample": "AI research and products that put safety at the frontier. AI will have a vast im",
+      "family": "anthropicSerif",
+      "stack": "anthropicSerif, \"anthropicSerif Fallback\", serif",
+      "size": 40.7843,
+      "weight": "400",
+      "lineHeight": "50.9804px",
+      "letterSpacing": "-0.407843px",
+      "transform": "none",
+      "color": "#141413"
+    },
+    "h2": {
+      "sample": "2026 Public Benefit Report",
+      "family": "anthropicSans",
+      "stack": "anthropicSans, \"anthropicSans Fallback\", sans-serif",
+      "size": 51.902,
+      "weight": "600",
+      "lineHeight": "56.0541px",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "color": "#141413"
+    },
+    "h3": {
+      "sample": "Introducing Claude Haiku 5.5",
+      "family": "anthropicSans",
+      "stack": "anthropicSans, \"anthropicSans Fallback\", sans-serif",
+      "size": 21.3725,
+      "weight": "700",
+      "lineHeight": "26.7157px",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "color": "#141413"
+    },
+    "body": {
+      "sample": "Anthropic is a Public Benefit Corporation (PBC), a designation that requires us ",
+      "family": "anthropicSans",
+      "stack": "anthropicSans, \"anthropicSans Fallback\", sans-serif",
+      "size": 16.6863,
+      "weight": "400",
+      "lineHeight": "25.53px",
+      "letterSpacing": "normal",
+      "transform": "none",
+      "color": "#5e5d59"
+    },
+    "small": null,
+    "button": {
+      "sample": "Research",
+      "family": "anthropicSans",
+      "stack": "anthropicSans, \"anthropicSans Fallback\", sans-serif",
+      "size": 13,
+      "weight": "400",
+      "lineHeight": "20.02px",
+      "letterSpacing": "0.13px",
+      "transform": "none",
+      "color": "#3d3d3a"
+    },
+    "link": {
+      "sample": "Skip to main content",
+      "family": "anthropicSans",
+      "stack": "anthropicSans, \"anthropicSans Fallback\", sans-serif",
+      "size": 13,
+      "weight": "400",
+      "lineHeight": "20.02px",
+      "letterSpacing": "0.13px",
+      "transform": "none",
+      "color": "#faf9f5"
+    },
+    "nav": {
+      "sample": "News",
+      "family": "anthropicSans",
+      "stack": "anthropicSans, \"anthropicSans Fallback\", sans-serif",
+      "size": 13,
+      "weight": "400",
+      "lineHeight": "20.02px",
+      "letterSpacing": "0.13px",
+      "transform": "none",
+      "color": "#3d3d3a"
+    },
+    "code": null
+  },
+  "fonts": {
+    "byTextLength": [
+      {
+        "value": "anthropicSans",
+        "weight": 1939
+      },
+      {
+        "value": "anthropicSerif",
+        "weight": 143
+      }
+    ],
+    "loaded": [
+      "anthropicSans|normal|normal",
+      "anthropicSans Fallback|normal|normal",
+      "anthropicSerif|normal|normal",
+      "anthropicSerif Fallback|normal|normal"
+    ],
+    "faces": [
+      {
+        "family": "anthropicSans",
+        "weight": "400",
+        "style": "normal",
+        "urls": [
+          "https://www.anthropic.com/_next/static/media/AnthropicSans_Roman_Web-s.p.1e3n6bt4oqimz.woff2"
+        ]
+      },
+      {
+        "family": "anthropicSans",
+        "weight": "400",
+        "style": "italic",
+        "urls": [
+          "https://www.anthropic.com/_next/static/media/AnthropicSans_Italic_Web-s.p.212cqpul8-axk.woff2"
+        ]
+      },
+      {
+        "family": "anthropicSans Fallback",
+        "weight": "400",
+        "style": "normal",
+        "urls": []
+      },
+      {
+        "family": "anthropicSerif",
+        "weight": "400",
+        "style": "normal",
+        "urls": [
+          "https://www.anthropic.com/_next/static/media/AnthropicSerif_Roman_Web-s.p.0twp0vwi-lncj.woff2"
+        ]
+      },
+      {
+        "family": "anthropicSerif",
+        "weight": "400",
+        "style": "italic",
+        "urls": [
+          "https://www.anthropic.com/_next/static/media/AnthropicSerif_Italic_Web-s.p.1fjksu1uimpf3.woff2"
+        ]
+      },
+      {
+        "family": "anthropicSerif Fallback",
+        "weight": "400",
+        "style": "normal",
+        "urls": []
+      },
+      {
+        "family": "anthropicMono",
+        "weight": "400",
+        "style": "normal",
+        "urls": [
+          "https://www.anthropic.com/_next/static/media/AnthropicMono_Roman_Web-s.p.16xhthj2n-pap.woff2"
+        ]
+      },
+      {
+        "family": "anthropicMono",
+        "weight": "400",
+        "style": "italic",
+        "urls": [
+          "https://www.anthropic.com/_next/static/media/AnthropicMono_Italic_Web-s.p.0x1wr-4z1xgw3.woff2"
+        ]
+      },
+      {
+        "family": "anthropicMono Fallback",
+        "weight": "400",
+        "style": "normal",
+        "urls": []
+      },
+      {
+        "family": "jetBrainsMono",
+        "weight": "400",
+        "style": "normal",
+        "urls": [
+          "https://www.anthropic.com/_next/static/media/JetBrainsMono_VF-s.p.3-7d89st7id7n.ttf"
+        ]
+      },
+      {
+        "family": "jetBrainsMono Fallback",
+        "weight": "400",
+        "style": "normal",
+        "urls": []
+      },
+      {
+        "family": "Lato",
+        "weight": "400",
+        "style": "normal",
+        "urls": [
+          "https://www.anthropic.com/_next/static/media/Lato-Regular.3-jmm_z_te0oj.ttf"
+        ]
+      },
+      {
+        "family": "Lato",
+        "weight": "700",
+        "style": "normal",
+        "urls": [
+          "https://www.anthropic.com/_next/static/media/Lato-Bold.2vm10rcxoroto.ttf"
+        ]
+      }
+    ],
+    "files": [
+      {
+        "file": "fonts/JetBrainsMono_VF-s.p.3-7d89st7id7n.ttf",
+        "url": "https://www.anthropic.com/_next/static/media/JetBrainsMono_VF-s.p.3-7d89st7id7n.ttf",
+        "family": "jetBrainsMono",
+        "weight": "400",
+        "style": "normal"
+      },
+      {
+        "file": "fonts/AnthropicMono_Italic_Web-s.p.0x1wr-4z1xgw3.woff2",
+        "url": "https://www.anthropic.com/_next/static/media/AnthropicMono_Italic_Web-s.p.0x1wr-4z1xgw3.woff2",
+        "family": "anthropicMono",
+        "weight": "400",
+        "style": "italic"
+      },
+      {
+        "file": "fonts/AnthropicMono_Roman_Web-s.p.16xhthj2n-pap.woff2",
+        "url": "https://www.anthropic.com/_next/static/media/AnthropicMono_Roman_Web-s.p.16xhthj2n-pap.woff2",
+        "family": "anthropicMono",
+        "weight": "400",
+        "style": "normal"
+      },
+      {
+        "file": "fonts/AnthropicSans_Roman_Web-s.p.1e3n6bt4oqimz.woff2",
+        "url": "https://www.anthropic.com/_next/static/media/AnthropicSans_Roman_Web-s.p.1e3n6bt4oqimz.woff2",
+        "family": "anthropicSans",
+        "weight": "400",
+        "style": "normal"
+      },
+      {
+        "file": "fonts/AnthropicSans_Italic_Web-s.p.212cqpul8-axk.woff2",
+        "url": "https://www.anthropic.com/_next/static/media/AnthropicSans_Italic_Web-s.p.212cqpul8-axk.woff2",
+        "family": "anthropicSans",
+        "weight": "400",
+        "style": "italic"
+      },
+      {
+        "file": "fonts/AnthropicSerif_Italic_Web-s.p.1fjksu1uimpf3.woff2",
+        "url": "https://www.anthropic.com/_next/static/media/AnthropicSerif_Italic_Web-s.p.1fjksu1uimpf3.woff2",
+        "family": "anthropicSerif",
+        "weight": "400",
+        "style": "italic"
+      },
+      {
+        "file": "fonts/AnthropicSerif_Roman_Web-s.p.0twp0vwi-lncj.woff2",
+        "url": "https://www.anthropic.com/_next/static/media/AnthropicSerif_Roman_Web-s.p.0twp0vwi-lncj.woff2",
+        "family": "anthropicSerif",
+        "weight": "400",
+        "style": "normal"
+      }
+    ],
+    "licence": "unknown — check before publishing"
+  },
+  "motion": {
+    "easingTokens": [
+      {
+        "name": "--ease-in-out-expo",
+        "value": "cubic-bezier(1, 0, 0, 1)"
+      },
+      {
+        "name": "--ease-in-out-quart",
+        "value": "cubic-bezier(.77, 0, .175, 1)"
+      },
+      {
+        "name": "--ease-in-quart",
+        "value": "cubic-bezier(.895, .03, .685, .22)"
+      },
+      {
+        "name": "--ease-out-quart",
+        "value": "cubic-bezier(.165, .84, .44, 1)"
+      }
+    ],
+    "durationTokens": [],
+    "usedDurations": [
+      {
+        "value": "0.2s",
+        "weight": 81
+      },
+      {
+        "value": "0.15s",
+        "weight": 21
+      },
+      {
+        "value": "0.25s",
+        "weight": 15
+      },
+      {
+        "value": "0.1s",
+        "weight": 11
+      },
+      {
+        "value": "0.3s",
+        "weight": 5
+      },
+      {
+        "value": "0.633s",
+        "weight": 1
+      }
+    ],
+    "usedEasings": [
+      {
+        "value": "ease-in-out",
+        "weight": 52
+      },
+      {
+        "value": "ease-out",
+        "weight": 41
+      },
+      {
+        "value": "ease",
+        "weight": 38
+      },
+      {
+        "value": "cubic-bezier(0.25, 1, 0.5, 1)",
+        "weight": 2
+      },
+      {
+        "value": "cubic-bezier(0.2, 0.8, 0.2, 1)",
+        "weight": 1
+      }
+    ],
+    "keyframes": [
+      "Body-module-scss-module__PA4F1q__landing",
+      "HeaderLayout-module-scss-module__UTJ3Tq__hero-nav-return",
+      "MooHero-module-scss-module__WHJwZW__hero-words-return",
+      "MooHero-module-scss-module__WHJwZW__scrollcue",
+      "PacingHero-module-scss-module__dbN6Cq__fade-in",
+      "PacingHero-module-scss-module__dbN6Cq__word-rise",
+      "PacingHero-module-scss-module__dbN6Cq__unblur",
+      "ConstellationIcon-module-scss-module__xjGFCq__rearrange",
+      "ConstellationIcon-module-scss-module__xjGFCq__connect",
+      "ImageDrift-module-scss-module__OI3WYG__drift-x",
+      "ImageDrift-module-scss-module__OI3WYG__drift-y",
+      "ImageDrift-module-scss-module__OI3WYG__drift-zoom",
+      "ImageDrift-module-scss-module__OI3WYG__drift-turn",
+      "MobyHero-module-scss-module__rdpyvG__scrollcue",
+      "ModelComparison-module-scss-module__mnfOdW__fade-in",
+      "ModelComparison-module-scss-module__mnfOdW__reveal",
+      "ModelComparison-module-scss-module__mnfOdW__reveal-marker",
+      "WillyHero-module-scss-module__myou2q__willy-rise",
+      "WillyHero-module-scss-module__myou2q__willy-rise-far",
+      "WillyHero-module-scss-module__myou2q__willy-words-return",
+      "DeepDive-module-scss-module__QaiuSa__bd-tip-in"
+    ]
+  },
+  "shape": {
+    "radius": [
+      {
+        "value": "999999px",
+        "weight": 7
+      },
+      {
+        "value": "9999px",
+        "weight": 7
+      },
+      {
+        "value": "10px",
+        "weight": 5
+      },
+      {
+        "value": "4px",
+        "weight": 4
+      },
+      {
+        "value": "8px",
+        "weight": 3
+      },
+      {
+        "value": "16px",
+        "weight": 3
+      }
+    ],
+    "shadow": [
+      {
+        "value": "rgb(250, 249, 245) 0px 0px 0px 2px",
+        "weight": 1
+      }
+    ]
+  },
+  "components": [
+    {
+      "kind": "logo",
+      "file": "components/logo-1.png",
+      "box": {
+        "width": 170,
+        "height": 24
+      },
+      "style": {
+        "background": "rgba(0, 0, 0, 0)",
+        "color": "rgb(20, 20, 19)",
+        "radius": "0px",
+        "padding": "0px",
+        "border": "0px solid rgb(20, 20, 19)",
+        "shadow": "none",
+        "font": "400 16.6863px anthropicSans",
+        "text": ""
+      }
+    },
+    {
+      "kind": "nav",
+      "file": "components/nav-1.png",
+      "box": {
+        "width": 1440,
+        "height": 84
+      },
+      "style": {
+        "background": "rgb(250, 249, 245)",
+        "color": "rgb(20, 20, 19)",
+        "radius": "0px",
+        "padding": "0px",
+        "border": "0px solid rgb(20, 20, 19)",
+        "shadow": "none",
+        "font": "400 16.6863px anthropicSans",
+        "text": "NewsResearchPolicyCommitmentsCompanyTry Claude"
+      }
+    },
+    {
+      "kind": "button",
+      "file": "components/button-1.png",
+      "box": {
+        "width": 69,
+        "height": 28
+      },
+      "style": {
+        "background": "rgb(245, 244, 237)",
+        "color": "rgb(61, 61, 58)",
+        "radius": "999999px",
+        "padding": "8px 16px",
+        "border": "1px solid rgb(232, 230, 220)",
+        "shadow": "none",
+        "font": "400 13px anthropicSans",
+        "text": "News"
+      }
+    },
+    {
+      "kind": "button",
+      "file": "components/button-2.png",
+      "box": {
+        "width": 109,
+        "height": 28
+      },
+      "style": {
+        "background": "rgb(245, 244, 237)",
+        "color": "rgb(61, 61, 58)",
+        "radius": "999999px",
+        "padding": "8px 12px 8px 16px",
+        "border": "1px solid rgb(232, 230, 220)",
+        "shadow": "none",
+        "font": "400 13px anthropicSans",
+        "text": "Research"
+      }
+    },
+    {
+      "kind": "button",
+      "file": "components/button-3.png",
+      "box": {
+        "width": 87,
+        "height": 28
+      },
+      "style": {
+        "background": "rgb(245, 244, 237)",
+        "color": "rgb(61, 61, 58)",
+        "radius": "999999px",
+        "padding": "8px 12px 8px 16px",
+        "border": "1px solid rgb(232, 230, 220)",
+        "shadow": "none",
+        "font": "400 13px anthropicSans",
+        "text": "Policy"
+      }
+    },
+    {
+      "kind": "button",
+      "file": "components/button-4.png",
+      "box": {
+        "width": 139,
+        "height": 28
+      },
+      "style": {
+        "background": "rgb(245, 244, 237)",
+        "color": "rgb(61, 61, 58)",
+        "radius": "999999px",
+        "padding": "8px 12px 8px 16px",
+        "border": "1px solid rgb(232, 230, 220)",
+        "shadow": "none",
+        "font": "400 13px anthropicSans",
+        "text": "Commitments"
+      }
+    },
+    {
+      "kind": "card",
+      "file": "components/card-1.png",
+      "box": {
+        "width": 416,
+        "height": 445
+      },
+      "style": {
+        "background": "rgb(245, 244, 237)",
+        "color": "rgb(20, 20, 19)",
+        "radius": "16px",
+        "padding": "32px",
+        "border": "0px solid rgb(20, 20, 19)",
+        "shadow": "none",
+        "font": "400 16.6863px anthropicSans",
+        "text": "AnnouncementsOct 7, 2026Introducing Claude Haiku 5.5Claude H"
+      }
+    },
+    {
+      "kind": "card",
+      "file": "components/card-2.png",
+      "box": {
+        "width": 416,
+        "height": 445
+      },
+      "style": {
+        "background": "rgb(245, 244, 237)",
+        "color": "rgb(20, 20, 19)",
+        "radius": "16px",
+        "padding": "32px",
+        "border": "0px solid rgb(20, 20, 19)",
+        "shadow": "none",
+        "font": "400 16.6863px anthropicSans",
+        "text": "AnnouncementsSep 28, 2026Introducing Claude Sonnet 5.5Claude"
+      }
+    },
+    {
+      "kind": "card",
+      "file": "components/card-3.png",
+      "box": {
+        "width": 416,
+        "height": 445
+      },
+      "style": {
+        "background": "rgb(245, 244, 237)",
+        "color": "rgb(20, 20, 19)",
+        "radius": "16px",
+        "padding": "32px",
+        "border": "0px solid rgb(20, 20, 19)",
+        "shadow": "none",
+        "font": "400 16.6863px anthropicSans",
+        "text": "AnnouncementsSep 22, 2026Introducing Claude Opus 5.5Claude O"
+      }
+    },
+    {
+      "kind": "footer",
+      "file": "components/footer-1.png",
+      "box": {
+        "width": 1440,
+        "height": 808
+      },
+      "style": {
+        "background": "rgb(20, 20, 19)",
+        "color": "rgb(250, 249, 245)",
+        "radius": "0px",
+        "padding": "0px",
+        "border": "0px solid rgb(250, 249, 245)",
+        "shadow": "none",
+        "font": "400 16.6863px anthropicSans",
+        "text": "NewsResearchPolicyCommitmentsCompanyTry ClaudeResearchPolicy"
+      }
+    }
+  ],
+  "logo": {
+    "svg": "logo.svg"
+  },
+  "images": [
+    {
+      "role": "shortcut icon",
+      "file": "images/favicon.ico",
+      "sizes": null
+    },
+    {
+      "role": "icon",
+      "file": "images/favicon-32x32.png",
+      "sizes": null
+    },
+    {
+      "role": "apple-touch-icon",
+      "file": "images/apple-touch-icon.png",
+      "sizes": null
+    },
+    {
+      "role": "apple-touch-icon",
+      "file": "images/apple-touch-icon.png",
+      "sizes": "180x180"
+    },
+    {
+      "role": "mask-icon",
+      "file": "images/safari-pinned-tab.svg",
+      "sizes": null
+    },
+    {
+      "role": "og:image",
+      "file": "images/6d4a0d28992ade92d6fa63646fd9c9d318245c6c-2400x1260.jpg"
+    }
+  ],
+  "screenshots": {
+    "desktop": "screenshots/desktop-1440x900.png",
+    "fullPage": "screenshots/full-page.png",
+    "mobile": "screenshots/mobile-390x844.png"
+  },
+  "cssVars": {
+    "--anthropic-sans": "\"anthropicSans\", \"anthropicSans Fallback\"",
+    "--anthropic-serif": "\"anthropicSerif\", \"anthropicSerif Fallback\"",
+    "--body-1": "20px",
+    "--body-2": "17px",
+    "--body-3": "15px",
+    "--body-4": "12px",
+    "--body-large-1": "25px",
+    "--body-large-2": "23px",
+    "--border-lg": "2px",
+    "--border-md": "1.5px",
+    "--border-sm": "1px",
+    "--border-xs": ".5px",
+    "--br-12": "12px",
+    "--br-16": "16px",
+    "--br-2": "2px",
+    "--br-24": "24px",
+    "--br-32": "32px",
+    "--br-4": "4px",
+    "--br-6": "6px",
+    "--br-8": "8px",
+    "--breakpoint-desktop": "1024px",
+    "--breakpoint-mobile": "567px",
+    "--breakpoint-tablet": "992px",
+    "--caption": "14px",
+    "--card-padding-lg": "64px",
+    "--card-padding-md": "32px",
+    "--card-padding-sm": "24px",
+    "--card-padding-xs": "16px",
+    "--color-cactus": "#bcd1ca",
+    "--color-clay": "#d97757",
+    "--color-clay-interactive": "#c6613f",
+    "--color-clay-primary": "#d97757",
+    "--color-cloud-dark": "#87867f",
+    "--color-cloud-light": "#d1cfc5",
+    "--color-cloud-medium": "#b0aea5",
+    "--color-coral": "#ebcece",
+    "--color-dark": "#0f0f0e",
+    "--color-error": "#bf4d43",
+    "--color-fig": "#c46686",
+    "--color-focus": "#2c84db",
+    "--color-gray-000": "#fff",
+    "--color-gray-050": "#faf9f5",
+    "--color-gray-100": "#f5f4ed",
+    "--color-gray-1000": "#000",
+    "--color-gray-150": "#f0eee6",
+    "--color-gray-200": "#e8e6dc",
+    "--color-gray-250": "#dedcd1",
+    "--color-gray-300": "#d1cfc5",
+    "--color-gray-350": "#c2c0b6",
+    "--color-gray-400": "#b0aea5",
+    "--color-gray-450": "#9c9a92",
+    "--color-gray-500": "#87867f",
+    "--color-gray-550": "#73726c",
+    "--color-gray-600": "#5e5d59",
+    "--color-gray-650": "#4d4c48",
+    "--color-gray-700": "#3d3d3a",
+    "--color-gray-750": "#30302e",
+    "--color-gray-800": "#262624",
+    "--color-gray-850": "#1f1e1d",
+    "--color-gray-900": "#1a1918",
+    "--color-gray-950": "#141413",
+    "--color-heather": "#cbcadb",
+    "--color-iris": "#dfdbfd",
+    "--color-iris-deep": "#4a3aa7",
+    "--color-ivory-dark": "#e8e6dc",
+    "--color-ivory-light": "#faf9f5",
+    "--color-ivory-medium": "#f0eee6",
+    "--color-light": "#fff",
+    "--color-oat": "#e3dacc",
+    "--color-olive": "#788c5d",
+    "--color-periwinkle": "#cde2fb",
+    "--color-periwinkle-deep": "#184f95",
+    "--color-periwinkle-interactive": "#154c92",
+    "--color-sky": "#6a9bcc",
+    "--color-sky-interactive": "#90c3f6",
+    "--color-slate-000": "#fff",
+    "--color-slate-050": "#faf9f5",
+    "--color-slate-100": "#f5f4ed",
+    "--color-slate-1000": "#0f0f0e",
+    "--color-slate-150": "#f0eee6",
+    "--color-slate-200": "#e8e6dc",
+    "--color-slate-250": "#dedcd1",
+    "--color-slate-300": "#d1cfc5",
+    "--color-slate-350": "#c2c0b6",
+    "--color-slate-400": "#b0aea5",
+    "--color-slate-450": "#9c9a92",
+    "--color-slate-500": "#87867f",
+    "--color-slate-550": "#73726c",
+    "--color-slate-600": "#5e5d59",
+    "--color-slate-650": "#4d4c48",
+    "--color-slate-700": "#3d3d3a",
+    "--color-slate-750": "#30302e",
+    "--color-slate-800": "#262624",
+    "--color-slate-850": "#1f1e1d",
+    "--color-slate-900": "#1a1918",
+    "--color-slate-950": "#141413",
+    "--color-slate-dark": "#141413",
+    "--color-slate-light": "#5e5d59",
+    "--color-slate-medium": "#3d3d3a",
+    "--color-tint-10": "#1919191a",
+    "--color-tint-20": "#19191933",
+    "--column-count": "2",
+    "--container-max-width": "1400px",
+    "--display-1": "72px",
+    "--display-2": "64px",
+    "--ease-in-out-expo": "cubic-bezier(1, 0, 0, 1)",
+    "--ease-in-out-quart": "cubic-bezier(.77, 0, .175, 1)",
+    "--ease-in-quart": "cubic-bezier(.895, .03, .685, .22)",
+    "--ease-out-quart": "cubic-bezier(.165, .84, .44, 1)",
+    "--font-opsz-display": "48",
+    "--font-opsz-text": "16",
+    "--font-weight-bold": "700",
+    "--font-weight-medium": "500",
+    "--font-weight-regular": "400",
+    "--font-weight-semibold": "600",
+    "--gap-lg": "48px",
+    "--gap-md": "32px",
+    "--gap-sm": "24px",
+    "--gap-xl": "64px",
+    "--gap-xs": "16px",
+    "--gap-xxs": "8px",
+    "--grid-col": "calc(( min(100vw, 1920px) - 2 * 80px - (12 - 1) * 16px ) / 12)",
+    "--grid-columns": "12",
+    "--grid-edge": "calc((100vw - min(100vw, 1920px)) / 2 + 80px)",
+    "--grid-gutter": "16px",
+    "--grid-margin": "80px",
+    "--grid-max-width": "1920px",
+    "--grid-reading-max-width": "720px",
+    "--gutter": "32px",
+    "--gutter-x": "32px",
+    "--gutter-y": "32px",
+    "--header-nav-height": "84px",
+    "--headline-1": "52px",
+    "--headline-2": "44px",
+    "--headline-3": "36px",
+    "--headline-4": "32px",
+    "--headline-5": "25px",
+    "--headline-6": "19px",
+    "--leading-100": "100%",
+    "--leading-120": "120%",
+    "--leading-125": "125%",
+    "--leading-140": "140%",
+    "--leading-155": "155%",
+    "--lightningcss-dark": "",
+    "--lightningcss-light": "",
+    "--line-height-100": "100%",
+    "--line-height-104": "104%",
+    "--line-height-108": "108%",
+    "--line-height-112": "112%",
+    "--line-height-114": "114%",
+    "--line-height-116": "116%",
+    "--line-height-120": "120%",
+    "--line-height-125": "125%",
+    "--line-height-130": "130%",
+    "--line-height-135": "135%",
+    "--line-height-145": "145%",
+    "--line-height-150": "150%",
+    "--line-height-153": "153%",
+    "--line-height-154": "154%",
+    "--media-max-height": "540px",
+    "--media-max-width": "880px",
+    "--micro": "10px",
+    "--mono": "15px",
+    "--page-margins": "64px",
+    "--page-top-spacer": "80px",
+    "--radius-lg": "24px",
+    "--radius-max": "1000px",
+    "--radius-md": "16px",
+    "--radius-sm": "12px",
+    "--radius-xs": "4px",
+    "--responsive-scale-max-breakpoint": "1920px",
+    "--responsive-scale-min-breakpoint": "390px",
+    "--section-spacer-0": "0",
+    "--section-spacer-lg": "96px",
+    "--section-spacer-sm": "48px",
+    "--sp-12": "12px",
+    "--sp-128": "128px",
+    "--sp-16": "16px",
+    "--sp-2": "2px",
+    "--sp-20": "20px",
+    "--sp-200": "200px",
+    "--sp-24": "24px",
+    "--sp-32": "32px",
+    "--sp-4": "4px",
+    "--sp-40": "40px",
+    "--sp-48": "48px",
+    "--sp-56": "56px",
+    "--sp-6": "6px",
+    "--sp-64": "64px",
+    "--sp-8": "8px",
+    "--sp-80": "80px",
+    "--sp-96": "96px",
+    "--spacer-01": "4px",
+    "--spacer-02": "8px",
+    "--spacer-03": "12px",
+    "--spacer-04": "16px",
+    "--spacer-05": "24px",
+    "--spacer-06": "32px",
+    "--spacer-07": "40px",
+    "--spacer-08": "48px",
+    "--spacer-09": "64px",
+    "--spacer-10": "80px",
+    "--spacer-11": "96px",
+    "--spacer-12": "128px",
+    "--spacer-huge": "192px",
+    "--spacer-large": "96px",
+    "--spacer-medium": "48px",
+    "--spacer-micro": "12px",
+    "--spacer-small": "24px",
+    "--spacing-12": "12px",
+    "--spacing-128": "128px",
+    "--spacing-16": "16px",
+    "--spacing-2": "2px",
+    "--spacing-200": "200px",
+    "--spacing-24": "24px",
+    "--spacing-32": "32px",
+    "--spacing-4": "4px",
+    "--spacing-48": "48px",
+    "--spacing-64": "64px",
+    "--spacing-8": "8px",
+    "--spacing-80": "80px",
+    "--spacing-96": "96px",
+    "--spacing-radius-full": "999999px",
+    "--text-column-max-width": "640px",
+    "--theme-background-primary": "#faf9f5",
+    "--theme-background-quaternary": "#d1cfc5",
+    "--theme-background-secondary": "#f5f4ed",
+    "--theme-background-tertiary": "#e8e6dc",
+    "--theme-border-primary": "#c2c0b6",
+    "--theme-border-secondary": "#dedcd1",
+    "--theme-border-tertiary": "#f0eee6",
+    "--theme-button-primary-background": "#141413",
+    "--theme-button-primary-border": "#141413",
+    "--theme-button-primary-foreground": "#faf9f5",
+    "--theme-button-secondary-background": "#e8e6dc",
+    "--theme-button-secondary-border": "#dedcd1",
+    "--theme-button-secondary-foreground": "#30302e",
+    "--theme-button-tertiary-background": "#f5f4ed",
+    "--theme-button-tertiary-border": "#e8e6dc",
+    "--theme-button-tertiary-foreground": "#3d3d3a",
+    "--theme-focus-ring": "#154c92",
+    "--theme-foreground-body": "#141413",
+    "--theme-foreground-primary": "#141413",
+    "--theme-foreground-quaternary": "#87867f",
+    "--theme-foreground-secondary": "#30302e",
+    "--theme-foreground-tertiary": "#5e5d59",
+    "--weight-display-bold": "700",
+    "--weight-display-medium": "500",
+    "--weight-display-regular": "400",
+    "--weight-display-semibold": "600",
+    "--weight-mono-regular": "400",
+    "--weight-text-bold": "700",
+    "--weight-text-medium": "500",
+    "--weight-text-regular": "400",
+    "--weight-text-semibold": "600",
+    "--z-index-nav": "100",
+    "--z-index-nav-menu": "101",
+    "--z-index-search": "calc(100 - 1)",
+    "--z-tooltip": "200"
+  }
+}

@@ -1,0 +1,274 @@
+{
+  "domain": "anthropic.com",
+  "generatedFrom": [
+    "brand.json",
+    "overrides.json"
+  ],
+  "capturedAt": "2026-10-25T12:37:48.492Z",
+  "colors": {
+    "background": "#faf9f5",
+    "text": "#141413",
+    "accent": "#d97757",
+    "neutrals": [
+      "#ffffff",
+      "#faf9f5",
+      "#f5f4ed",
+      "#e8e6dc",
+      "#dedcd1",
+      "#b0aea5",
+      "#87867f",
+      "#5e5d59",
+      "#3d3d3a",
+      "#30302e"
+    ],
+    "tokens": {
+      "--color-cactus": "#bcd1ca",
+      "--color-clay": "#d97757",
+      "--color-clay-interactive": "#c6613f",
+      "--color-clay-primary": "#d97757",
+      "--color-cloud-dark": "#87867f",
+      "--color-cloud-light": "#d1cfc5",
+      "--color-cloud-medium": "#b0aea5",
+      "--color-coral": "#ebcece",
+      "--color-dark": "#0f0f0e",
+      "--color-error": "#bf4d43",
+      "--color-fig": "#c46686",
+      "--color-focus": "#2c84db",
+      "--color-gray-000": "#ffffff",
+      "--color-gray-050": "#faf9f5",
+      "--color-gray-100": "#f5f4ed",
+      "--color-gray-1000": "#000000",
+      "--color-gray-150": "#f0eee6",
+      "--color-gray-200": "#e8e6dc",
+      "--color-gray-250": "#dedcd1",
+      "--color-gray-300": "#d1cfc5",
+      "--color-gray-350": "#c2c0b6",
+      "--color-gray-400": "#b0aea5",
+      "--color-gray-450": "#9c9a92",
+      "--color-gray-500": "#87867f",
+      "--color-gray-550": "#73726c",
+      "--color-gray-600": "#5e5d59",
+      "--color-gray-650": "#4d4c48",
+      "--color-gray-700": "#3d3d3a",
+      "--color-gray-750": "#30302e",
+      "--color-gray-800": "#262624",
+      "--color-gray-850": "#1f1e1d",
+      "--color-gray-900": "#1a1918",
+      "--color-gray-950": "#141413",
+      "--color-heather": "#cbcadb",
+      "--color-iris": "#dfdbfd",
+      "--color-iris-deep": "#4a3aa7",
+      "--color-ivory-dark": "#e8e6dc",
+      "--color-ivory-light": "#faf9f5",
+      "--color-ivory-medium": "#f0eee6",
+      "--color-light": "#ffffff",
+      "--color-oat": "#e3dacc",
+      "--color-olive": "#788c5d",
+      "--color-periwinkle": "#cde2fb",
+      "--color-periwinkle-deep": "#184f95",
+      "--color-periwinkle-interactive": "#154c92",
+      "--color-sky": "#6a9bcc",
+      "--color-sky-interactive": "#90c3f6",
+      "--color-slate-000": "#ffffff",
+      "--color-slate-050": "#faf9f5",
+      "--color-slate-100": "#f5f4ed",
+      "--color-slate-1000": "#0f0f0e",
+      "--color-slate-150": "#f0eee6",
+      "--color-slate-200": "#e8e6dc",
+      "--color-slate-250": "#dedcd1",
+      "--color-slate-300": "#d1cfc5",
+      "--color-slate-350": "#c2c0b6",
+      "--color-slate-400": "#b0aea5",
+      "--color-slate-450": "#9c9a92",
+      "--color-slate-500": "#87867f",
+      "--color-slate-550": "#73726c",
+      "--color-slate-600": "#5e5d59",
+      "--color-slate-650": "#4d4c48",
+      "--color-slate-700": "#3d3d3a",
+      "--color-slate-750": "#30302e",
+      "--color-slate-800": "#262624",
+      "--color-slate-850": "#1f1e1d",
+      "--color-slate-900": "#1a1918",
+      "--color-slate-950": "#141413",
+      "--color-slate-dark": "#141413",
+      "--color-slate-light": "#5e5d59",
+      "--color-slate-medium": "#3d3d3a",
+      "--theme-background-primary": "#faf9f5",
+      "--theme-background-quaternary": "#d1cfc5",
+      "--theme-background-secondary": "#f5f4ed",
+      "--theme-background-tertiary": "#e8e6dc",
+      "--theme-border-primary": "#c2c0b6",
+      "--theme-border-secondary": "#dedcd1",
+      "--theme-border-tertiary": "#f0eee6",
+      "--theme-button-primary-background": "#141413",
+      "--theme-button-primary-border": "#141413",
+      "--theme-button-primary-foreground": "#faf9f5",
+      "--theme-button-secondary-background": "#e8e6dc",
+      "--theme-button-secondary-border": "#dedcd1",
+      "--theme-button-secondary-foreground": "#30302e",
+      "--theme-button-tertiary-background": "#f5f4ed",
+      "--theme-button-tertiary-border": "#e8e6dc",
+      "--theme-button-tertiary-foreground": "#3d3d3a",
+      "--theme-focus-ring": "#154c92",
+      "--theme-foreground-body": "#141413",
+      "--theme-foreground-primary": "#141413",
+      "--theme-foreground-quaternary": "#87867f",
+      "--theme-foreground-secondary": "#30302e",
+      "--theme-foreground-tertiary": "#5e5d59"
+    }
+  },
+  "fonts": {
+    "display": {
+      "family": "anthropicSerif",
+      "googleFont": null,
+      "files": [
+        {
+          "file": "fonts/AnthropicSerif_Italic_Web-s.p.1fjksu1uimpf3.woff2",
+          "weight": "400",
+          "style": "italic"
+        },
+        {
+          "file": "fonts/AnthropicSerif_Roman_Web-s.p.0twp0vwi-lncj.woff2",
+          "weight": "400",
+          "style": "normal"
+        }
+      ]
+    },
+    "text": {
+      "family": "anthropicSans",
+      "googleFont": null,
+      "files": [
+        {
+          "file": "fonts/AnthropicSans_Roman_Web-s.p.1e3n6bt4oqimz.woff2",
+          "weight": "400",
+          "style": "normal"
+        },
+        {
+          "file": "fonts/AnthropicSans_Italic_Web-s.p.212cqpul8-axk.woff2",
+          "weight": "400",
+          "style": "italic"
+        }
+      ]
+    },
+    "mono": {
+      "family": "anthropicMono",
+      "googleFont": null,
+      "files": [
+        {
+          "file": "fonts/AnthropicMono_Italic_Web-s.p.0x1wr-4z1xgw3.woff2",
+          "weight": "400",
+          "style": "italic"
+        },
+        {
+          "file": "fonts/AnthropicMono_Roman_Web-s.p.16xhthj2n-pap.woff2",
+          "weight": "400",
+          "style": "normal"
+        }
+      ]
+    }
+  },
+  "type": {
+    "factor": 3.356,
+    "ui": 56,
+    "body": 56,
+    "h3": 72,
+    "h2": 174,
+    "h1": 137
+  },
+  "easing": {
+    "--ease-in-out-expo": [
+      1,
+      0,
+      0,
+      1
+    ],
+    "--ease-in-out-quart": [
+      0.77,
+      0,
+      0.175,
+      1
+    ],
+    "--ease-in-quart": [
+      0.895,
+      0.03,
+      0.685,
+      0.22
+    ],
+    "--ease-out-quart": [
+      0.165,
+      0.84,
+      0.44,
+      1
+    ],
+    "used: ease-in-out": [
+      0.42,
+      0,
+      0.58,
+      1
+    ],
+    "used: ease-out": [
+      0,
+      0,
+      0.58,
+      1
+    ],
+    "used: ease": [
+      0.25,
+      0.1,
+      0.25,
+      1
+    ],
+    "used: cubic-bezier(0.25, 1, 0.5, 1)": [
+      0.25,
+      1,
+      0.5,
+      1
+    ],
+    "used: cubic-bezier(0.2, 0.8, 0.2, 1)": [
+      0.2,
+      0.8,
+      0.2,
+      1
+    ]
+  },
+  "durations": [
+    {
+      "value": "0.2s",
+      "ms": 200,
+      "beats": 0.43
+    },
+    {
+      "value": "0.15s",
+      "ms": 150,
+      "beats": 0.32
+    },
+    {
+      "value": "0.25s",
+      "ms": 250,
+      "beats": 0.53
+    },
+    {
+      "value": "0.1s",
+      "ms": 100,
+      "beats": 0.21
+    },
+    {
+      "value": "0.3s",
+      "ms": 300,
+      "beats": 0.64
+    },
+    {
+      "value": "0.633s",
+      "ms": 633,
+      "beats": 1.35
+    }
+  ],
+  "radius": [
+    "999999px",
+    "9999px",
+    "10px",
+    "4px",
+    "8px",
+    "16px"
+  ]
+}

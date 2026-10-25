@@ -1,0 +1,34 @@
+{
+  "name": "claude-animation",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "remotion studio",
+    "audio": "node audio/synth.mjs && node audio/beats.mjs",
+    "sheet": "node render.mjs sheet",
+    "render": "node render.mjs",
+    "typecheck": "tsc --noEmit",
+    "upgrade": "remotion upgrade",
+    "demo": "node demo/serve.mjs",
+    "brand:capture": "node brand/capture.mjs",
+    "brand:guide": "node brand/style-guide.mjs"
+  },
+  "dependencies": {
+    "@remotion/bundler": "4.0.538",
+    "@remotion/cli": "4.0.538",
+    "@remotion/fonts": "4.0.538",
+    "@remotion/google-fonts": "4.0.538",
+    "@remotion/motion-blur": "4.0.538",
+    "@remotion/renderer": "4.0.538",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "remotion": "4.0.538"
+  },
+  "devDependencies": {
+    "@types/react": "19.3.0",
+    "fontkit": "2.0.4",
+    "playwright-core": "1.64.1",
+    "typescript": "5.9.3"
+  }
+}

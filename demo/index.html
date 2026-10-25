@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Motion Reel Viewer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #141413;
+    --ink-raised: #1f1e1d;
+    --ink-line: #30302e;
+    --ivory: #f0eee6;
+    --ivory-dim: #9c9a92;
+    --clay: #d97757;
+    --display: "Instrument Serif", Georgia, serif;
+    --ui: "Geist Mono", ui-monospace, Menlo, monospace;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--ink); color: var(--ivory); font: 14px/1.5 var(--ui); }
+  main { max-width: 1280px; margin: 0 auto; padding: 32px 16px 48px; }
+  header { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 24px; margin-bottom: 20px; }
+  h1 { font: 400 clamp(36px, 6vw, 64px)/1 var(--display); margin: 0; }
+  h1 span { color: var(--clay); }
+  .meta { color: var(--ivory-dim); }
+  .frame { position: relative; aspect-ratio: 16 / 9; background: #000; border-radius: 6px; overflow: hidden; cursor: pointer; }
+  video { width: 100%; height: 100%; display: block; }
+  .missing { position: absolute; inset: 0; display: none; place-items: center; text-align: center; padding: 16px; color: var(--ivory-dim); }
+
+  .transport { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin: 16px 0 12px; }
+  button, select { font: inherit; color: var(--ivory); background: var(--ink-raised); border: 1px solid var(--ink-line); border-radius: 6px; height: 36px; padding: 0 12px; cursor: pointer; }
+  button:hover, select:hover { border-color: var(--ivory-dim); }
+  button:focus-visible, select:focus-visible, .timeline:focus-visible { outline: 2px solid var(--clay); outline-offset: 2px; }
+  button[aria-pressed="true"] { border-color: var(--clay); color: var(--clay); }
+  #play { width: 48px; padding: 0; display: grid; place-items: center; background: var(--clay); border-color: var(--clay); color: var(--ink); }
+  #play svg { width: 16px; height: 16px; fill: currentColor; }
+  .readout { margin-left: auto; display: flex; flex-wrap: wrap; gap: 4px 16px; font-variant-numeric: tabular-nums; }
+  .readout b { font-weight: 500; color: var(--ivory); }
+  .readout span { color: var(--ivory-dim); }
+
+  .timeline { position: relative; user-select: none; touch-action: none; cursor: ew-resize; padding-top: 4px; }
+  .chapters { position: relative; height: 40px; }
+  .chapter { position: absolute; top: 0; bottom: 0; border-left: 1px solid var(--ink-line); padding: 4px 6px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; color: var(--ivory-dim); font-size: 12px; background: var(--ink-raised); }
+  .chapter small { display: block; color: var(--ivory-dim); opacity: .7; font-size: 11px; }
+  .chapter.active { color: var(--ink); background: var(--clay); }
+  .chapter.active small { color: var(--ink); }
+  .ruler { position: relative; height: 30px; border-bottom: 1px solid var(--ink-line); }
+  .tick { position: absolute; bottom: 0; width: 1px; height: 8px; background: var(--ink-line); }
+  .tick.bar { height: 18px; background: var(--ivory-dim); }
+  .tick.bar::after { content: attr(data-bar); position: absolute; left: 4px; top: -2px; font-size: 11px; color: var(--ivory-dim); }
+  .progress { position: absolute; left: 0; bottom: 0; height: 3px; background: var(--clay); }
+  .playhead { position: absolute; top: 0; bottom: 0; width: 2px; margin-left: -1px; background: var(--clay); pointer-events: none; }
+  .playhead::before { content: ""; position: absolute; top: -2px; left: -5px; border: 6px solid transparent; border-top-color: var(--clay); }
+  .preview { position: absolute; bottom: calc(100% + 10px); width: 240px; pointer-events: none; display: none; transform: translateX(-50%); }
+  .preview .thumb { width: 240px; height: 135px; border-radius: 4px; border: 1px solid var(--ink-line); background-color: #000; background-repeat: no-repeat; }
+  .preview .label { margin: 4px auto 0; width: max-content; padding: 0 8px; border-radius: 4px; font-size: 12px; color: var(--ivory); background: var(--ink); border: 1px solid var(--ink-line); }
+  .keys { margin-top: 20px; color: var(--ivory-dim); font-size: 12px; }
+  kbd { font: inherit; border: 1px solid var(--ink-line); border-radius: 4px; padding: 0 5px; color: var(--ivory); }
+
+  @media (max-width: 640px) {
+    .chapter { padding: 10px 0 0; text-align: center; }
+    .chapter .name, .chapter small, .keys { display: none; }
+    .readout { margin-left: 0; width: 100%; }
+    .preview { width: 160px; }
+    .preview .thumb { width: 160px; height: 90px; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>Motion Reel<span>.</span></h1>
+    <div class="meta" id="meta">15 s · 60 fps</div>
+  </header>
+
+  <div class="frame" id="frame">
+    <video id="video" src="/reel.mp4" preload="auto" playsinline></video>
+    <div class="missing" id="missing">out/reel.mp4 not found. Run <kbd>npm run render</kbd>, then reload.</div>
+  </div>
+
+  <div class="transport">
+    <button id="play" aria-label="Play"><svg viewBox="0 0 16 16" id="playIcon"><path d="M3 1.5v13l11-6.5z"/></svg></button>
+    <button id="prevChapter" aria-label="Previous chapter">⇤</button>
+    <button id="prevFrame" aria-label="Previous frame">‹ f</button>
+    <button id="nextFrame" aria-label="Next frame">f ›</button>
+    <button id="nextChapter" aria-label="Next chapter">⇥</button>
+    <select id="speed" aria-label="Playback speed">
+      <option value="0.25">0.25×</option>
+      <option value="0.5">0.5×</option>
+      <option value="1" selected>1×</option>
+    </select>
+    <button id="loop" aria-pressed="false">loop</button>
+    <button id="mute" aria-pressed="false">mute</button>
+    <div class="readout" aria-live="off">
+      <span><b id="time">0.00</b> s</span>
+      <span>frame <b id="frameNo">0</b>/900</span>
+      <span>bar <b id="bar">1</b> beat <b id="beat">1</b></span>
+      <span>b <b id="beatNo">0.00</b></span>
+    </div>
+  </div>
+
+  <div class="timeline" id="timeline" tabindex="0" role="slider" aria-label="Timeline" aria-valuemin="0" aria-valuemax="15" aria-valuenow="0">
+    <div class="chapters" id="chapters"></div>
+    <div class="ruler" id="ruler"><div class="progress" id="progress"></div></div>
+    <div class="playhead" id="playhead"></div>
+    <div class="preview" id="preview"><div class="thumb" id="thumb"></div><div class="label" id="previewLabel"></div></div>
+  </div>
+
+  <p class="keys">
+    <kbd>Space</kbd> play/pause · <kbd>←</kbd><kbd>→</kbd> frame · <kbd>Shift</kbd>+<kbd>←</kbd><kbd>→</kbd> beat ·
+    <kbd>[</kbd><kbd>]</kbd> chapter · <kbd>L</kbd> loop · <kbd>M</kbd> mute · drag the timeline to scrub
+  </p>
+</main>
+
+<script type="module">
+  const FPS = 60;
+  const FRAMES = 900;
+  // Contact sheet layout (src/reel/ContactSheet.tsx): 4 columns, 480 × 270 tiles, 16 px gaps.
+  const SHEET = { cols: 4, w: 480, h: 270, gap: 16, width: 2000, height: 2304 };
+
+  const $ = (id) => document.getElementById(id);
+  const video = $("video");
+  const [grid, chapters] = await Promise.all([fetch("/beats.json").then((r) => r.json()), fetch("/chapters.json").then((r) => r.json())]);
+  const sheetOk = await fetch("/sheet.png", { method: "HEAD" }).then((r) => r.ok).catch(() => false);
+
+  const DURATION = FRAMES / FPS;
+  const beatAt = (t) => (t - grid.offset) / grid.period;
+  const timeAtBeat = (b) => grid.offset + b * grid.period;
+  const frameOf = (t) => Math.min(FRAMES - 1, Math.floor(t * FPS + 1e-6));
+  const pct = (t) => `${(Math.max(0, Math.min(DURATION, t)) / DURATION) * 100}%`;
+  $("meta").textContent = `15 s · ${Math.round(grid.bpm)} BPM · ${FPS} fps · 8 bars`;
+
+  // Chapters and ruler.
+  const chapterTimes = chapters.map((c, i) => ({ ...c, t0: Math.max(0, timeAtBeat(c.start)), t1: chapters[i + 1] ? timeAtBeat(chapters[i + 1].start) : DURATION }));
+  for (const [i, c] of chapterTimes.entries()) {
+    const el = document.createElement("div");
+    el.className = "chapter";
+    el.style.left = pct(c.t0);
+    el.style.width = `calc(${pct(c.t1 - c.t0)} - 1px)`;
+    el.innerHTML = `${String(i + 1).padStart(2, "0")}<span class="name"> ${c.name}</span><small>${c.scene}</small>`;
+    el.title = `${c.name} — ${c.scene}, from beat ${c.start}`;
+    c.el = el;
+    $("chapters").append(el);
+  }
+  for (let b = 0; b < 32; b++) {
+    const el = document.createElement("div");
+    el.className = b % 4 === 0 ? "tick bar" : "tick";
+    if (b % 4 === 0) el.dataset.bar = b / 4 + 1;
+    el.style.left = pct(timeAtBeat(b));
+    $("ruler").append(el);
+  }
+
+  // Seeking lands in the middle of a frame so the decoder shows that exact frame.
+  const seek = (t) => { video.currentTime = Math.max(0, Math.min(DURATION - 0.5 / FPS, t)); render(); };
+  const seekFrame = (f) => seek((Math.max(0, Math.min(FRAMES - 1, f)) + 0.5) / FPS);
+  const step = (frames) => { video.pause(); seekFrame(frameOf(video.currentTime) + frames); };
+  const stepBeat = (dir) => {
+    video.pause();
+    const b = beatAt(video.currentTime);
+    const target = dir > 0 ? Math.floor(b + 1e-3) + 1 : Math.ceil(b - 1e-3) - 1;
+    seek(timeAtBeat(Math.max(0, Math.min(31, target))) + 0.5 / FPS);
+  };
+  const stepChapter = (dir) => {
+    const t = video.currentTime;
+    const idx = chapterTimes.findLastIndex((c) => c.t0 <= t + 1e-3);
+    const target = chapterTimes[Math.max(0, Math.min(chapterTimes.length - 1, idx + dir))];
+    seek(target.t0 + 0.5 / FPS);
+  };
+  const toggle = () => (video.paused ? video.play() : video.pause());
+
+  function render() {
+    const t = video.currentTime;
+    const b = beatAt(t);
+    $("time").textContent = t.toFixed(2);
+    $("frameNo").textContent = frameOf(t);
+    $("beatNo").textContent = Math.max(0, b).toFixed(2);
+    $("bar").textContent = Math.floor(Math.max(0, b) / 4) + 1;
+    $("beat").textContent = Math.floor(Math.max(0, b) % 4) + 1;
+    $("playhead").style.left = pct(t);
+    $("progress").style.width = pct(t);
+    $("timeline").setAttribute("aria-valuenow", t.toFixed(2));
+    for (const c of chapterTimes) c.el.classList.toggle("active", t >= c.t0 - 1e-3 && t < c.t1 - 1e-3);
+  }
+  const tick = () => { render(); requestAnimationFrame(tick); };
+  requestAnimationFrame(tick);
+
+  const setPlayIcon = () => {
+    $("playIcon").innerHTML = video.paused ? '<path d="M3 1.5v13l11-6.5z"/>' : '<path d="M3 1.5h3.5v13H3zM9.5 1.5H13v13H9.5z"/>';
+    $("play").setAttribute("aria-label", video.paused ? "Play" : "Pause");
+  };
+  video.addEventListener("play", setPlayIcon);
+  video.addEventListener("pause", setPlayIcon);
+  video.addEventListener("error", () => { $("missing").style.display = "grid"; });
+
+  // Scrubbing and hover preview.
+  const timeline = $("timeline");
+  const timeAtX = (x) => {
+    const r = timeline.getBoundingClientRect();
+    return Math.max(0, Math.min(1, (x - r.left) / r.width)) * DURATION;
+  };
+  let scrubbing = false;
+  let resume = false;
+  timeline.addEventListener("pointerdown", (e) => {
+    scrubbing = true;
+    resume = !video.paused;
+    video.pause();
+    timeline.setPointerCapture(e.pointerId);
+    seek(timeAtX(e.clientX));
+  });
+  timeline.addEventListener("pointermove", (e) => {
+    if (scrubbing) seek(timeAtX(e.clientX));
+    showPreview(e.clientX);
+  });
+  timeline.addEventListener("pointerup", () => { scrubbing = false; if (resume) video.play(); });
+  timeline.addEventListener("pointerleave", () => { $("preview").style.display = "none"; });
+
+  function showPreview(x) {
+    if (!sheetOk) return;
+    const t = timeAtX(x);
+    const beat = Math.max(0, Math.min(31, Math.floor(beatAt(t) + 1e-3)));
+    const thumb = $("thumb");
+    const scale = thumb.clientWidth / SHEET.w || 0.5;
+    const col = beat % SHEET.cols;
+    const row = Math.floor(beat / SHEET.cols);
+    thumb.style.backgroundImage = "url(/sheet.png)";
+    thumb.style.backgroundSize = `${SHEET.width * scale}px ${SHEET.height * scale}px`;
+    thumb.style.backgroundPosition = `${-(SHEET.gap + col * (SHEET.w + SHEET.gap)) * scale}px ${-(SHEET.gap + row * (SHEET.h + SHEET.gap)) * scale}px`;
+    const r = timeline.getBoundingClientRect();
+    const half = $("preview").offsetWidth / 2 || 120;
+    $("preview").style.left = `${Math.max(half, Math.min(r.width - half, x - r.left))}px`;
+    $("preview").style.display = "block";
+    $("previewLabel").textContent = `beat ${beat} · bar ${Math.floor(beat / 4) + 1}`;
+  }
+
+  // Controls.
+  $("play").onclick = toggle;
+  $("frame").onclick = toggle;
+  $("prevFrame").onclick = () => step(-1);
+  $("nextFrame").onclick = () => step(1);
+  $("prevChapter").onclick = () => stepChapter(-1);
+  $("nextChapter").onclick = () => stepChapter(1);
+  $("speed").onchange = (e) => { video.playbackRate = Number(e.target.value); };
+  $("loop").onclick = () => { video.loop = !video.loop; $("loop").setAttribute("aria-pressed", video.loop); };
+  $("mute").onclick = () => { video.muted = !video.muted; $("mute").setAttribute("aria-pressed", video.muted); };
+
+  document.addEventListener("keydown", (e) => {
+    if (e.target.tagName === "SELECT") return;
+    if (e.target.tagName === "BUTTON" && (e.key === " " || e.key === "Enter")) return;
+    const keys = {
+      " ": toggle,
+      k: toggle,
+      ArrowLeft: () => (e.shiftKey ? stepBeat(-1) : step(-1)),
+      ArrowRight: () => (e.shiftKey ? stepBeat(1) : step(1)),
+      "[": () => stepChapter(-1),
+      "]": () => stepChapter(1),
+      l: () => $("loop").click(),
+      m: () => $("mute").click(),
+      Home: () => seek(0),
+      End: () => seekFrame(FRAMES - 1),
+    };
+    const action = keys[e.key] ?? keys[e.key.toLowerCase()];
+    if (action) { e.preventDefault(); action(); }
+  });
+  render();
+</script>
+</body>
+</html>
