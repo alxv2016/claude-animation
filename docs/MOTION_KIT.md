@@ -13,7 +13,6 @@ Source of truth: [`kit/`](../kit/) (CLI, commands, project templates), [`.agents
 | Tag          | Meaning                                 |
 | ------------ | --------------------------------------- |
 | `[measured]` | Measured in this repo; conditions in §9 |
-| `[?]`        | Unverified; tracked in §11              |
 
 | §   | Section                                   | Look here for                                                    |
 | --- | ----------------------------------------- | ---------------------------------------------------------------- |
