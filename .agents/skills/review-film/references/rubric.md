@@ -1,7 +1,7 @@
 # Review rubric
 
-Nine criteria (R17), each scored 1–10. **8 is the bar to ship**: every criterion at 8 or more (R18),
-after at least three rounds (R24). Score what the frames show, not what the code intends, and cite
+Nine criteria (R17), each scored 1–10. **8 means the critic would ship it** — the scores and the three
+worst problems inform the user's decision (R18, R25); they do not decide it. Score what the frames show, not what the code intends, and cite
 frames as evidence. Hold the film to the showreel: compare it with
 [reel-benchmark.jpg](reel-benchmark.jpg), the reel's own per-beat sheet — an 8 is a film that would
 not look out of place cut next to it.
@@ -23,6 +23,12 @@ not look out of place cut next to it.
 Name every one you find, with frames:
 
 - Dead beats: a beat where nothing new happens (compare neighbouring cells of the per-beat sheet).
+- The product clipped or cut by anything but the frame (a plate edge, a fade, a mask), or cropped so
+  close it can no longer be recognised (R27).
+- Text over the product or its UI, or rising while the camera still moves (R28).
+- Zoom transitions: a push into one screen and a pull back from another, a fly-in to an element, a
+  fall-away to a point, an iris (R21).
+- Glass bigger than the element it dresses, beside it rather than over it, or bending its whole face.
 - A hard cut at a chapter join that no motion, match or impact hides.
 - Anything sliding in on one curve with no anticipation or settle; everything moving the same way.
 - An impact in `cues.json` with no picture reaction on its frame.

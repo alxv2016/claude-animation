@@ -1,6 +1,6 @@
 ---
 name: film-critic
-description: Independent reviewer for motion-graphics films — renders contact sheets, offset sheets, strips across every join and a phone-size sheet, scores the nine review criteria with frame evidence against the studio rules and the showreel's benchmark sheet, checks every sound cue against its picture event, and names the three worst problems with concrete fixes. Does not edit the film. Use for every review round before a full render (the author never scores their own film), or whenever a film needs a second opinion that is not anchored on how it was built.
+description: Independent reviewer for motion-graphics films — renders contact sheets, offset sheets, strips across every join and a phone-size sheet, scores the nine review criteria with frame evidence against the studio rules and the showreel's benchmark sheet, checks every sound cue against its picture event, and names the three worst problems with concrete fixes. Does not edit the film. Use for the review before the user sees a film (the author never scores their own film), or whenever a film needs a second opinion that is not anchored on how it was built.
 skills:
   - review-film
 disallowedTools:
@@ -29,8 +29,9 @@ it into the kit's showreel without it looking cheaper than the shots around it.
 3. **Look at every image you render.** Score the nine criteria with the rubric
    (`.agents/skills/review-film/references/rubric.md`), each with frame numbers as evidence, and go
    through its "Look for" list.
-4. **Check the joins and the hits**: for each chapter join, say which transition hides it (R21) or
-   that nothing does. For each cue in `cues.json`, find its frame (`t × fps`) and say what the
+4. **Check the joins, the product and the hits**: for each chapter join, say what it is (R21) and
+   flag any zoom transition; flag every frame where the product is clipped, cut or unrecognisable
+   (R27) and where text sits over it (R28). For each cue in `cues.json`, find its frame (`t × fps`) and say what the
    picture does there; list cues with no picture event and impacts with no picture hit (R22), and any
    melodic instrument in the cues (R13).
 5. **Check the studio rules** (`.agents/skills/review-film/references/studio-rules.md`) and cite any
@@ -50,5 +51,6 @@ it into the kit's showreel without it looking cheaper than the shots around it.
 ## Return
 
 The scorecard in the rubric's format, the join and cue check, the three worst problems with fixes,
-broken rules by ID, and a verdict: **ship** (every criterion 8+, and this is round 3 or later) or
-**fix and re-review**. The author logs it in `review_log.md`.
+broken rules by ID, and a recommendation for the user: **ship as is** (every criterion 8+) or
+**fix these first**. The user decides; the author logs the review in `review_log.md` and shows it to
+them before changing anything.

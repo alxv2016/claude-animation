@@ -38,6 +38,11 @@ Ask for what the request does not give; propose from the site's capture and conf
 - **Springs with at most a tiny overshoot** (damping 26–30 at stiffness 170–220); none on text.
 - **Warm neutral canvas, one accent** unless the brand's style guide says otherwise.
 - **Banned**: bouncy easing, glows, gradients on UI chrome, particle bursts, dead time.
+- **Liquid Glass dresses an element at its exact size and sits over it**: a glass bubble over an avatar
+  is the avatar's circle, no padding, no shadow halo; the element is drawn into the backdrop the glass
+  refracts (`LiquidGlass` `compose`), and the glass bends only its outer edge (`inward: 1`, a thin
+  bevel) with a rim light and a gloss on top, so the face or content stays undistorted. Glass only over
+  imagery, never over a flat colour.
 - **Real pixels or real data**: show the captured screenshots inside the container, cropped to the
   element, or rebuild a component in the brand's own colours, fonts and radius with the site's real
   copy and numbers. Never UI from imagination.

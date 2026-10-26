@@ -1,6 +1,6 @@
 ---
 name: make-motion-film
-description: Make a motion-graphics film from a brief, however short — "a 15-second video of <URL>" included — showreel, story, self-introduction, product film from real screenshots, product UI motion, or app UI in liquid glass. Plans every beat with a designed transition at every join, gets the user's approval on a storyboard before any code, builds pure functions of the beat to the showreel's bar in 16:9, 9:16 and 1:1 from one timeline, adds sound effects on every picture event (the user brings any music), passes three independent review rounds, and shows the user the contact sheet and an animatic before the full render. Use when the user asks for a motion graphics video, a showreel, a promo or launch film, an animated story, an intro, or UI animation.
+description: Make a motion-graphics film from a brief, however short — "a 15-second video of <URL>" included — showreel, story, self-introduction, product film from real screenshots, product UI motion, or app UI in liquid glass. Plans every beat in the brand's film language (the product always whole and identifiable, text readable and never over the product, cuts on the beat, no zoom transitions), gets the user's approval on a storyboard of three frames per scene before any code and again before every render of a revision, builds pure functions of the beat to the showreel's bar in 16:9, 9:16 and 1:1 from one timeline, adds sound effects on every picture event (the user brings any music), gets one independent review, and puts the animatic, the scorecard and the proposed fixes in front of the user to decide before the full render. Use when the user asks for a motion graphics video, a showreel, a promo or launch film, an animated story, an intro, or UI animation.
 ---
 
 # Make a motion film
@@ -13,7 +13,7 @@ lock.
 
 Before you start, read [references/pipeline.md](references/pipeline.md) (the folder, the clock and
 the scene contract), the studio rules (the review-film skill's `references/studio-rules.md`,
-R1–R26) and the showreel's benchmark sheet (the review-film skill's `references/reel-benchmark.jpg`):
+R1–R30) and the showreel's benchmark sheet (the review-film skill's `references/reel-benchmark.jpg`):
 it is the bar every film is held to, whatever its brand.
 
 **Two gates, on every film** — the user approves the storyboard before any scene code or sound (R20),
@@ -41,7 +41,9 @@ and the contact sheet and animatic before the full render (R25). A short request
    face); a **brand** (capture-brand skill, then read `docs/brands/<domain>/STYLE_GUIDE.md`); or a
    **reference video** (capture-reference-style skill: its style guide and shot list come first, and
    the user approves them before any code). A brand's restraint sets palette, type and how much
-   things overshoot — never whether the film meets the showreel's bar (R12, R21, R22).
+   things overshoot — never whether the film has life (R12, R22). **A brand's film language sets the
+   joins**: for a product brand such as Apple, cuts on the beat between moving shots and the brand's
+   own rendered footage, not the showreel's zoom-style transitions (R21).
 
 3. **Gather inputs**: what the playbook and, for UI, the UI motion rules list — always the duration
    and formats, a reference if the user has one, and whether they have a music track (without one
@@ -65,14 +67,19 @@ and the contact sheet and animatic before the full render (R25). A short request
    Set `chapters.json` to match. Check the plan now, while it is cheap:
 
    - something new on every beat or two (R12); a different technique per chapter;
-   - a designed transition at every join (R21) and a picture hit for every impact (R22), from
-     [references/techniques.md](references/techniques.md);
+   - a deliberate join on the beat and no zoom transitions (R21); a picture hit for every impact
+     (R22), from [references/techniques.md](references/techniques.md);
+   - the product whole in every frame, close-ups still readable as the product (R27); type readable,
+     off the product's UI, entering after camera moves settle (R28); only key features get a scene,
+     with the brand's frontal renders and its own footage (R29);
    - no banned looks (R5–R9); UI moments as one container driven by a cursor or tap (R26).
 
-7. **Storyboard and approval** (R20): write `storyboard.json` from the plan, render it with
-   `npx motion-kit storyboard src/films/<slug>`, look at it, and show the user the board, the asset
-   list and the plan ([references/storyboard.md](references/storyboard.md)). **Wait for the user's
-   approval**; nothing below starts until they give it.
+7. **Storyboard and approval** (R20): write `storyboard.json` from the plan — three frames per scene
+   (start, middle, end) — render it with `npx motion-kit storyboard src/films/<slug>`, look at it, and
+   show the user the board, the asset list and the plan
+   ([references/storyboard.md](references/storyboard.md)). **Wait for the user's approval**; nothing
+   below starts until they give it. **The same gate comes back for every revision**: after changes the
+   user asks for, show a new board with frames rendered from the edited scenes before rendering video.
 
 8. **Sound**: write `score.mjs` — sound effects only, each on its picture event, over the user's
    track if they gave one — and run `npx motion-kit score src/films/<slug>` (score-and-beats skill).
@@ -85,8 +92,9 @@ and the contact sheet and animatic before the full render (R25). A short request
    to it, so the film moves as one.
 
 10. **Stills pass**: build every shot's layout at its key beats before animating —
-    `npx motion-kit sheet <id> --beats src/films/<slug>/beats.json` in every format — and fix
-    composition, readability and the frame's layers while they are still cheap.
+    `npx motion-kit sheet <id> --beats src/films/<slug>/beats.json` in every format — and fix what is
+    broken (text over text, a subject off-frame, a wrong crop). This is a check, not a polish: the
+    user's eyes come next.
 
 11. **Motion pass**, one component per chapter, each a pure function of its local beat
     ([references/pipeline.md](references/pipeline.md#scene-contract)). Lay out from `useLayout()`
@@ -98,18 +106,20 @@ and the contact sheet and animatic before the full render (R25). A short request
       and the file to write; wire the scenes into `FilmFrame` yourself.
     - **Pacing animatic**: once every chapter moves, `npx motion-kit render <id> --animatic`
       (960 × 540 for 16:9, with the sound) and check a strip of frames across every join and the
-      cues around it; fix pacing before polish.
+      cues around it; fix what is broken, then move on.
 
-12. **Review and polish** with the review-film skill: an independent critic — the `film-critic`
-    agent, never you (R23) — every format, at least three rounds logged in `review_log.md` (R24),
-    until every criterion scores 8 or more. Don't rush to the final render: a film is a
-    multi-session production, and the rounds are where it gets good.
+12. **One review** with the review-film skill: an independent critic — the `film-critic` agent, never
+    you (R23) — every format, logged in `review_log.md` (R24). Don't fix its findings yet.
 
-13. **Animatic and approval** (R25): render the animatic again, then show the user the passing contact
-    sheet, the last scorecard and the animatic. **Wait for the user's approval.**
+13. **Show the user and wait** (R18, R25): the animatic, the contact sheet, the scorecard and the
+    three worst problems as options with proposed fixes — say which are limited by the assets or the
+    brief. Open the animatic in QuickTime for them, or give its path (R30). The goal is to get the
+    film in front of the user for their input, not to converge alone:
+    **don't go in circles fixing things yourself.** Fix what the user picks, review again only if they
+    ask, and come back to them each time.
 
 14. **Render and deliver** with the render-and-deliver skill: every format, `verify` each file, and the
     poster and contact sheet beside them (a loop check if the film loops).
 
-15. **Report**: the files, each format's length and loudness, the last scorecard, what the brief asked
+15. **Report**: the files, each format's length and loudness, the review's scorecard, what the brief asked
     for that the film does not do with the reason, and what you would improve next.

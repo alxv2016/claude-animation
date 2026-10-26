@@ -5,29 +5,31 @@ library (`src/motion-kit/effects`, path relative to your file).
 
 ## Task lookup
 
-| The user asks for…                             | Use                                        | Start from                                                                  |
-| ---------------------------------------------- | ------------------------------------------ | --------------------------------------------------------------------------- |
-| A dithering effect on their video              | `Dither` with `source={{ video }}`         | `mode="bayer8"`, `pixelSize={3}`, a 2–4 colour `palette`                    |
-| A 1-bit / Game Boy / retro look                | `Dither`                                   | `palette` of 2 or 4 colours, `mode="bayer4"`, `pixelSize={4}`               |
-| Newspaper or comic halftone                    | `Dither`                                   | `mode="halftone"`, `pixelSize={8}`, `angle={45}`, palette ink + paper       |
-| Engraving / hatching                           | `Dither`                                   | `mode="lines"` or `"crosshatch"`, `pixelSize={6}`                           |
-| A grainy gradient background                   | `Gradient`                                 | `type="mesh"`, 3–4 brand colours, `grain={0.06}`                            |
-| A silky or flowing gradient                    | `Gradient`                                 | `type="linear"`, `bands={3}`, `silk={0.8}`, `warp={0.8}`                    |
-| Hard-edged colour blocks that drift            | `Gradient`                                 | `type="conic"` or `"linear"`, `softness={0.15}`                             |
-| A 3D wave / ocean / landscape gradient         | `GradientWaves`                            | defaults; set the four colours                                              |
-| A sky with drifting clouds                     | `Sky`                                      | `cover={0.55}`, `sharpness={0.6}`                                           |
-| Pixel, LED or dot-matrix background            | `PixelField`                               | `shape="circle"`, `background`, `cellSize={14}`                             |
-| Dither / pixelate / duotone a whole video file | `npx motion-kit filter`                    | [Filter a whole video](#filter-a-whole-video)                               |
-| Pixels that pulse on the beat                  | `PixelField` or `Dither` with `ripples`    | [Ripples](#ripples-and-beat-sync)                                           |
-| Mosaic / pixelated footage                     | `PixelField` with `source`, `sourceColor`  | `shape="square"`, `cellSize={12}`                                           |
-| Duotone, tritone or brand-tinted footage       | `GradientMap`                              | 2–3 `colors`, `grain={0.06}`                                                |
-| Film grain on footage                          | `GradientMap`                              | `amount={0}` (original colours) and `grain`                                 |
-| Apple Liquid Glass / iOS UI animation          | `LiquidGlass`                              | [iOS patterns](#ios-patterns)                                               |
-| A floating glass tab bar                       | `LiquidGlass` + a stretching lens panel    | [iOS patterns](#ios-patterns)                                               |
-| Glass over an animated effect                  | `LiquidGlass` with `backdrop={{ shader }}` | `{ fragment: SKY_FRAGMENT, uniforms: skyUniforms({}) }`                     |
-| Frosted-glass cards over a photo or gradient   | `LiquidGlass`                              | `glass={{ frost: 8 }}`                                                      |
-| Shapes that melt together                      | `LiquidGlass` with `glass.smooth`          | `smooth` ≈ 30–40 px                                                         |
-| An effect this toolbox lacks                   | `ShaderCanvas` with your own fragment      | `src/motion-kit/effects/ShaderCanvas.tsx`; copy a component as the template |
+| The user asks for…                             | Use                                        | Start from                                                                                                                       |
+| ---------------------------------------------- | ------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------- |
+| A dithering effect on their video              | `Dither` with `source={{ video }}`         | `mode="bayer8"`, `pixelSize={3}`, a 2–4 colour `palette`                                                                         |
+| A 1-bit / Game Boy / retro look                | `Dither`                                   | `palette` of 2 or 4 colours, `mode="bayer4"`, `pixelSize={4}`                                                                    |
+| Newspaper or comic halftone                    | `Dither`                                   | `mode="halftone"`, `pixelSize={8}`, `angle={45}`, palette ink + paper                                                            |
+| Engraving / hatching                           | `Dither`                                   | `mode="lines"` or `"crosshatch"`, `pixelSize={6}`                                                                                |
+| A grainy gradient background                   | `Gradient`                                 | `type="mesh"`, 3–4 brand colours, `grain={0.06}`                                                                                 |
+| A silky or flowing gradient                    | `Gradient`                                 | `type="linear"`, `bands={3}`, `silk={0.8}`, `warp={0.8}`                                                                         |
+| Hard-edged colour blocks that drift            | `Gradient`                                 | `type="conic"` or `"linear"`, `softness={0.15}`                                                                                  |
+| A 3D wave / ocean / landscape gradient         | `GradientWaves`                            | defaults; set the four colours                                                                                                   |
+| A sky with drifting clouds                     | `Sky`                                      | `cover={0.55}`, `sharpness={0.6}`                                                                                                |
+| Pixel, LED or dot-matrix background            | `PixelField`                               | `shape="circle"`, `background`, `cellSize={14}`                                                                                  |
+| Dither / pixelate / duotone a whole video file | `npx motion-kit filter`                    | [Filter a whole video](#filter-a-whole-video)                                                                                    |
+| Pixels that pulse on the beat                  | `PixelField` or `Dither` with `ripples`    | [Ripples](#ripples-and-beat-sync)                                                                                                |
+| Mosaic / pixelated footage                     | `PixelField` with `source`, `sourceColor`  | `shape="square"`, `cellSize={12}`                                                                                                |
+| Duotone, tritone or brand-tinted footage       | `GradientMap`                              | 2–3 `colors`, `grain={0.06}`                                                                                                     |
+| Film grain on footage                          | `GradientMap`                              | `amount={0}` (original colours) and `grain`                                                                                      |
+| Apple Liquid Glass / iOS UI animation          | `LiquidGlass`                              | [iOS patterns](#ios-patterns)                                                                                                    |
+| A floating glass tab bar                       | `LiquidGlass` + a stretching lens panel    | [iOS patterns](#ios-patterns)                                                                                                    |
+| Glass over an animated effect                  | `LiquidGlass` with `backdrop={{ shader }}` | `{ fragment: SKY_FRAGMENT, uniforms: skyUniforms({}) }`                                                                          |
+| Frosted-glass cards over a photo or gradient   | `LiquidGlass`                              | `glass={{ frost: 8 }}`                                                                                                           |
+| Glass over a product photo placed in the scene | `LiquidGlass` with `placement`             | `backdrop={{ image }}`, `placement={{ x, y, width, height, ground }}`: the backdrop sits exactly where the scene draws the photo |
+| A glass bubble over an avatar or icon          | `LiquidGlass` with `compose`               | Panel = the element's circle; `glass={{ inward: 1, bevel: ≈ 0.13 × diameter, shadow: 0 }}` bends only the outer edge             |
+| Shapes that melt together                      | `LiquidGlass` with `glass.smooth`          | `smooth` ≈ 30–40 px                                                                                                              |
+| An effect this toolbox lacks                   | `ShaderCanvas` with your own fragment      | `src/motion-kit/effects/ShaderCanvas.tsx`; copy a component as the template                                                      |
 
 ## Backgrounds
 
@@ -241,12 +243,14 @@ Where it lives: `src/motion-kit/effects/ripples.ts` — `Ripple`, `rippleUniform
 
 ### Props
 
-| Prop                 | Default          | Does                                                                                                         |
-| -------------------- | ---------------- | ------------------------------------------------------------------------------------------------------------ |
-| `backdrop`           | required         | `{ gradient: GradientProps }`, `{ shader: { fragment, uniforms } }`, `{ color }`, `{ video }` or `{ image }` |
-| `panels`             | required         | Up to 8 `{ x, y, width, height, radius? }` in composition px; `radius` defaults to a capsule                 |
-| `glass`              | `DEFAULT_GLASS`  | Partial `GlassStyle`, below                                                                                  |
-| `time`, `resolution` | frame / fps, `1` | Backdrop time; render scale                                                                                  |
+| Prop                 | Default          | Does                                                                                                                                                                                                          |
+| -------------------- | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `backdrop`           | required         | `{ gradient: GradientProps }`, `{ shader: { fragment, uniforms } }`, `{ color }`, `{ video }` or `{ image }`                                                                                                  |
+| `panels`             | required         | Up to 8 `{ x, y, width, height, radius? }` in composition px; `radius` defaults to a capsule                                                                                                                  |
+| `placement`          | —                | `{ x, y, width, height, ground? }` px: where an `{ image }` or `{ video }` backdrop sits (with `ground` around it), so the glass refracts what the scene draws there; omitted, the backdrop covers the canvas |
+| `backdrop.compose`   | —                | `{ images, draw(ctx, images, width, height) }`: a backdrop the scene composes each frame on a 2D canvas, so glass can refract elements the scene draws (an avatar under its own bubble)                       |
+| `glass`              | `DEFAULT_GLASS`  | Partial `GlassStyle`, below                                                                                                                                                                                   |
+| `time`, `resolution` | frame / fps, `1` | Backdrop time; render scale                                                                                                                                                                                   |
 
 | `GlassStyle`                               | Default            | Does                                                                          |
 | ------------------------------------------ | ------------------ | ----------------------------------------------------------------------------- |
