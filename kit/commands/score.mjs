@@ -35,7 +35,11 @@ export async function score(args) {
   const offset = measured ? measured.offset : 0;
   const duration = spec.duration ?? offset + spec.bars * beatsPerBar * period + (spec.tail ?? 0);
   const music = spec.music === true; // the reel's own score only (R13)
-  const session = createSession({ bpm: 60 / period, duration, seed: spec.seed ?? 1337, target: spec.lufs ?? -14, music, bed, grid: measured && { offset, period } });
+  // Sound effects are all transient: AAC turns a −1.5 dBFS sample peak into overs above −1 dBTP, so an
+  // effects-only master gets more headroom; a score with music or a track keeps −1.5 (measured: −0.7
+  // dBTP after AAC at −1.5 for 52 effects).
+  const ceilingDb = spec.ceilingDb ?? (music || bed ? -1.5 : -2.5);
+  const session = createSession({ bpm: 60 / period, duration, seed: spec.seed ?? 1337, target: spec.lufs ?? -14, ceilingDb, music, bed, grid: measured && { offset, period } });
   const t0 = Date.now();
   spec.compose(session);
   const result = session.master();

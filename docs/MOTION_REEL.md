@@ -951,13 +951,13 @@ film is held to ([reel-benchmark.jpg](../.agents/skills/review-film/references/r
 | R15 −14 LUFS                               | Mastering loop to −14 LUFS; −13.8 LUFS after AAC                                                             | §13.5, §18         |
 | R16 Per-beat contact sheet first           | `ContactSheet` composition, `npm run sheet`                                                                  | §16                |
 | R17 Score the criteria                     | Six criteria scored per round (composition, depth and polish were added after the reel)                      | §16, §18           |
-| R18 Fix the 3 worst; repeat to 8+          | Final scores 8–9                                                                                             | §16, §18           |
-| R19 Full render only then                  | `npm run render`                                                                                             | §17                |
+| R18 Findings to the user before fixing     | Predates the rule: the reel's author fixed the three worst per round until scores reached 8–9                | §16, §18           |
+| R19 Full render after approval             | `npm run render`                                                                                             | §17                |
 | R20 Storyboard approved first              | Predates the rule: the reel's brief was a one-line prompt                                                    | §22.1              |
 | R21 Every join designed                    | Seven joins, seven transitions: match cut, blinds, continuity morph, smash cut, dolly, converge, iris        | §10                |
 | R22 Springs by role, hits on impacts       | Anticipation and overshoot on every big move; shake on the three impacts; hit reactions on most beats        | §9.4, §9.11, §12.2 |
-| R23–R24 Independent review, three rounds   | Predate the rules: the reel was reviewed by its author                                                       | §16                |
-| R25 Animatic approved first                | Predates the rule                                                                                            | §17                |
+| R23–R24 One independent review, logged     | Predate the rules: the reel was reviewed by its author                                                       | §16                |
+| R25 The user decides after the review      | Predates the rule                                                                                            | §17                |
 | R26 UI motion rules                        | No product UI in the reel                                                                                    | —                  |
 
 ### 22.3 Example prompts

@@ -22,14 +22,14 @@ The rules every film made with motion-kit follows, unless the brief says otherwi
 | R15 | Sound       | Loudness −14 LUFS                                                                                                                                                                                                   |
 | R16 | Review loop | Before showing anything, render one frame per beat as a contact sheet and look at it                                                                                                                                |
 | R17 | Review loop | Score it 1–10 on hook in the first 2 s, readability at phone size, motion quality, variety, composition, depth, brand accuracy, sound sync and polish                                                               |
-| R18 | Review loop | Fix the 3 worst problems; repeat until every score is 8 or more                                                                                                                                                     |
-| R19 | Review loop | Only then do the full render                                                                                                                                                                                        |
+| R18 | Review loop | Bring the review to the user before fixing anything: the scorecard and the three worst problems with proposed fixes; fix what the user picks — never loop on fixes alone                                            |
+| R19 | Review loop | Full render only after the user approves                                                                                                                                                                            |
 | R20 | Gate        | Storyboard first: the user approves the storyboard (one panel per shot: key frame, copy, motion, join, sound) before any scene code or sound is written                                                             |
 | R21 | Look        | Every scene join is a designed transition: match cut, iris, blinds, continuity morph, dolly, converge, container morph, or a smash cut on an impact with shake — never an unhidden hard cut or a crossfade          |
 | R22 | Look        | Motion has weight: big moves anticipate and settle on springs chosen by role (a tiny overshoot on UI, none on text being read), and every impact the ear hears has a picture hit (shake, wobble, flash)             |
 | R23 | Review loop | The review is independent: the `film-critic` agent, or a session that did not build the film, scores it; the author never scores their own film                                                                     |
-| R24 | Review loop | At least three review rounds, each scorecard logged in the film's `review_log.md`                                                                                                                                   |
-| R25 | Gate        | Before the full render, the user sees the passing contact sheet and the animatic (`npx motion-kit render <id> --animatic`) and approves                                                                             |
+| R24 | Review loop | One independent review per pass, its scorecard logged in the film's `review_log.md`; another pass only when the user asks for one                                                                                   |
+| R25 | Gate        | After the review, the user sees the scorecard, the three worst problems and the animatic (`npx motion-kit render <id> --animatic`) and decides: fix, review again, or ship                                          |
 | R26 | Look        | Any product UI on screen follows the UI motion rules (make-motion-film skill, `references/ui-motion-rules.md`): one container that never cuts, a cursor or tap driving every change on a beat, real states and data |
 
 ## Why
@@ -47,8 +47,10 @@ The rules every film made with motion-kit follows, unless the brief says otherwi
 - **R13**: synthesized melodies sound like stock music; sound effects synced to the picture are what
   make motion feel physical, and the user chooses the music.
 - **R16–R19, R23–R24**: stills catch problems before a full render costs minutes; scoring against
-  fixed criteria stops "looks fine" from passing a weak film; an author grading their own film
-  scores what the code meant, not what the frames show; one round fixes the obvious and leaves the
-  rest.
+  fixed criteria stops "looks fine" from passing a weak film; an author grading their own film scores
+  what the code meant, not what the frames show. One review, then the user: the goal is to get the
+  film in front of them for input, not to converge alone — a 2026-10 test looped four rounds (~25 min
+  each) while scores crept 6.0 → 6.4, and some limits were the assets'. The user judges what is worth
+  fixing.
 - **R20, R25**: the user decides what the film is before effort goes into it, and sees the film in
   motion before the full render — the two points where a change is cheap.

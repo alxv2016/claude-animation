@@ -1,6 +1,6 @@
 ---
 name: film-critic
-description: Independent reviewer for motion-graphics films — renders contact sheets, offset sheets, strips across every join and a phone-size sheet, scores the nine review criteria with frame evidence against the studio rules and the showreel's benchmark sheet, checks every sound cue against its picture event, and names the three worst problems with concrete fixes. Does not edit the film. Use for every review round before a full render (the author never scores their own film), or whenever a film needs a second opinion that is not anchored on how it was built.
+description: Independent reviewer for motion-graphics films — renders contact sheets, offset sheets, strips across every join and a phone-size sheet, scores the nine review criteria with frame evidence against the studio rules and the showreel's benchmark sheet, checks every sound cue against its picture event, and names the three worst problems with concrete fixes. Does not edit the film. Use for the review before the user sees a film (the author never scores their own film), or whenever a film needs a second opinion that is not anchored on how it was built.
 skills:
   - review-film
 disallowedTools:
@@ -50,5 +50,6 @@ it into the kit's showreel without it looking cheaper than the shots around it.
 ## Return
 
 The scorecard in the rubric's format, the join and cue check, the three worst problems with fixes,
-broken rules by ID, and a verdict: **ship** (every criterion 8+, and this is round 3 or later) or
-**fix and re-review**. The author logs it in `review_log.md`.
+broken rules by ID, and a recommendation for the user: **ship as is** (every criterion 8+) or
+**fix these first**. The user decides; the author logs the review in `review_log.md` and shows it to
+them before changing anything.

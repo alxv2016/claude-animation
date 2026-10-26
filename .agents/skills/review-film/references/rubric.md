@@ -1,7 +1,7 @@
 # Review rubric
 
-Nine criteria (R17), each scored 1–10. **8 is the bar to ship**: every criterion at 8 or more (R18),
-after at least three rounds (R24). Score what the frames show, not what the code intends, and cite
+Nine criteria (R17), each scored 1–10. **8 means the critic would ship it** — the scores and the three
+worst problems inform the user's decision (R18, R25); they do not decide it. Score what the frames show, not what the code intends, and cite
 frames as evidence. Hold the film to the showreel: compare it with
 [reel-benchmark.jpg](reel-benchmark.jpg), the reel's own per-beat sheet — an 8 is a film that would
 not look out of place cut next to it.

@@ -85,7 +85,15 @@ const BLIT_FRAGMENT = frag(
   `
 uniform sampler2D uSource;
 uniform vec2 uSourceSize;
-void main() { outColor = vec4(texture(uSource, coverUv(vUv, uResolution, uSourceSize)).rgb, 1.0); }
+uniform vec4 uPlace;   // x, y (from the top), width, height in canvas px; width 0 = cover the canvas
+uniform vec3 uGround;
+void main() {
+  if (uPlace.z <= 0.0) { outColor = vec4(texture(uSource, coverUv(vUv, uResolution, uSourceSize)).rgb, 1.0); return; }
+  vec2 px = vec2(vUv.x * uResolution.x, (1.0 - vUv.y) * uResolution.y);
+  vec2 uv = (px - uPlace.xy) / uPlace.zw;
+  bool inside = all(greaterThanEqual(uv, vec2(0.0))) && all(lessThanEqual(uv, vec2(1.0)));
+  outColor = vec4(inside ? texture(uSource, vec2(uv.x, 1.0 - uv.y)).rgb : uGround, 1.0);
+}
 `,
 );
 
@@ -199,9 +207,14 @@ export type LiquidGlassProps = {
   resolution?: number;
   /** UI drawn on top of the glass (labels, icons), positioned in composition pixels. */
   children?: React.ReactNode;
+  /**
+   * Where an image or video backdrop sits, in composition px, with `ground` around it — so the glass
+   * refracts exactly what the scene shows beneath it. Omitted, the backdrop covers the canvas.
+   */
+  placement?: { x: number; y: number; width: number; height: number; ground?: string };
 };
 
-export const LiquidGlass: React.FC<LiquidGlassProps> = ({ backdrop, panels, glass, time: timeProp, resolution = 1, children }) => {
+export const LiquidGlass: React.FC<LiquidGlassProps> = ({ backdrop, panels, glass, time: timeProp, resolution = 1, children, placement }) => {
   const frame = useCurrentFrame();
   const { fps, width, height } = useVideoConfig();
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -251,7 +264,8 @@ export const LiquidGlass: React.FC<LiquidGlassProps> = ({ backdrop, panels, glas
       gl.useProgram(state.current.blit);
       gl.activeTexture(gl.TEXTURE0);
       uploadTexture(gl, state.current.media, mediaFrame.current);
-      setUniforms(gl, state.current.blit, { ...base, uSourceSize: sourceSize(mediaFrame.current) });
+      const place: [number, number, number, number] = placement ? [placement.x * resolution, placement.y * resolution, placement.width * resolution, placement.height * resolution] : [0, 0, 0, 0];
+      setUniforms(gl, state.current.blit, { ...base, uSourceSize: sourceSize(mediaFrame.current), uPlace: place, uGround: hexToSrgb(placement?.ground ?? "#ffffff") });
       gl.uniform1i(gl.getUniformLocation(state.current.blit, "uSource"), 0);
       gl.drawArrays(gl.TRIANGLES, 0, 3);
     }

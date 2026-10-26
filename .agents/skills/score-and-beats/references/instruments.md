@@ -15,22 +15,23 @@
 
 `score.mjs` default-exports:
 
-| Key                | Required | Default                                            | Does                                                                                    |
-| ------------------ | -------- | -------------------------------------------------- | --------------------------------------------------------------------------------------- |
-| `bpm`              | Yes\*    | —                                                  | Tempo of the planned grid (\*measured from `track` when there is one)                   |
-| `bars`             | Yes\*    | —                                                  | Length in bars (\*or give `duration`)                                                   |
-| `beatsPerBar`      | No       | `4`                                                |                                                                                         |
-| `tail`             | No       | `0`                                                | Seconds after the last bar for the last effect to ring out                              |
-| `duration`         | No       | track offset + `bars · beatsPerBar` beats + `tail` | Length in seconds                                                                       |
-| `beats`            | No       | Beats before the tail                              | How many beats `beats.json` lists                                                       |
-| `track`            | No       | —                                                  | The user's music (any audio or video file): measured, mixed unchanged under the effects |
-| `trackLufs`        | No       | `-16`                                              | The track's level under the effects, before the master                                  |
-| `beatBand`         | No       | `"low"`                                            | Measure the track's kick band (`"low"`) or everything (`"full"`)                        |
-| `minBpm`, `maxBpm` | No       | `70`, `180`                                        | Tempo search range for the track                                                        |
-| `seed`             | No       | `1337`                                             | Seeds `rand()` and `noise()`                                                            |
-| `lufs`             | No       | `-14`                                              | Loudness target of the master                                                           |
-| `output`           | No       | `public/<folder>/score.wav`                        | Where the WAV goes                                                                      |
-| `compose(s)`       | Yes      | —                                                  | Places every effect; `s` is the session below                                           |
+| Key                | Required | Default                                            | Does                                                                                          |
+| ------------------ | -------- | -------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| `bpm`              | Yes\*    | —                                                  | Tempo of the planned grid (\*measured from `track` when there is one)                         |
+| `bars`             | Yes\*    | —                                                  | Length in bars (\*or give `duration`)                                                         |
+| `beatsPerBar`      | No       | `4`                                                |                                                                                               |
+| `tail`             | No       | `0`                                                | Seconds after the last bar for the last effect to ring out                                    |
+| `duration`         | No       | track offset + `bars · beatsPerBar` beats + `tail` | Length in seconds                                                                             |
+| `beats`            | No       | Beats before the tail                              | How many beats `beats.json` lists                                                             |
+| `track`            | No       | —                                                  | The user's music (any audio or video file): measured, mixed unchanged under the effects       |
+| `trackLufs`        | No       | `-16`                                              | The track's level under the effects, before the master                                        |
+| `beatBand`         | No       | `"low"`                                            | Measure the track's kick band (`"low"`) or everything (`"full"`)                              |
+| `minBpm`, `maxBpm` | No       | `70`, `180`                                        | Tempo search range for the track                                                              |
+| `seed`             | No       | `1337`                                             | Seeds `rand()` and `noise()`                                                                  |
+| `lufs`             | No       | `-14`                                              | Loudness target of the master                                                                 |
+| `ceilingDb`        | No       | `-2.5` effects only; `-1.5` with music or a track  | Limiter ceiling: effects are all transients, which AAC turns into overs above −1 dBTP at −1.5 |
+| `output`           | No       | `public/<folder>/score.wav`                        | Where the WAV goes                                                                            |
+| `compose(s)`       | Yes      | —                                                  | Places every effect; `s` is the session below                                                 |
 
 `music: true` exposes the engine's music instruments; it exists only for the kit repo's own reel
 (`src/reel/score.mjs`), which predates R13. Films never set it.

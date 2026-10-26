@@ -1,6 +1,6 @@
 ---
 name: make-motion-film
-description: Make a motion-graphics film from a brief, however short — "a 15-second video of <URL>" included — showreel, story, self-introduction, product film from real screenshots, product UI motion, or app UI in liquid glass. Plans every beat with a designed transition at every join, gets the user's approval on a storyboard before any code, builds pure functions of the beat to the showreel's bar in 16:9, 9:16 and 1:1 from one timeline, adds sound effects on every picture event (the user brings any music), passes three independent review rounds, and shows the user the contact sheet and an animatic before the full render. Use when the user asks for a motion graphics video, a showreel, a promo or launch film, an animated story, an intro, or UI animation.
+description: Make a motion-graphics film from a brief, however short — "a 15-second video of <URL>" included — showreel, story, self-introduction, product film from real screenshots, product UI motion, or app UI in liquid glass. Plans every beat with a designed transition at every join, gets the user's approval on a storyboard before any code, builds pure functions of the beat to the showreel's bar in 16:9, 9:16 and 1:1 from one timeline, adds sound effects on every picture event (the user brings any music), gets one independent review, and puts the animatic, the scorecard and the proposed fixes in front of the user to decide before the full render. Use when the user asks for a motion graphics video, a showreel, a promo or launch film, an animated story, an intro, or UI animation.
 ---
 
 # Make a motion film
@@ -85,8 +85,9 @@ and the contact sheet and animatic before the full render (R25). A short request
    to it, so the film moves as one.
 
 10. **Stills pass**: build every shot's layout at its key beats before animating —
-    `npx motion-kit sheet <id> --beats src/films/<slug>/beats.json` in every format — and fix
-    composition, readability and the frame's layers while they are still cheap.
+    `npx motion-kit sheet <id> --beats src/films/<slug>/beats.json` in every format — and fix what is
+    broken (text over text, a subject off-frame, a wrong crop). This is a check, not a polish: the
+    user's eyes come next.
 
 11. **Motion pass**, one component per chapter, each a pure function of its local beat
     ([references/pipeline.md](references/pipeline.md#scene-contract)). Lay out from `useLayout()`
@@ -98,18 +99,19 @@ and the contact sheet and animatic before the full render (R25). A short request
       and the file to write; wire the scenes into `FilmFrame` yourself.
     - **Pacing animatic**: once every chapter moves, `npx motion-kit render <id> --animatic`
       (960 × 540 for 16:9, with the sound) and check a strip of frames across every join and the
-      cues around it; fix pacing before polish.
+      cues around it; fix what is broken, then move on.
 
-12. **Review and polish** with the review-film skill: an independent critic — the `film-critic`
-    agent, never you (R23) — every format, at least three rounds logged in `review_log.md` (R24),
-    until every criterion scores 8 or more. Don't rush to the final render: a film is a
-    multi-session production, and the rounds are where it gets good.
+12. **One review** with the review-film skill: an independent critic — the `film-critic` agent, never
+    you (R23) — every format, logged in `review_log.md` (R24). Don't fix its findings yet.
 
-13. **Animatic and approval** (R25): render the animatic again, then show the user the passing contact
-    sheet, the last scorecard and the animatic. **Wait for the user's approval.**
+13. **Show the user and wait** (R18, R25): the animatic, the contact sheet, the scorecard and the
+    three worst problems as options with proposed fixes — say which are limited by the assets or the
+    brief. The goal is to get the film in front of the user for their input, not to converge alone:
+    **don't go in circles fixing things yourself.** Fix what the user picks, review again only if they
+    ask, and come back to them each time.
 
 14. **Render and deliver** with the render-and-deliver skill: every format, `verify` each file, and the
     poster and contact sheet beside them (a loop check if the film loops).
 
-15. **Report**: the files, each format's length and loudness, the last scorecard, what the brief asked
+15. **Report**: the files, each format's length and loudness, the review's scorecard, what the brief asked
     for that the film does not do with the reason, and what you would improve next.
