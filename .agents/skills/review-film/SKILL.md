@@ -42,7 +42,8 @@ reviewed.
 7. **Show the user, without fixing first** (R18, R25): the animatic,
    `npx motion-kit render <composition> --animatic` (half size, with sound), the contact sheet, the
    scorecard, and the three worst problems as options — which are quick fixes, which are limited by
-   the assets or the brief. Wait for the user's decision.
+   the assets or the brief. Open the animatic for them (R30): QuickTime when it is available
+   (`open -a "QuickTime Player" <file>`), otherwise its full path. Wait for the user's decision.
 8. **Do what the user decides**: fix what they pick (log what changed), review again only if they ask,
    or go on to the full render.
 9. **Render only after the user approves** (R19) — the render-and-deliver skill.

@@ -32,23 +32,30 @@ render" becomes the two gates, the storyboard (R20) and the contact sheet with a
 
 ## Structure
 
-| Part     | Beats     | On screen                                                                                                                                                  | Join into the next                              |
-| -------- | --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
-| Hook     | 1 (2–4 s) | The problem in five words of huge kinetic type, one word or phrase slamming per beat                                                                       | Iris or match into the product                  |
-| Reveal   | 1         | The product appears; its UI assembles element by element (`Assemble` with real pieces)                                                                     | Dolly or container morph into the first feature |
-| Features | 3         | Each a UI moment under the [UI motion rules](../references/ui-motion-rules.md): one container, a `Cursor` (or a tap on a touch device) doing a real action | Container morph between features                |
-| Proof    | 1         | One number that proves it works, counting up with a hit per step                                                                                           | Converge or smash cut on an impact              |
-| Lockup   | 1         | Logo and CTA, landing heavy with a shake on the impact                                                                                                     | —                                               |
+| Part     | Beats     | On screen                                                                                                                                                  | Join into the next                                           |
+| -------- | --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| Hook     | 1 (2–4 s) | The problem in five words of huge kinetic type, one word or phrase slamming per beat                                                                       | Cut on the beat                                              |
+| Reveal   | 1         | The product appears; its UI assembles element by element (`Assemble` with real pieces)                                                                     | Cut on the beat, or a container morph into the first feature |
+| Features | 3         | Each a UI moment under the [UI motion rules](../references/ui-motion-rules.md): one container, a `Cursor` (or a tap on a touch device) doing a real action | Cut on the beat, or a container morph between UI states      |
+| Proof    | 1         | One number that proves it works, counting up with a hit per step                                                                                           | Cut, or a smash cut on an impact                             |
+| Lockup   | 1         | Logo and CTA, landing heavy with a shake on the impact                                                                                                     | —                                                            |
 
-- **Every join is designed** (R21) — the column above is the default; the storyboard names each one.
+- **Every join is deliberate and on the beat** (R21): cuts between moving shots, not zooms into and
+  out of screens; the storyboard names each one.
 - **Something new on every beat or two** (R12): an element landing, a cursor press, a state change, a
   camera move. A headline over a still product for three beats is a dead beat.
 - **The cursor does real actions**: clicks where a button is in the screenshot, types into a real
   field, hovers a real chart. Move it on springs between targets, click on beats. A `Cursor` path
   keyframe is when a move starts; it arrives about 0.35 s later, so key each move that much before
   its click.
-- **Crops, not whole pages**: zoom into the part of the screenshot that shows the feature; full-page
-  shots are unreadable at phone size.
+- **Crops of UI, never of the product**: zoom into the part of a screenshot that shows the feature
+  (full pages are unreadable at phone size), but show the device itself whole (R27). If every capture of
+  a feature crops the device, place the real screen content into a full-device render with the same
+  screen shape rather than show a cut device.
+- **Key features only** (R29): the page's own launch order and its highlights decide the scenes;
+  colour options are implied by showing the colours, not a scene of their own.
+- **The brand's own footage first**: product turns and fans from the page's rendered videos, scrubbed
+  on the beat; frontal renders over angled photos; not a hand-lit 3D model.
 - **Real copy**: headlines and labels from the site; the five-word hook may be written fresh but must
   match the product's claims.
 
@@ -56,9 +63,16 @@ render" becomes the two gates, the storyboard (R20) and the contact sheet with a
 
 The brand's style guide: its accent, its fonts (or the guide's substitutes), its radius. Neutral
 grounds behind the screenshots; one accent for the cursor ring and highlights. **The brand's
-restraint sets palette and type, not energy**: a quiet brand still gets a hook that slams, designed
-joins, heavy springs on devices and lockups, and a hit on every impact — the showreel's bar (R12,
-R21, R22).
+restraint sets palette and type, not energy**: a quiet brand still gets a hook that slams, heavy
+springs on devices and lockups, and a hit on every impact (R12, R22) — with the brand's own join
+language (R21): cuts on the beat, no zoom transitions.
+
+- **The product is always whole** (R27): no video plate edge, feather, radial mask or gradient band
+  across it; use only the stretch of a rendered video where its own camera keeps the product whole.
+- **Type is readable** (R28): on plain ground above or beside the product, never over its UI or a
+  busy photo, and only after a camera move settles.
+- **Backdrops are the product**: a close-up of a screen's corner, the device on its plate — never a
+  blurred photo.
 
 ## Sound
 

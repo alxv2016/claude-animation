@@ -32,7 +32,10 @@ scene's file.
    Place events on the plan's beats; lay out from `useLayout()`; size type in units.
    - Springs from `SPRINGS` by role, as the guide says; anticipation on big moves (R22).
    - Something new on every beat or two (R12); no dead beats.
-   - Both joins as the storyboard names them (R21): if the transition needs the neighbouring scene,
+   - The product whole and identifiable in every frame, never clipped by a plate edge, fade or mask
+     (R27); text readable, never over the product, entering after camera moves settle (R28).
+   - Both joins as the storyboard names them (R21) — cuts on the beat, no zoom transitions unless the
+     brief asks; if the transition needs the neighbouring scene,
      render it from its own local beat across the join.
    - A picture hit on the frame of every impact in `cues.json` for your beats (R22), and a picture
      event under every other cue.

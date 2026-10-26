@@ -1,7 +1,7 @@
 // motion-kit storyboard <film dir> [--cols 4] [--width 300] [--out file]
 // The storyboard the user approves before any scene code (studio rule R20): one panel per shot from
-// the film's storyboard.json — key frame from the real assets, copy, motion, camera, the join into
-// the next shot and the sound — laid out as a board and photographed with Playwright → out/storyboard-<slug>.png.
+// the film's storyboard.json — key frame(s) from the real assets (`image`, or `images` for a row of
+// frames per shot), copy, motion, camera, the join into the next shot and the sound — laid out as a board and photographed with Playwright → out/storyboard-<slug>.png.
 import fs from "node:fs";
 import path from "node:path";
 import { ensureBrowser } from "@remotion/renderer";
@@ -28,6 +28,26 @@ export async function storyboard(args) {
   const w = Number(opts.width ?? (format === "16:9" ? 420 : 300));
   const h = Math.round((w * ah) / aw);
 
+  // A shot with `images` (several frames): one row per shot — the frames side by side, notes beside.
+  const row = (shot, i) => {
+    const [b0, b1] = shot.beats ?? [];
+    const when = b0 === undefined ? "" : ` · b${b0}–${b1}${time(b0) === null ? "" : ` · ${time(b0).toFixed(2)}–${time(b1).toFixed(2)} s`}`;
+    const frames = shot.images
+      .map((img) => {
+        const src = path.resolve("public", img);
+        if (!fs.existsSync(src)) throw new Error(`shot ${i + 1}: no image at ${src}`);
+        return `<img src="file://${src}" style="width:${w}px;height:${h}px;object-fit:cover;border-radius:4px;display:block;background:#fff">`;
+      })
+      .join("");
+    const line = (label, text) => (text ? `<div style="margin-top:8px"><b style="color:#888;font-weight:600">${label}</b> ${esc(text)}</div>` : "");
+    return `<div style="display:flex;gap:20px;align-items:flex-start;margin-bottom:28px">
+      <div style="display:flex;gap:10px">${frames}</div>
+      <div style="width:${Math.round(w * 1.4)}px;font:14px/1.4 system-ui,sans-serif;color:#ddd">
+        <div style="font:700 15px ui-monospace,monospace;color:#fff;margin-bottom:6px">${i + 1} · ${esc(shot.chapter ?? "")}${when}</div>
+        ${line("Motion", shot.motion)}${line("Camera", shot.camera)}${line("Join →", shot.join)}${line("Sound", shot.sound)}
+      </div></div>`;
+  };
+
   const panel = (shot, i) => {
     const [b0, b1] = shot.beats ?? [];
     const when = b0 === undefined ? "" : ` · b${b0}–${b1}${time(b0) === null ? "" : ` · ${time(b0).toFixed(2)}–${time(b1).toFixed(2)} s`}`;
@@ -50,14 +70,21 @@ export async function storyboard(args) {
   const html = `<!doctype html><html><body style="margin:0;background:#1d1d1b;padding:24px">
   <div style="font:700 22px system-ui,sans-serif;color:#fff">${esc(board.title ?? film.title)} — storyboard · ${format}</div>
   ${board.logline ? `<div style="font:15px system-ui,sans-serif;color:#bbb;margin:6px 0 4px">${esc(board.logline)}</div>` : ""}
-  <div style="display:grid;grid-template-columns:repeat(${cols},${w}px);gap:28px 20px;margin-top:18px">${board.shots.map(panel).join("")}</div>
+  ${
+    board.shots.some((sh) => sh.images)
+      ? `<div style="margin-top:18px">${board.shots.map(row).join("")}</div>`
+      : `<div style="display:grid;grid-template-columns:repeat(${cols},${w}px);gap:28px 20px;margin-top:18px">${board.shots.map(panel).join("")}</div>`
+  }
   </body></html>`;
   const work = path.resolve("out/.storyboard", film.id);
   fs.mkdirSync(work, { recursive: true });
   const htmlFile = path.join(work, "storyboard.html");
   fs.writeFileSync(htmlFile, html);
   const browser = await chromium.launch({ executablePath: (await ensureBrowser()).path });
-  const page = await browser.newPage({ viewport: { width: cols * w + (cols - 1) * 20 + 48, height: 100 } });
+  const rows = board.shots.some((sh) => sh.images);
+  const maxFrames = Math.max(1, ...board.shots.map((sh) => sh.images?.length ?? 1));
+  const pageW = rows ? maxFrames * w + (maxFrames - 1) * 10 + 20 + Math.round(w * 1.4) + 48 : cols * w + (cols - 1) * 20 + 48;
+  const page = await browser.newPage({ viewport: { width: pageW, height: 100 } });
   await page.goto(`file://${htmlFile}`);
   await page.waitForLoadState("networkidle");
   const out = opts.out ?? `out/storyboard-${film.id}.png`;

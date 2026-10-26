@@ -23,6 +23,12 @@ not look out of place cut next to it.
 Name every one you find, with frames:
 
 - Dead beats: a beat where nothing new happens (compare neighbouring cells of the per-beat sheet).
+- The product clipped or cut by anything but the frame (a plate edge, a fade, a mask), or cropped so
+  close it can no longer be recognised (R27).
+- Text over the product or its UI, or rising while the camera still moves (R28).
+- Zoom transitions: a push into one screen and a pull back from another, a fly-in to an element, a
+  fall-away to a point, an iris (R21).
+- Glass bigger than the element it dresses, beside it rather than over it, or bending its whole face.
 - A hard cut at a chapter join that no motion, match or impact hides.
 - Anything sliding in on one curve with no anticipation or settle; everything moving the same way.
 - An impact in `cues.json` with no picture reaction on its frame.

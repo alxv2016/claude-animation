@@ -1,5 +1,5 @@
 import { useLayoutEffect, useRef } from "react";
-import { AbsoluteFill, useCurrentFrame, useVideoConfig } from "remotion";
+import { AbsoluteFill, Img, staticFile, useCurrentFrame, useVideoConfig } from "remotion";
 import { MediaFeed, type MediaInput } from "../media";
 import { GRADIENT_FRAGMENT, gradientUniforms, type GradientProps } from "../backgrounds/Gradient";
 import { hexToSrgb } from "../color";
@@ -50,6 +50,12 @@ export type GlassStyle = {
   shadowOffset: number;
   /** Panels closer than this many px melt together. */
   smooth: number;
+  /**
+   * Sample inward instead of outward: the glass magnifies and wraps what is under it (a lens or a glass
+   * bubble over an avatar) and never shows what lies outside its outline. 0 = Liquid Glass's outward
+   * rim, 1 = a lens.
+   */
+  inward: number;
 };
 
 export const DEFAULT_GLASS: GlassStyle = {
@@ -69,6 +75,7 @@ export const DEFAULT_GLASS: GlassStyle = {
   shadowSoftness: 28,
   shadowOffset: 10,
   smooth: 0,
+  inward: 0,
 };
 
 export type Backdrop =
@@ -76,6 +83,11 @@ export type Backdrop =
   | { color: string }
   /** Any fragment shader built with glsl.ts `frag()`, e.g. WAVES_FRAGMENT with wavesUniforms(). */
   | { shader: { fragment: string; uniforms?: Uniforms } }
+  /**
+   * A backdrop the scene composes each frame on a 2D canvas, in composition px, from loaded images —
+   * so glass can refract elements the scene draws (an avatar under its own glass bubble).
+   */
+  | { compose: { images: string[]; draw: (ctx: CanvasRenderingContext2D, images: HTMLImageElement[], width: number, height: number) => void } }
   | MediaInput;
 
 const MAX_PANELS = 8;
@@ -105,7 +117,7 @@ uniform sampler2D uBackdrop;
 uniform vec4 uRects[8];   // centre x, y, half width, half height (canvas px, y up)
 uniform float uRadii[8];
 uniform float uCount, uRefraction, uBevel, uIor, uDispersion, uFrost, uSaturation, uBrightness, uTintAmount;
-uniform float uSpecular, uLight, uEdge, uShadow, uShadowSoft, uShadowOffset, uSmooth;
+uniform float uSpecular, uLight, uEdge, uShadow, uShadowSoft, uShadowOffset, uSmooth, uInward;
 uniform vec3 uTint;
 
 float scene(vec2 p) {
@@ -162,6 +174,8 @@ void main() {
     vec3 R = refract(vec3(0.0, 0.0, -1.0), N, 1.0 / uIor);
     vec2 disp = -R.xy / max(-R.z, 0.2) * depth;
     disp *= min(1.0, 2.5 * uBevel / max(length(disp), 1e-4)); // keep rim samples nearby
+    // A lens samples toward its centre, magnifying what is under it and never reaching past the edge.
+    if (uInward > 0.5) disp = -min(1.0, e / max(length(disp), 1e-4)) * disp;
 
     vec3 glass;
     glass.r = frosted(px + disp * (1.0 + uDispersion), uFrost).r;
@@ -220,6 +234,7 @@ export const LiquidGlass: React.FC<LiquidGlassProps> = ({ backdrop, panels, glas
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const state = useRef<State | null>(null);
   const mediaFrame = useRef<TexImageSource | null>(null);
+  const composed = useRef<{ canvas: HTMLCanvasElement | null; images: (HTMLImageElement | null)[] }>({ canvas: null, images: [] });
   const w = Math.round(width * resolution);
   const h = Math.round(height * resolution);
   const time = timeProp ?? frame / fps;
@@ -260,12 +275,27 @@ export const LiquidGlass: React.FC<LiquidGlassProps> = ({ backdrop, panels, glas
       const [r, g, b] = hexToSrgb(backdrop.color);
       gl.clearColor(r, g, b, 1);
       gl.clear(gl.COLOR_BUFFER_BIT);
-    } else if (mediaFrame.current) {
+    } else if ("compose" in backdrop || mediaFrame.current) {
+      if ("compose" in backdrop) {
+        // Compose the backdrop on a 2D canvas at the render size, once every image has loaded.
+        const imgs = backdrop.compose.images.map((_, i) => composed.current.images[i] ?? null);
+        if (imgs.some((im) => !im)) return;
+        const c = (composed.current.canvas ??= document.createElement("canvas"));
+        if (c.width !== w || c.height !== h) Object.assign(c, { width: w, height: h });
+        const ctx = c.getContext("2d")!;
+        ctx.setTransform(resolution, 0, 0, resolution, 0, 0);
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, width, height);
+        backdrop.compose.draw(ctx, imgs as HTMLImageElement[], width, height);
+        mediaFrame.current = c;
+      }
+      const source = mediaFrame.current;
+      if (!source) return;
       gl.useProgram(state.current.blit);
       gl.activeTexture(gl.TEXTURE0);
-      uploadTexture(gl, state.current.media, mediaFrame.current);
-      const place: [number, number, number, number] = placement ? [placement.x * resolution, placement.y * resolution, placement.width * resolution, placement.height * resolution] : [0, 0, 0, 0];
-      setUniforms(gl, state.current.blit, { ...base, uSourceSize: sourceSize(mediaFrame.current), uPlace: place, uGround: hexToSrgb(placement?.ground ?? "#ffffff") });
+      uploadTexture(gl, state.current.media, source);
+      const place: [number, number, number, number] = placement && !("compose" in backdrop) ? [placement.x * resolution, placement.y * resolution, placement.width * resolution, placement.height * resolution] : [0, 0, 0, 0];
+      setUniforms(gl, state.current.blit, { ...base, uSourceSize: sourceSize(source), uPlace: place, uGround: hexToSrgb(placement?.ground ?? "#ffffff") });
       gl.uniform1i(gl.getUniformLocation(state.current.blit, "uSource"), 0);
       gl.drawArrays(gl.TRIANGLES, 0, 3);
     }
@@ -305,6 +335,7 @@ export const LiquidGlass: React.FC<LiquidGlassProps> = ({ backdrop, panels, glas
       uShadowSoft: Math.max(1, style.shadowSoftness * resolution),
       uShadowOffset: style.shadowOffset * resolution,
       uSmooth: style.smooth * resolution,
+      uInward: style.inward,
     });
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, target.tex);
@@ -331,6 +362,18 @@ export const LiquidGlass: React.FC<LiquidGlassProps> = ({ backdrop, panels, glas
   const media = "video" in backdrop || "image" in backdrop ? (backdrop as MediaInput) : null;
   return (
     <AbsoluteFill>
+      {"compose" in backdrop &&
+        backdrop.compose.images.map((src, i) => (
+          <Img
+            key={src}
+            src={/^(https?:|data:|\/)/.test(src) ? src : staticFile(src)}
+            onLoad={(e) => {
+              composed.current.images[i] = e.currentTarget;
+              drawRef.current();
+            }}
+            style={{ position: "absolute", width: 1, height: 1, opacity: 0, pointerEvents: "none" }}
+          />
+        ))}
       {media && (
         <MediaFeed
           source={media}

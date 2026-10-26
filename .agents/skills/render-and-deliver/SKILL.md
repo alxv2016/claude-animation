@@ -1,6 +1,6 @@
 ---
 name: render-and-deliver
-description: Render a finished motion-graphics film to MP4 and check it before handing it over — master render (H.264 yuv420p, CRF 16, AAC), verification of codec, loudness (−14 LUFS), true peak and bitrate, a smaller delivery copy for grainy films, a poster frame, a contact sheet and a loop check for looping films, and where to watch it with sound. Use when a film has passed review and the user wants the final video, an export, or a file to share.
+description: Render a finished motion-graphics film to MP4 and check it before handing it over — master render (H.264 yuv420p, CRF 16, AAC), verification of codec, loudness (−14 LUFS), true peak and bitrate, a smaller delivery copy for grainy films, a poster frame, a contact sheet and a loop check for looping films, and the film opened in QuickTime for the user to review with sound. Use when a film has passed review and the user wants the final video, an export, or a file to share.
 ---
 
 # Render and deliver
@@ -32,4 +32,5 @@ Rules, settings and traps: [references/delivery.md](references/delivery.md).
      watch the seam.
 7. **Hand over**: give the path(s), duration, size, bitrate and loudness, the poster and contact
    sheet, and say where to watch it with sound — QuickTime or a browser, not VS Code's built-in
-   preview (see the delivery traps). Say what you would improve next.
+   preview (see the delivery traps) — and open it for them (R30): `open -a "QuickTime Player" <file>` when QuickTime
+   is available, otherwise give the file's full path or link. Say what you would improve next.

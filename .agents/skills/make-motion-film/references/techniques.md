@@ -89,19 +89,27 @@ accelerates, overshoots a hair, settles.
 
 ## Transitions
 
-Every chapter join is one of these (R21): hide it with motion, a match or an impact. A hard cut nothing
-hides and a crossfade are not joins. Plan each join in `brief.md` and the storyboard before building.
+Every chapter join is deliberate and lands on the beat (R21). **The style source decides the
+language**: a brand's films (a product launch, Apple's) cut on the beat between shots that are already
+moving, match on shape or position, or let the brand's own footage carry the move — and never zoom into
+one screen and out of another, fly into an element, fall away to a point or iris. Those zoom-style
+transitions read as a template; they belong to showreels, where the transition is the subject.
 
-| Transition       | How                                                                                      |
-| ---------------- | ---------------------------------------------------------------------------------------- |
-| Match cut        | The last shape of one scene is the first of the next (a ball becomes the next ground)    |
-| Iris             | `clip-path: circle()` growing from a point the camera holds still                        |
-| Blinds           | Bands slide off along their own directions, staggered                                    |
-| Continuity morph | Elements of one scene reshape into the next scene's elements                             |
-| Smash cut        | A hard cut on an impact, with camera shake — the only cut allowed, and only on an impact |
-| Dolly in         | Scale a surface up until it fills the frame, then cut to it                              |
-| Converge         | Everything flies to one point, which becomes the next scene's seed                       |
-| Container morph  | `MorphBox`: the same element changes size, radius and fill                               |
+| Transition       | How                                                                                    | Where                     |
+| ---------------- | -------------------------------------------------------------------------------------- | ------------------------- |
+| Cut on the beat  | A hard cut on a downbeat between two shots both in motion (a scrub, a drift, an entry) | Every film; brand default |
+| Match cut        | The last shape of one scene is the first of the next (a ball becomes the next ground)  | Every film                |
+| Smash cut        | A hard cut on an impact, with camera shake                                             | Every film                |
+| Container morph  | `MorphBox`: the same element changes size, radius and fill                             | UI motion                 |
+| Iris             | `clip-path: circle()` growing from a point the camera holds still                      | Showreels                 |
+| Blinds           | Bands slide off along their own directions, staggered                                  | Showreels                 |
+| Continuity morph | Elements of one scene reshape into the next scene's elements                           | Showreels                 |
+| Dolly in         | Scale a surface up until it fills the frame, then cut to it                            | Showreels                 |
+| Converge         | Everything flies to one point, which becomes the next scene's seed                     | Showreels                 |
+
+- **Camera inside a shot**: a slow drift or the footage's own move; at most one deliberate scale move
+  in a brand film, and only when it reveals (a grid scaling out), never in-then-out.
+- **Type waits for the camera** (R28): a headline rises after a scale or push has settled.
 
 ## Camera
 

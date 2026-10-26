@@ -29,8 +29,9 @@ it into the kit's showreel without it looking cheaper than the shots around it.
 3. **Look at every image you render.** Score the nine criteria with the rubric
    (`.agents/skills/review-film/references/rubric.md`), each with frame numbers as evidence, and go
    through its "Look for" list.
-4. **Check the joins and the hits**: for each chapter join, say which transition hides it (R21) or
-   that nothing does. For each cue in `cues.json`, find its frame (`t × fps`) and say what the
+4. **Check the joins, the product and the hits**: for each chapter join, say what it is (R21) and
+   flag any zoom transition; flag every frame where the product is clipped, cut or unrecognisable
+   (R27) and where text sits over it (R28). For each cue in `cues.json`, find its frame (`t × fps`) and say what the
    picture does there; list cues with no picture event and impacts with no picture hit (R22), and any
    melodic instrument in the cues (R13).
 5. **Check the studio rules** (`.agents/skills/review-film/references/studio-rules.md`) and cite any

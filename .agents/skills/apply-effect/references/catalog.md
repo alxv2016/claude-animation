@@ -27,6 +27,7 @@ library (`src/motion-kit/effects`, path relative to your file).
 | Glass over an animated effect                  | `LiquidGlass` with `backdrop={{ shader }}` | `{ fragment: SKY_FRAGMENT, uniforms: skyUniforms({}) }`                                                                          |
 | Frosted-glass cards over a photo or gradient   | `LiquidGlass`                              | `glass={{ frost: 8 }}`                                                                                                           |
 | Glass over a product photo placed in the scene | `LiquidGlass` with `placement`             | `backdrop={{ image }}`, `placement={{ x, y, width, height, ground }}`: the backdrop sits exactly where the scene draws the photo |
+| A glass bubble over an avatar or icon          | `LiquidGlass` with `compose`               | Panel = the element's circle; `glass={{ inward: 1, bevel: ≈ 0.13 × diameter, shadow: 0 }}` bends only the outer edge             |
 | Shapes that melt together                      | `LiquidGlass` with `glass.smooth`          | `smooth` ≈ 30–40 px                                                                                                              |
 | An effect this toolbox lacks                   | `ShaderCanvas` with your own fragment      | `src/motion-kit/effects/ShaderCanvas.tsx`; copy a component as the template                                                      |
 
@@ -247,6 +248,7 @@ Where it lives: `src/motion-kit/effects/ripples.ts` — `Ripple`, `rippleUniform
 | `backdrop`           | required         | `{ gradient: GradientProps }`, `{ shader: { fragment, uniforms } }`, `{ color }`, `{ video }` or `{ image }`                                                                                                  |
 | `panels`             | required         | Up to 8 `{ x, y, width, height, radius? }` in composition px; `radius` defaults to a capsule                                                                                                                  |
 | `placement`          | —                | `{ x, y, width, height, ground? }` px: where an `{ image }` or `{ video }` backdrop sits (with `ground` around it), so the glass refracts what the scene draws there; omitted, the backdrop covers the canvas |
+| `backdrop.compose`   | —                | `{ images, draw(ctx, images, width, height) }`: a backdrop the scene composes each frame on a 2D canvas, so glass can refract elements the scene draws (an avatar under its own bubble)                       |
 | `glass`              | `DEFAULT_GLASS`  | Partial `GlassStyle`, below                                                                                                                                                                                   |
 | `time`, `resolution` | frame / fps, `1` | Backdrop time; render scale                                                                                                                                                                                   |
 
